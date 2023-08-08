@@ -1,4 +1,4 @@
-import { log } from "logger";
+import { log } from "@ai-flow/logger";
 import { CounterButton, NewTabLink } from "ui";
 
 export const metadata = {
