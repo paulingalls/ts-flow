@@ -1,3 +1,3 @@
-export const log = (str: any) => {
+export const log = (str: string): void => {
   console.log("logger: " + str);
 };

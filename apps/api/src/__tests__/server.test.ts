@@ -1,4 +1,4 @@
-import supertest from "supertest";
+import supertest, { Response } from "supertest";
 import { createServer } from "../server";
 
 describe("server", () => {
@@ -6,8 +6,8 @@ describe("server", () => {
     await supertest(createServer())
       .get("/healthz")
       .expect(200)
-      .then((res) => {
-        expect(res.body.ok).toBe(true);
+      .then((res: Response) => {
+        expect((res.body as {ok: boolean}).ok).toBe(true);
       });
   });
 
@@ -15,7 +15,7 @@ describe("server", () => {
     await supertest(createServer())
       .get("/message/jared")
       .expect(200)
-      .then((res) => {
+      .then((res: Response) => {
         expect(res.body).toEqual({ message: "hello jared" });
       });
   });

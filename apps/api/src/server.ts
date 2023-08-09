@@ -3,7 +3,7 @@ import express, { Express } from "express";
 import morgan from "morgan";
 import cors from "cors";
 
-export const createServer: () => Express = () => {
+export function createServer(): Express {
   const app = express();
   app
     .disable("x-powered-by")
@@ -19,4 +19,4 @@ export const createServer: () => Express = () => {
     });
 
   return app;
-};
+}
