@@ -1,0 +1,78 @@
+{
+  "id": "gen-article",
+  "type": "workflow",
+  "config": {
+    "name": "Generate Article from Wire",
+    "description": "Generate an article when a new wire appears",
+    "nodes": [
+      {
+        "id": "gen-article-endpoint",
+        "type": "endpoint",
+        "config": {
+          "path": "gen-article",
+          "type": "post",
+          "outputEventName": "wireDataReceived",
+          "schema": {
+            "uid": "string",
+            "headline": "string",
+            "subhead": "string",
+            "content": "string",
+            "date": "date"
+          }
+        }
+      },
+      {
+        "id": "gen-article-query-vector",
+        "type": "query-vector",
+        "config": {
+          "inputEventName": "wireDataReceived",
+          "vectorType": "weaviate",
+          "query": "${headline} ${content}",
+          "outputEventSchema": [
+            {
+              "uid": "string",
+              "headline": "string",
+              "subhead": "string",
+              "content": "string",
+              "date": "date"
+            }
+          ],
+          "outputEventName": "wiresLoaded"
+        }
+      },
+      {
+        "id": "gen-article-ai-article",
+        "type": "query-ai",
+        "config": {
+          "inputName": "wires",
+          "target": "openai",
+          "systemPrompt": "generate an article",
+          "userPrompt": "",
+          "outputName": "article"
+        }
+      },
+      {
+        "id": "gen-article-ai-style-guide",
+        "type": "query-ai",
+        "config":{
+          "inputName": "article",
+          "target": "openai",
+          "systemPrompt": "apply the style guide",
+          "userPrompt": "",
+          "outputName": "styledArticle"
+        }
+      },
+      {
+        "id": "gen-article-ai-headline",
+        "type": "query-ai",
+        "config":{
+          "inputName": "styledArticle",
+          "target": "openai",
+          "systemPrompt": "generate a headline",
+          "userPrompt": ""
+        }
+      }
+    ]
+  }
+
+}

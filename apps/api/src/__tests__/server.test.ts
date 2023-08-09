@@ -1,9 +1,12 @@
 import supertest, { Response } from "supertest";
-import { createServer } from "../server";
+import express, { Express } from 'express';
+import { setupServer } from "../server";
 
 describe("server", () => {
   it("health check returns 200", async () => {
-    await supertest(createServer())
+    const app: Express = express();
+    setupServer(app);
+    await supertest(app)
       .get("/healthz")
       .expect(200)
       .then((res: Response) => {
@@ -12,7 +15,9 @@ describe("server", () => {
   });
 
   it("message endpoint says hello", async () => {
-    await supertest(createServer())
+    const app: Express = express();
+    setupServer(app);
+    await supertest(app)
       .get("/message/jared")
       .expect(200)
       .then((res: Response) => {
