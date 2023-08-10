@@ -12,7 +12,11 @@ export interface JSONObject {
   [name: string] : JSONValue;
 }
 
-export class NodeBase {
+export interface ContainerNode {
+  getId(): string;
+}
+
+export class NodeBase implements ContainerNode {
   constructor(protected id: string, protected container: IContainer, private config: JSONObject) {}
 
   getId(): string {
@@ -66,6 +70,11 @@ class Container implements IContainer {
   }
 
   createInstance(id: string, type: string, config: JSONObject): NodeBase | null {
+    const existingInstance = this.getInstance(id);
+    if (existingInstance) {
+      return existingInstance;
+    }
+
     const node: typeof NodeBase = this.nodes[type];
     if (node) {
       const instance = new node(id, this, config);

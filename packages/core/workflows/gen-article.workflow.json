@@ -42,12 +42,15 @@
       },
       {
         "id": "gen-article-ai-article",
-        "type": "query-ai",
+        "type": "QueryAI",
         "config": {
-          "inputName": "wires",
-          "target": "openai",
-          "systemPrompt": "generate an article",
-          "userPrompt": "",
+          "inputEventName": "wires",
+          "modelEngineType": "OpenAIQueryEngine",
+          "engineId": "openai-query",
+          "engineConfig" : {
+            "systemPrompt": "generate an article",
+            "userPrompt": ""
+          },
           "outputName": "article"
         }
       },

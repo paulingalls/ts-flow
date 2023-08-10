@@ -1,6 +1,6 @@
 import { ContainerNode, IContainer, NodeBase, JSONObject } from "../Container";
 
-interface IEventListener {
+export interface IEventListener {
   eventTriggered(payload: JSONObject): void;
 }
 
