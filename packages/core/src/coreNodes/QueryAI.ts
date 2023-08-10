@@ -10,13 +10,13 @@ export type QueryResponse = {
   }
 }
 
-interface QueryTargetAI extends ContainerNode {
+export interface IQueryTargetAI extends ContainerNode {
   sendQuery(payload: JSONObject): Promise<QueryResponse>;
 }
 
 @ContainerNode
 export class QueryAI extends NodeBase implements IEventListener {
-  private queryEngine: QueryTargetAI | null = null;
+  private queryEngine: IQueryTargetAI | null = null;
   private outputEventName: string = '';
 
   constructor(id: string, container: IContainer, config: JSONObject) {
@@ -31,7 +31,7 @@ export class QueryAI extends NodeBase implements IEventListener {
       const engineConfig = config["config"] as JSONObject;
       const engine = this.container.createInstance(engineId, modelType, engineConfig) as unknown;
       if (engine) {
-        this.queryEngine = engine as QueryTargetAI;
+        this.queryEngine = engine as IQueryTargetAI;
       }
 
       const eventBus = this.container.getInstance('EventBus') as EventBus;
