@@ -22,10 +22,7 @@ export class Workflow extends NodeBase {
 
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
-    this.init(config);
-  }
 
-  init(config: JSONObject) {
     this.name = config['name'] as string;
     this.description = config['description'] as string;
     const nodes: WorkflowNodeDefinition[] = config['nodes'] as [];

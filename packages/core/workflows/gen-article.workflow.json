@@ -44,39 +44,62 @@
         "id": "gen-article-ai-article",
         "type": "QueryAI",
         "config": {
-          "inputEventName": "wires",
+          "inputEventName": "wiresLoaded",
           "modelEngineType": "OpenAIQueryEngine",
-          "engineId": "openai-query",
-          "engineConfig" : {
+          "engineId": "openai-query-gen-article",
+          "engineConfig": {
             "modelName": "gpt-4",
             "systemPrompt": "generate an article",
             "userPrompt": ""
           },
-          "outputName": "article"
+          "outputEventName": "article"
         }
       },
       {
         "id": "gen-article-ai-style-guide",
-        "type": "query-ai",
-        "config":{
-          "inputName": "article",
-          "target": "openai",
-          "systemPrompt": "apply the style guide",
-          "userPrompt": "",
-          "outputName": "styledArticle"
+        "type": "QueryAI",
+        "config": {
+          "inputEventName": "article",
+          "modelEngineType": "OpenAIQueryEngine",
+          "engineId": "openai-query-style",
+          "engineConfig": {
+            "modelName": "gpt-4",
+            "systemPrompt": "apply style to article",
+            "userPrompt": ""
+          },
+          "outputEventName": "styledArticle"
         }
       },
       {
         "id": "gen-article-ai-headline",
-        "type": "query-ai",
-        "config":{
-          "inputName": "styledArticle",
-          "target": "openai",
-          "systemPrompt": "generate a headline",
-          "userPrompt": ""
+        "type": "QueryAI",
+        "config": {
+          "inputEventName": "styledArticle",
+          "modelEngineType": "OpenAIQueryEngine",
+          "engineId": "openai-query-headline",
+          "engineConfig": {
+            "modelName": "gpt-4",
+            "systemPrompt": "create headline for article",
+            "userPrompt": ""
+          },
+          "outputEventName": "articleWithHeadline"
+        }
+      },
+      {
+        "id": "gen-article-query-user-ask-submit",
+        "type": "QueryUser",
+        "config": {
+          "inputEventName": "articleWithHeadline",
+          "queryUserEngineType": "SlackYesNoQueryEngine",
+          "engineId": "slack-yes-no",
+          "engineConfig": {
+            "channel": "testChannel",
+            "userPrompt": "Do you want to submit this?",
+            "yesOutputEventName": "publishArticle",
+            "noOutputEventName": "ignoreArticle"
+          }
         }
       }
     ]
   }
-
 }

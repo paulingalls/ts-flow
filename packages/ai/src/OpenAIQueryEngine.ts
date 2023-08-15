@@ -3,17 +3,14 @@ import { OpenAI } from 'openai';
 
 @ContainerNode
 export class OpenAIQueryEngine extends NodeBase implements IQueryTargetAI {
-  private systemPrompt: string = '';
-  private userPrompt: string = '';
-  private modelName: string = '';
-  private openAI: OpenAI | null = null;
+  private systemPrompt: string;
+  private userPrompt: string;
+  private modelName: string;
+  private openAI: OpenAI;
 
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
-    this.init(config);
-  }
 
-  init(config: JSONObject): void {
     this.systemPrompt = config['systemPrompt'] as string;
     this.userPrompt = config['userPrompt'] as string;
     this.modelName = config['modelName'] as string;
@@ -38,7 +35,7 @@ export class OpenAIQueryEngine extends NodeBase implements IQueryTargetAI {
 
       console.log('USER_PROMPT', payload, userPrompt, userKeywords);
 
-      this.openAI?.chat.completions.create({
+      this.openAI.chat.completions.create({
         model: this.modelName,
         messages: [{role: 'user', content: userPrompt}, {role: 'system', content: systemPrompt}]
       }).then((response) => {

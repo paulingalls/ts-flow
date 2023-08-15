@@ -8,12 +8,10 @@ export interface IEventListener {
 export class EventBus extends NodeBase {
   private devMode: boolean = false;
   private listeners: Record<string, Array<IEventListener>> = {};
+
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
-    this.init(config);
-  }
 
-  init(config: JSONObject): void {
     if (config['devMode']) {
       this.devMode = true;
     }

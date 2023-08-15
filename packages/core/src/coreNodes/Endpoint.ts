@@ -7,10 +7,7 @@ import { Request, Response } from 'express';
 export class Endpoint extends NodeBase {
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
-    this.init(config);
-  }
 
-  init(config: JSONObject): void {
     const webServer = this.container.getInstance('WebServer') as WebServer;
     const eventBus = this.container.getInstance('EventBus') as EventBus;
     const endpointPath = config['path'] as string;

@@ -1,5 +1,5 @@
 {
-  "name": "@ai-flow/core",
+  "name": "@ai-flow/slack",
   "version": "0.0.1",
   "main": "./dist/index.js",
   "source": "./src/index.ts",
@@ -18,7 +18,8 @@
     "preset": "jest-presets/jest/node"
   },
   "dependencies": {
-    "express": "4.18.2"
+    "@ai-flow/core": "workspace:*",
+    "axios": "1.4.0"
   },
   "devDependencies": {
     "@types/express": "4.17.17",
@@ -26,6 +27,7 @@
     "@types/node": "20.4.9",
     "eslint": "8.46.0",
     "eslint-config-custom-server": "workspace:*",
+    "express": "4.18.2",
     "jest": "29.6.2",
     "jest-presets": "workspace:*",
     "tsconfig": "workspace:*",

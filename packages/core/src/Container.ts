@@ -17,7 +17,7 @@ export interface ContainerNode {
 }
 
 export class NodeBase implements ContainerNode {
-  constructor(protected id: string, protected container: IContainer, private config: JSONObject) {}
+  constructor(protected id: string, protected container: IContainer, protected config: JSONObject) {}
 
   getId(): string {
     return this.id;
