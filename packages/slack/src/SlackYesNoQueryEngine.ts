@@ -32,11 +32,10 @@ export class SlackYesNoQueryEngine extends NodeBase implements IQueryUserEngine 
 
   sendQuery(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
     this.completeCallback = completeCallback;
-    axios({
-      url: 'https://slack.com/api/chat.postMessage',
-      method: 'POST',
-      data: {
-        token: process.env.SLACK_API_TOKEN,
+    axios.post(
+      'https://slack.com/api/chat.postMessage',
+      {
+        token: process.env.SLACK_API_TOKEN || '',
         channel: this.slackChannel,
         text: this.userPrompt,
         blocks: [
@@ -75,7 +74,7 @@ export class SlackYesNoQueryEngine extends NodeBase implements IQueryUserEngine 
           }
         ]
       }
-    }).then((res) => {
+    ).then((res) => {
       console.log(res);
     }).catch(e => {
       console.error(e);
