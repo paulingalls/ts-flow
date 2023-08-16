@@ -1,32 +1,26 @@
-import { ContainerNode, IContainer, NodeBase, JSONObject } from "../Container";
-import { EventBus, IEventListener } from "./EventBus";
+import { ContainerNode, IContainer, JSONObject, NodeBase } from "../Container";
+import { EventBus } from "./EventBus";
 
-export type QueryResponse = {
-  role: string;
-  content?: string;
-  function_call?: {
-    name?: string;
-    arguments?: string;
-  }
+export type QueryAPIResult = {
+  result: JSONObject,
 }
 
-export interface IQueryTargetAI extends ContainerNode {
-  sendQuery(payload: JSONObject): Promise<QueryResponse>;
+export interface IQueryAPIEngine {
+  sendQuery(payload: JSONObject): Promise<QueryAPIResult>;
 }
 
 @ContainerNode
-export class QueryAI extends NodeBase implements IEventListener {
-  private queryEngine: IQueryTargetAI
+export class QueryAPI extends NodeBase {
+  private queryEngine: IQueryAPIEngine;
   private outputEventName: string;
 
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
-
-    const modelType = config['modelEngineType'] as string;
+    const modelType = config['apiEngineType'] as string;
     const engineId = config["engineId"] as string;
     const engineConfig = config["engineConfig"] as JSONObject;
     const engine = this.container.createInstance(engineId, modelType, engineConfig) as unknown;
-    this.queryEngine = engine as IQueryTargetAI;
+    this.queryEngine = engine as IQueryAPIEngine;
 
     const eventBus = this.container.getInstance('EventBus') as EventBus;
     const inputEventName = config['inputEventName'] as string;
@@ -36,13 +30,11 @@ export class QueryAI extends NodeBase implements IEventListener {
   }
 
   eventTriggered(payload: JSONObject): void {
-    this.queryEngine.sendQuery(payload).then((response: QueryResponse) => {
+    this.queryEngine.sendQuery(payload).then((response: QueryAPIResult) => {
       const eventBus = this.container.getInstance('EventBus') as EventBus;
-      eventBus.sendEvent(this.outputEventName, { ...payload, ...response });
+      eventBus.sendEvent(this.outputEventName, { ...payload, ...response.result });
     }).catch(e => {
       console.log("error executing query", e);
     });
   }
-
-
 }

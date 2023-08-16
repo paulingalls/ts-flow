@@ -26,7 +26,7 @@ export class QueryUser extends NodeBase implements IEventListener {
   eventTriggered(payload: JSONObject): void {
     this.queryEngine.sendQuery(payload, (eventName, result) => {
       const eventBus = this.container.getInstance('EventBus') as EventBus;
-      eventBus.sendEvent(eventName, result);
+      eventBus.sendEvent(eventName, {...payload, ...result});
     });
   }
 

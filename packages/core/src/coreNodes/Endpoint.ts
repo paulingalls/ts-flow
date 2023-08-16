@@ -15,13 +15,13 @@ export class Endpoint extends NodeBase {
     const eventName = config['eventName'] as string;
     if (endpointType === 'post') {
       webServer.addPostEndpoint(endpointPath, (req: Request, res: Response) => {
-        const data: JSONObject = JSON.parse(req.body as string) as JSONObject;
+        const data: JSONObject = req.body as JSONObject;
         eventBus.sendEvent(eventName, data);
         res.sendStatus(200);
       })
     } else if (endpointPath === 'get') {
       webServer.addGetEndpoint(endpointPath, (req: Request, res: Response) => {
-        eventBus.sendEvent(eventName, {});
+        eventBus.sendEvent(eventName, {...req.params});
         res.sendStatus(200);
       })
     }

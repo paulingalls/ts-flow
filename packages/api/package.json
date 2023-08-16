@@ -1,0 +1,35 @@
+{
+  "name": "@ai-flow/api",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "source": "./src/index.ts",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
+    "dev": "tsc -w",
+    "lint": "eslint \"src/**/*.ts*\"",
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "jest-presets/jest/node"
+  },
+  "dependencies": {
+    "@ai-flow/core": "workspace:*",
+    "axios": "1.4.0"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.17",
+    "@types/jest": "29.5.3",
+    "@types/node": "20.4.9",
+    "eslint": "8.46.0",
+    "eslint-config-custom-server": "workspace:*",
+    "jest": "29.6.2",
+    "jest-presets": "workspace:*",
+    "tsconfig": "workspace:*",
+    "typescript": "5.1.6"
+  }
+}

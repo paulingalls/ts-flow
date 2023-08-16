@@ -248,6 +248,43 @@ importers:
         specifier: 5.1.6
         version: 5.1.6
 
+  packages/api:
+    dependencies:
+      '@ai-flow/core':
+        specifier: workspace:*
+        version: link:../core
+      axios:
+        specifier: 1.4.0
+        version: 1.4.0
+    devDependencies:
+      '@types/express':
+        specifier: 4.17.17
+        version: 4.17.17
+      '@types/jest':
+        specifier: 29.5.3
+        version: 29.5.3
+      '@types/node':
+        specifier: 20.4.9
+        version: 20.4.9
+      eslint:
+        specifier: 8.46.0
+        version: 8.46.0
+      eslint-config-custom-server:
+        specifier: workspace:*
+        version: link:../eslint-config-custom-server
+      jest:
+        specifier: 29.6.2
+        version: 29.6.2(@types/node@20.4.9)
+      jest-presets:
+        specifier: workspace:*
+        version: link:../jest-presets
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: 5.1.6
+        version: 5.1.6
+
   packages/core:
     dependencies:
       express:

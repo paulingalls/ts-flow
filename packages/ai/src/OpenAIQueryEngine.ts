@@ -1,4 +1,4 @@
-import { NodeBase, ContainerNode, IQueryTargetAI, IContainer, JSONObject, QueryResponse } from "@ai-flow/core";
+import { NodeBase, ContainerNode, IQueryTargetAI, IContainer, JSONObject, QueryResponse, keywordReplacement } from "@ai-flow/core";
 import { OpenAI } from 'openai';
 
 @ContainerNode
@@ -20,20 +20,8 @@ export class OpenAIQueryEngine extends NodeBase implements IQueryTargetAI {
 
   sendQuery(payload: JSONObject): Promise<QueryResponse> {
     return new Promise((resolve, reject) => {
-      const systemKeywords = this.extractKeywords(this.systemPrompt);
-      let systemPrompt = this.systemPrompt.slice();
-      const userKeywords = this.extractKeywords(this.userPrompt);
-      let userPrompt = this.userPrompt.slice();
-      
-      systemKeywords.forEach((keyword) => {
-        systemPrompt = systemPrompt.replace('${' + keyword + '}', payload[keyword] as string);
-      })
-      userKeywords.forEach((keyword) => {
-        console.log(keyword, payload[keyword]);
-        userPrompt = userPrompt.replace('${' + keyword + '}', payload[keyword] as string);
-      })
-
-      console.log('USER_PROMPT', payload, userPrompt, userKeywords);
+      const systemPrompt = keywordReplacement(this.systemPrompt, payload);
+      const userPrompt = keywordReplacement(this.userPrompt, payload);
 
       this.openAI.chat.completions.create({
         model: this.modelName,
@@ -51,17 +39,4 @@ export class OpenAIQueryEngine extends NodeBase implements IQueryTargetAI {
       })
     })
   }
-
-  private extractKeywords(input: string): string[] {
-    const regex = /\${(\w+)}/g;
-    const keywords: string[] = [];
-
-    let match;
-    while ((match = regex.exec(input)) !== null) {
-      keywords.push(match[1]);
-    }
-
-    return keywords;
-  }
-
 }
