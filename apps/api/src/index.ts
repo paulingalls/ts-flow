@@ -2,7 +2,6 @@ import { setupServer } from "./server";
 import { IContainer, bootstrap } from '@ai-flow/core';
 import { WebServer } from '@ai-flow/core';
 import { Express, Request, Response } from 'express';
-import { log } from "@ai-flow/logger";
 
 void bootstrap([], (container: IContainer) => {
   container.createInstance('EventBus', 'EventBus', { devMode: 'true' });
@@ -22,6 +21,6 @@ void bootstrap([], (container: IContainer) => {
     });
 
     webServer.startServer();
-    log('started server');
+    console.log('started server');
   }
 });

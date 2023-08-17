@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@ai-flow/core": "workspace:*",
-    "@ai-flow/logger": "workspace:*",
     "body-parser": "1.20.2",
     "cors": "2.8.5",
     "express": "4.18.2",
@@ -30,7 +29,6 @@
     "@types/node": "20.4.9",
     "@types/supertest": "2.0.12",
     "eslint": "8.46.0",
-    "eslint-config-custom-server": "workspace:*",
     "jest": "29.6.2",
     "jest-presets": "workspace:*",
     "supertest": "6.3.3",

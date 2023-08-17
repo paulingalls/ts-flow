@@ -1,6 +1,7 @@
-import { NodeBase, IQueryUserEngine, IContainer, JSONObject, WebServer } from "@ai-flow/core";
+import { NodeBase, IQueryUserEngine, IContainer, JSONObject, WebServer, ContainerNode } from "@ai-flow/core";
 import axios from "axios";
 
+@ContainerNode
 export class SlackYesNoQueryEngine extends NodeBase implements IQueryUserEngine {
   private completeCallback: ((completeEventName: string, result: JSONObject) => void) | null = null;
   private userPrompt: string;

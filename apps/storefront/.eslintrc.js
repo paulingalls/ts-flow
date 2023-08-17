@@ -1,4 +1,10 @@
 module.exports = {
-  root: true,
-  extends: ["custom"],
+  extends: [
+    "eslint:recommended",
+    "turbo",
+    'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/recommended-type-checked',
+    'prettier',
+    'next/core-web-vitals'
+  ],
 };

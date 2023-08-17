@@ -11,14 +11,7 @@
         "config": {
           "path": "gen-article",
           "type": "post",
-          "outputEventName": "wireDataReceived",
-          "schema": {
-            "uid": "string",
-            "headline": "string",
-            "subhead": "string",
-            "content": "string",
-            "date": "date"
-          }
+          "outputEventName": "wireDataReceived"
         }
       },
       {
@@ -28,15 +21,6 @@
           "inputEventName": "wireDataReceived",
           "vectorType": "weaviate",
           "query": "${headline} ${content}",
-          "outputEventSchema": [
-            {
-              "uid": "string",
-              "headline": "string",
-              "subhead": "string",
-              "content": "string",
-              "date": "date"
-            }
-          ],
           "outputEventName": "wiresLoaded"
         }
       },
@@ -49,25 +33,10 @@
           "engineId": "openai-query-gen-article",
           "engineConfig": {
             "modelName": "gpt-4",
-            "systemPrompt": "generate an article",
+            "systemPrompt": "You are an expert journalist blah, here is some background... ${}",
             "userPrompt": ""
           },
           "outputEventName": "article"
-        }
-      },
-      {
-        "id": "gen-article-ai-style-guide",
-        "type": "QueryAI",
-        "config": {
-          "inputEventName": "article",
-          "modelEngineType": "OpenAIQueryEngine",
-          "engineId": "openai-query-style",
-          "engineConfig": {
-            "modelName": "gpt-4",
-            "systemPrompt": "apply style to article",
-            "userPrompt": ""
-          },
-          "outputEventName": "styledArticle"
         }
       },
       {
@@ -79,8 +48,8 @@
           "engineId": "openai-query-headline",
           "engineConfig": {
             "modelName": "gpt-4",
-            "systemPrompt": "create headline for article",
-            "userPrompt": ""
+            "systemPrompt": "You are an expert editor, specialized in creating headlines",
+            "userPrompt": "create a headline for the following article:\n${article}"
           },
           "outputEventName": "articleWithHeadline"
         }
@@ -91,12 +60,29 @@
         "config": {
           "inputEventName": "articleWithHeadline",
           "queryUserEngineType": "SlackYesNoQueryEngine",
-          "engineId": "slack-yes-no",
+          "engineId": "slack-yes-no-submit",
           "engineConfig": {
             "channel": "testChannel",
-            "userPrompt": "Do you want to submit this?",
+            "userPrompt": "${headline}\n${article}\nDo you want to submit this?",
             "yesOutputEventName": "publishArticle",
             "noOutputEventName": "ignoreArticle"
+          }
+        }
+      },
+      {
+        "id": "gen-article-submit-article",
+        "type": "QueryAPI",
+        "config": {
+          "inputEventName": "publishArticle",
+          "queryAPIEngineType": "HttpPostQueryEngine",
+          "engineId": "post-publish-article",
+          "engineConfig": {
+            "postUrl": "https://example.com",
+            "bodyType": "json",
+            "bodySchema": {
+              "content": "string",
+              "headline": "string"
+            }
           }
         }
       }

@@ -1,22 +1,24 @@
+/* eslint-env node */
 module.exports = {
   extends: [
-    "eslint:recommended", 
+    "eslint:recommended",
     "turbo",
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-type-checked',
-    'prettier'
+    'prettier',
   ],
   env: {
     node: true,
     es6: true,
   },
+  plugins: ['@typescript-eslint'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
+    project: ['./apps/*/tsconfig.json', './packages/*/tsconfig.json'],
     ecmaVersion: "latest",
     sourceType: "module",
-    project: true,
+    tsconfigRootDir: __dirname,
   },
-  plugins: ['@typescript-eslint'],
   overrides: [
     {
       files: ["**/__tests__/**/*"],
@@ -25,4 +27,5 @@ module.exports = {
       },
     },
   ],
+  root: true,
 };

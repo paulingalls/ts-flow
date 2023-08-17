@@ -1,0 +1,93 @@
+{
+  "id": "post-daily-holiday",
+  "type": "workflow",
+  "config": {
+    "name": "Post today's holiday",
+    "description": "Find the holiday of the day, then create a social media post about it",
+    "nodes": [
+      {
+        "id": "post-daily-holiday-trigger",
+        "type": "ScheduleTrigger",
+        "config": {
+          "schedule": "daily at 9am PT",
+          "outputEventName": "findHoliday"
+        }
+      },
+      {
+        "id": "post-daily-holiday-find-holiday",
+        "type": "QueryAPI",
+        "config": {
+          "inputEventName": "findHoliday",
+          "queryAPIEngineType": "HttpGetQueryEngine",
+          "engineId": "get-todays-holiday",
+          "engineConfig": {
+            "urlTemplate": "https://holidayapi.com/api?token=${HOLIDAY_API_TOKEN}",
+            "bodyType": "json"
+          },
+          "outputEventName": "holidayFound"
+        }
+      },
+      {
+        "id": "post-daily-holiday-gen-post-text",
+        "type": "QueryAI",
+        "config": {
+          "inputEventName": "holidayFound",
+          "modelEngineType": "OpenAIQueryEngine",
+          "engineId": "openai-create-holiday-post",
+          "engineConfig": {
+            "modelName": "gpt-4",
+            "systemPrompt": "You are a social media expert with a focus in creating holiday posts",
+            "userPrompt": "Today is ${holiday}, write some text about this holiday to share on social media"
+          },
+          "outputEventName": "postTextCreated"
+        }
+      },
+      {
+        "id": "post-daily-holiday-get-image",
+        "type": "QueryAI",
+        "config": {
+          "inputEventName": "postTextCreated",
+          "modelEngineType": "StableDiffusionQueryEngine",
+          "engineId": "stabe-diffusion-holiday-image",
+          "engineConfig": {
+            "modelName": "stable2",
+            "prompt": "create an image representing ${holiday}"
+          },
+          "outputEventName": "postAndImageReady"
+        }
+      },
+      {
+        "id": "post-daily-holiday-query-user",
+        "type": "QueryUser",
+        "config": {
+          "inputEventName": "postAndImageReady",
+          "queryUserEngineType": "SlackYesNoQueryEngine",
+          "engineId": "slack-yes-no-submit",
+          "engineConfig": {
+            "channel": "testChannel",
+            "userPrompt": "${postImageUrl}\n${postContent}\nDo you want to submit this?",
+            "yesOutputEventName": "publishPost",
+            "noOutputEventName": "ignorePost"
+          }
+        }
+      },
+      {
+        "id": "post-daily-holiday-post-x",
+        "type": "QueryAPI",
+        "config": {
+          "inputEventName": "publishPost",
+          "queryAPIEngineType": "HttpPostQueryEngine",
+          "engineId": "post-social-media",
+          "engineConfig": {
+            "postUrl": "https://api.x.com",
+            "bodyType": "json",
+            "bodySchema": {
+              "image": "postImageUrl",
+              "content": "postContent"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

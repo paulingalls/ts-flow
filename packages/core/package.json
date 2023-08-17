@@ -25,7 +25,6 @@
     "@types/jest": "29.5.3",
     "@types/node": "20.4.9",
     "eslint": "8.46.0",
-    "eslint-config-custom-server": "workspace:*",
     "jest": "29.6.2",
     "jest-presets": "workspace:*",
     "tsconfig": "workspace:*",

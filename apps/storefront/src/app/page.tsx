@@ -1,4 +1,3 @@
-import { log } from "@ai-flow/logger";
 import { CounterButton, NewTabLink } from "ui";
 
 export const metadata = {
@@ -6,7 +5,6 @@ export const metadata = {
 };
 
 export default function Store() {
-  log("Hey! This is Home.");
   return (
     <div className="container">
       <h1 className="title">

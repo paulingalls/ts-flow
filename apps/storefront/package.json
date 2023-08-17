@@ -10,7 +10,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "@ai-flow/logger": "workspace:*",
     "next": "13.4.13",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -21,7 +20,7 @@
     "@types/node": "20.4.9",
     "@types/react": "18.2.19",
     "@types/react-dom": "18.2.7",
-    "eslint-config-custom": "workspace:*",
+    "eslint-config-next": "13.4.17",
     "tsconfig": "workspace:*",
     "typescript": "5.1.6"
   }
