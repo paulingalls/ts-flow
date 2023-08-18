@@ -1,23 +1,22 @@
-import { ContainerNode, IContainer, NodeBase, JSONObject } from "../Container";
-import { EventBus, IEventListener } from "./EventBus";
+import { ContainerNode, IContainer, JSONObject, NodeBase } from "../Container";
+import { EventBus } from "./EventBus";
 
-export interface IQueryTargetAI extends ContainerNode {
-  sendQuery(payload: JSONObject): Promise<JSONObject>;
+export interface IQueryWebEngine {
+  loadAndQueryPage(payload: JSONObject): Promise<JSONObject>;
 }
 
 @ContainerNode
-export class QueryAI extends NodeBase implements IEventListener {
-  private queryEngine: IQueryTargetAI
+export class QueryWebpage extends NodeBase {
+  private queryEngine: IQueryWebEngine;
   private outputEventName: string;
 
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
-
-    const modelType = config['modelEngineType'] as string;
+    const engineType = config['webScrapeEngineType'] as string;
     const engineId = config["engineId"] as string;
     const engineConfig = config["engineConfig"] as JSONObject;
-    const engine = this.container.createInstance(engineId, modelType, engineConfig) as unknown;
-    this.queryEngine = engine as IQueryTargetAI;
+    const engine = this.container.createInstance(engineId, engineType, engineConfig) as unknown;
+    this.queryEngine = engine as IQueryWebEngine;
 
     const eventBus = this.container.getInstance('EventBus') as EventBus;
     const inputEventName = config['inputEventName'] as string;
@@ -27,13 +26,11 @@ export class QueryAI extends NodeBase implements IEventListener {
   }
 
   eventTriggered(payload: JSONObject): void {
-    this.queryEngine.sendQuery(payload).then((response: JSONObject) => {
+    this.queryEngine.loadAndQueryPage(payload).then((response: JSONObject) => {
       const eventBus = this.container.getInstance('EventBus') as EventBus;
       eventBus.sendEvent(this.outputEventName, { ...payload, ...response });
     }).catch(e => {
       console.log("error executing query", e);
     });
   }
-
-
 }

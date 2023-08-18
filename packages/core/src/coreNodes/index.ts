@@ -3,5 +3,7 @@ export * from "./EventBus";
 export * from "./QueryAI";
 export * from "./QueryAPI";
 export * from "./QueryUser";
+export * from "./QueryWebpage";
+export * from "./Trigger";
 export * from "./WebServer";
 export * from "./Workflow";

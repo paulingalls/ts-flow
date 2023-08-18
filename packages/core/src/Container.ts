@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-type JSONValue =
+export type JSONValue =
   | string
   | number
   | boolean

@@ -1,5 +1,5 @@
 {
-  "name": "@ai-flow/api",
+  "name": "@ai-flow/puppeteer",
   "version": "0.0.1",
   "main": "./dist/index.js",
   "source": "./src/index.ts",
@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@ai-flow/core": "workspace:*",
-    "axios": "1.4.0"
+    "puppeteer": "21.0.3"
   },
   "devDependencies": {
     "@types/jest": "29.5.3",

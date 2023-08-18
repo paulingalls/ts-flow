@@ -11,9 +11,8 @@ export class HttpGetQueryEngine extends NodeBase implements IQueryAPIEngine {
   }
 
   async sendQuery(payload: JSONObject): Promise<QueryAPIResult> {
-    const interimUrl: string = keywordReplacement(this.urlTemplate, payload);
-    const finalUrl: string = keywordReplacement(interimUrl, process.env as JSONObject);
-    const res = await axios.get(finalUrl);
+    const url: string = keywordReplacement(this.urlTemplate, payload);
+    const res = await axios.get(url);
     return {
       result: res.data as JSONObject
     };

@@ -7,9 +7,15 @@
     "nodes": [
       {
         "id": "post-daily-holiday-trigger",
-        "type": "ScheduleTrigger",
+        "type": "Trigger",
         "config": {
-          "schedule": "daily at 9am PT",
+          "triggerType": "CronTrigger",
+          "triggerId": "post-daily-holiday-cron",
+          "triggerConfig": {
+            "cron": "0 9 * * *",
+            "triggerOnStart": "true",
+            "payload": {}
+          },
           "outputEventName": "findHoliday"
         }
       },

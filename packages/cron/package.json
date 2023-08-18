@@ -1,5 +1,5 @@
 {
-  "name": "@ai-flow/api",
+  "name": "@ai-flow/cron",
   "version": "0.0.1",
   "main": "./dist/index.js",
   "source": "./src/index.ts",
@@ -19,11 +19,12 @@
   },
   "dependencies": {
     "@ai-flow/core": "workspace:*",
-    "axios": "1.4.0"
+    "node-cron": "3.0.2"
   },
   "devDependencies": {
     "@types/jest": "29.5.3",
     "@types/node": "20.4.9",
+    "@types/node-cron": "3.0.8",
     "eslint": "8.46.0",
     "jest": "29.6.2",
     "jest-presets": "workspace:*",

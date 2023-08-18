@@ -1,0 +1,120 @@
+{
+  "id": "send-daily-nd-summary",
+  "type": "workflow",
+  "config": {
+    "name": "Send a daily ND summary",
+    "description": "Find the latest Notre Dame Football news and slack a summary with included links",
+    "nodes": [
+      {
+        "id": "send-daily-nd-summary-trigger",
+        "type": "Trigger",
+        "config": {
+          "triggerType": "CronTrigger",
+          "triggerId": "send-daily-nd-summary-cron",
+          "triggerConfig": {
+            "cron": "0 9 * * *",
+            "triggerOnStart": "true",
+            "payload": {}
+          },
+          "outputEventName": "findLatestNews"
+        }
+      },
+      {
+        "id": "send-daily-nd-summary-find-latest-news",
+        "type": "QueryAPI",
+        "config": {
+          "inputEventName": "findLatestNews",
+          "queryAPIEngineType": "HttpGetQueryEngine",
+          "engineId": "get-latest-news",
+          "engineConfig": {
+            "urlTemplate": "https://newsapi.org/v2/everything?apiKey=${NEWS_API_TOKEN}&q=%22Notre%20Dame%22%20-cathedral%20%2Bfootball&sortBy=publishedAt",
+            "bodyType": "json"
+          },
+          "outputEventName": "latestNDNewsFound"
+        }
+      },
+      {
+        "id": "send-daily-nd-summary-scrape-article",
+        "type": "QueryWebpage",
+        "config": {
+          "inputEventName": "latestNDNewsFound",
+          "webScrapeEngineType": "PuppeteerQueryWebEngine",
+          "engineId": "puppeteer-scrape-article-page",
+          "engineConfig": {
+            "dataRoot": "articles",
+            "urlPath": "url",
+            "query": "allText",
+            "outputProperty": "content"
+          },
+          "outputEventName": "articlesScraped"
+        }
+      },
+      {
+        "id": "send-daily-nd-summary-summarize-article",
+        "type": "QueryAI",
+        "config": {
+          "inputEventName": "articlesScraped",
+          "modelEngineType": "OpenAIQueryEngine",
+          "engineId": "open-ai-article-summarize",
+          "engineConfig": {
+            "modelName": "gpt-4",
+            "systemPrompt": "You are an expert editor experienced in summarizing stories about The University of Notre Dame football",
+            "userPrompt": "Please summarize the following text in less than 200 words:\n${content}",
+            "dataRoot": "articles",
+            "outputProperty": "summary"
+          },
+          "outputEventName": "postAndImageReady"
+        }
+      },
+      {
+        "id": "send-daily-nd-summary-send-to-user",
+        "type": "QueryUser",
+        "config": {
+          "inputEventName": "postAndImageReady",
+          "queryUserEngineType": "SlackBlocksOnlyQueryEngine",
+          "engineId": "slack-send-summary",
+          "engineConfig": {
+            "channel": "testChannel",
+            "dataRoot": "articles",
+            "userPrompt": "${urlToImage}\n${title}\n${summary}\n${url}",
+            "blocks": [
+              {
+                "type": "image",
+                "title": {
+                  "type": "plain_text",
+                  "text": "${title}",
+                  "emoji": false
+                },
+                "image_url": "${urlToImage}",
+                "alt_text": ""
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*${title}*\n${summary}\n<${url}|read more...>\n"
+                }
+              }
+            ]
+          },
+          "outputEventName": "summariesSent"
+        }
+      },
+      {
+        "id": "send-daily-nd-summary-check-for-more",
+        "type": "QueryUser",
+        "config": {
+          "inputEventName": "summariesSent",
+          "queryUserEngineType": "SlackYesNoQueryEngine",
+          "engineId": "slack-yes-no-submit",
+          "engineConfig": {
+            "channel": "testChannel",
+            "userPrompt": "Do you want to see more?",
+            "yesOutputEventName": "findLatestNews",
+            "noOutputEventName": "done"
+          }
+        }
+      }
+    ]
+  }
+}

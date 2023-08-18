@@ -5,6 +5,7 @@ export function keywordReplacement(template: string, payload: JSONObject): strin
   const keywords: string[] = extractKeywords(template);
   keywords.forEach((keyword) => {
     result = result.replace('${' + keyword + '}', payload[keyword] as string);
+    result = result.replace('${' + keyword + '}', process.env[keyword] as string);
   })
 
   return result;
