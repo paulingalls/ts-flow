@@ -1,6 +1,15 @@
-import { IContainer, IQueryAPIEngine, JSONObject, keywordReplacement, NodeBase, QueryAPIResult } from "@ai-flow/core";
+import {
+  ContainerNode,
+  IContainer,
+  IQueryAPIEngine,
+  JSONObject,
+  keywordReplacement,
+  NodeBase,
+  QueryAPIResult
+} from "@ai-flow/core";
 import axios from "axios";
 
+@ContainerNode
 export class HttpPostQueryEngine extends NodeBase implements IQueryAPIEngine {
   private readonly urlTemplate: string;
   private bodyType: string;

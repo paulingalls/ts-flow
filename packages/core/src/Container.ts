@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { EventBus } from "./coreNodes";
 
 export type JSONValue =
   | string
@@ -42,10 +43,13 @@ export async function bootstrap(additionalNodePaths: string[], initFunction: (co
   const coreNodePath = path.join(__dirname, 'coreNodes');
   console.log('about to load core nodes at location', coreNodePath)
   await mainContainer.loadNodes(coreNodePath);
+  const eventBus = mainContainer.createInstance('EventBus', 'EventBus', {}) as EventBus;
+  mainContainer.createInstance('WebServer', 'WebServer', { port: process.env.PORT || ''});
   for (const nodePath of additionalNodePaths) {
     await mainContainer.loadNodes(nodePath);
   }
   initFunction(mainContainer);
+  eventBus.sendEvent('bootstrapComplete', {});
 }
 
 
@@ -76,6 +80,7 @@ class Container implements IContainer {
     }
 
     const node: typeof NodeBase = this.nodes[type];
+    console.log('checking for node type', type, node);
     if (node) {
       const instance = new node(id, this, config);
       this.instances[id] = instance;
@@ -92,7 +97,7 @@ class Container implements IContainer {
     for (const file of files) {
       if (file.endsWith('.js') || file.endsWith('.cjs')) {
         const filePath = path.join(nodeDirectoryPath, file);
-        console.log('trying to inmport file:', file, filePath);
+        console.log('trying to import file:', file, filePath);
         await import(filePath);
       }
     }

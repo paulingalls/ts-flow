@@ -1,6 +1,7 @@
-import { IContainer, IQueryWebEngine, JSONObject, NodeBase } from "@ai-flow/core";
+import { ContainerNode, IContainer, IQueryWebEngine, JSONObject, NodeBase } from "@ai-flow/core";
 import puppeteer, { Browser } from "puppeteer";
 
+@ContainerNode
 export class PuppeteerQueryWebEngine extends NodeBase implements IQueryWebEngine {
   private readonly dataRoot: string;
   private readonly urlPath: string;

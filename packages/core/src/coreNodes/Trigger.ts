@@ -1,9 +1,10 @@
-import { IContainer, JSONObject, NodeBase } from "../Container";
+import { ContainerNode, IContainer, JSONObject, NodeBase } from "../Container";
 import { EventBus } from "./EventBus";
 
 export interface ITrigger {
   registerTriggerCallback(execute: (event: string, payload: JSONObject) => void): void;
 }
+@ContainerNode
 export class Trigger extends NodeBase {
   private trigger: ITrigger;
   constructor(id: string, container: IContainer, config: JSONObject) {
@@ -17,6 +18,6 @@ export class Trigger extends NodeBase {
     const eventBus = this.container.getInstance('EventBus') as EventBus;
     this.trigger.registerTriggerCallback((event,  payload) => {
       eventBus.sendEvent(event, payload);
-    })
+    });
   }
 }

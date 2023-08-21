@@ -1,6 +1,6 @@
-{
+  {
   "id": "send-daily-nd-summary",
-  "type": "workflow",
+  "type": "Workflow",
   "config": {
     "name": "Send a daily ND summary",
     "description": "Find the latest Notre Dame Football news and slack a summary with included links",
@@ -13,8 +13,8 @@
           "triggerId": "send-daily-nd-summary-cron",
           "triggerConfig": {
             "cron": "0 9 * * *",
-            "triggerOnStart": "true",
-            "payload": {}
+            "payload": {},
+            "triggerOnStart": "true"
           },
           "outputEventName": "findLatestNews"
         }
@@ -74,7 +74,7 @@
           "queryUserEngineType": "SlackBlocksOnlyQueryEngine",
           "engineId": "slack-send-summary",
           "engineConfig": {
-            "channel": "testChannel",
+            "channel": "test-channel",
             "dataRoot": "articles",
             "userPrompt": "${urlToImage}\n${title}\n${summary}\n${url}",
             "blocks": [
@@ -108,10 +108,11 @@
           "queryUserEngineType": "SlackYesNoQueryEngine",
           "engineId": "slack-yes-no-submit",
           "engineConfig": {
-            "channel": "testChannel",
+            "channel": "test-channel",
             "userPrompt": "Do you want to see more?",
             "yesOutputEventName": "findLatestNews",
-            "noOutputEventName": "done"
+            "noOutputEventName": "done",
+            "interactiveEndpoint": "/slack/interactive"
           }
         }
       }

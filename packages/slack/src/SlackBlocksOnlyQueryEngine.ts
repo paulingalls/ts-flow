@@ -1,6 +1,15 @@
-import { IContainer, IQueryUserEngine, JSONObject, JSONValue, keywordReplacement, NodeBase } from "@ai-flow/core";
-import axios from "axios/index";
+import {
+  ContainerNode,
+  IContainer,
+  IQueryUserEngine,
+  JSONObject,
+  JSONValue,
+  keywordReplacement,
+  NodeBase
+} from "@ai-flow/core";
+import axios from "axios";
 
+@ContainerNode
 export class SlackBlocksOnlyQueryEngine extends NodeBase implements IQueryUserEngine {
   private userPrompt: string;
   private slackChannel: string;

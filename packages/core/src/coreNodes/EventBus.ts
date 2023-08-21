@@ -26,7 +26,7 @@ export class EventBus extends NodeBase {
   }
 
   sendEvent(eventName: string, payload: JSONObject) {
-    this.listeners[eventName].forEach((listener) => {
+    this.listeners[eventName]?.forEach((listener) => {
       listener.eventTriggered(payload);
     })
   }
