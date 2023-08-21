@@ -24,10 +24,10 @@
         "type": "QueryAPI",
         "config": {
           "inputEventName": "findLatestNews",
-          "queryAPIEngineType": "HttpGetQueryEngine",
+          "engineType": "HttpGetQueryEngine",
           "engineId": "get-latest-news",
           "engineConfig": {
-            "urlTemplate": "https://newsapi.org/v2/everything?apiKey=${NEWS_API_TOKEN}&q=%22Notre%20Dame%22%20-cathedral%20%2Bfootball&sortBy=publishedAt",
+            "urlTemplate": "https://newsapi.org/v2/everything?apiKey=${NEWS_API_TOKEN}&q=%22Notre%20Dame%22%20-cathedral%20%2Bfootball&sortBy=publishedAt&pageSize=5",
             "bodyType": "json"
           },
           "outputEventName": "latestNDNewsFound"
@@ -38,7 +38,7 @@
         "type": "QueryWebpage",
         "config": {
           "inputEventName": "latestNDNewsFound",
-          "webScrapeEngineType": "PuppeteerQueryWebEngine",
+          "engineType": "PuppeteerQueryWebEngine",
           "engineId": "puppeteer-scrape-article-page",
           "engineConfig": {
             "dataRoot": "articles",
@@ -54,7 +54,7 @@
         "type": "QueryAI",
         "config": {
           "inputEventName": "articlesScraped",
-          "modelEngineType": "OpenAIQueryEngine",
+          "engineType": "OpenAIQueryEngine",
           "engineId": "open-ai-article-summarize",
           "engineConfig": {
             "modelName": "gpt-4",
@@ -71,7 +71,7 @@
         "type": "QueryUser",
         "config": {
           "inputEventName": "postAndImageReady",
-          "queryUserEngineType": "SlackBlocksOnlyQueryEngine",
+          "engineType": "SlackBlocksOnlyQueryEngine",
           "engineId": "slack-send-summary",
           "engineConfig": {
             "channel": "test-channel",
@@ -105,7 +105,7 @@
         "type": "QueryUser",
         "config": {
           "inputEventName": "summariesSent",
-          "queryUserEngineType": "SlackYesNoQueryEngine",
+          "engineType": "SlackYesNoQueryEngine",
           "engineId": "slack-yes-no-submit",
           "engineConfig": {
             "channel": "test-channel",

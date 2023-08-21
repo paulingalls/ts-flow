@@ -12,7 +12,7 @@ export class QueryUser extends NodeBase implements IEventListener {
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
 
-    const queryUserEngineType = config['queryUserEngineType'] as string;
+    const queryUserEngineType = config['engineType'] as string;
     const engineId = config["engineId"] as string;
     const engineConfig = config["engineConfig"] as JSONObject;
     const engine = this.container.createInstance(engineId, queryUserEngineType, engineConfig) as unknown;

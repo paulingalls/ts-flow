@@ -58,7 +58,7 @@ export class PuppeteerQueryWebEngine extends NodeBase implements IQueryWebEngine
           selection.addRange(range);
         }
         return window.getSelection()?.toString() as string;
-      }) as string;
+      });
       console.log(extractedText);
     } else {
       console.log('TODO');

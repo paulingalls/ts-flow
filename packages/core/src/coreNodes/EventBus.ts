@@ -13,6 +13,7 @@ export class EventBus extends NodeBase {
     super(id, container, config);
 
     if (config['devMode']) {
+      console.log('setting dev mode to true for EventBus');
       this.devMode = true;
     }
   }
@@ -26,6 +27,9 @@ export class EventBus extends NodeBase {
   }
 
   sendEvent(eventName: string, payload: JSONObject) {
+    if (this.devMode) {
+      console.log('EventBus sendEvent', eventName, payload);
+    }
     this.listeners[eventName]?.forEach((listener) => {
       listener.eventTriggered(payload);
     })

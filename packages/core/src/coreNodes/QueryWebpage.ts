@@ -12,7 +12,7 @@ export class QueryWebpage extends NodeBase {
 
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
-    const engineType = config['webScrapeEngineType'] as string;
+    const engineType = config['engineType'] as string;
     const engineId = config["engineId"] as string;
     const engineConfig = config["engineConfig"] as JSONObject;
     const engine = this.container.createInstance(engineId, engineType, engineConfig) as unknown;
