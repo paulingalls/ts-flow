@@ -45,21 +45,30 @@ export class PuppeteerQueryWebEngine extends NodeBase implements IQueryWebEngine
 
   async scrapeData(browser: Browser, url: string, query: string): Promise<string> {
     const page = await browser.newPage();
-    await page.goto(url);
-
     let extractedText: string = '';
+
+    try {
+      await page.goto(url, {timeout: 60000});
+    } catch (e) {
+      console.log('error loading page', e);
+      return extractedText;
+    }
+
     if (query === 'allText') {
-      extractedText = await page.$eval('*', (el) => {
-        const selection = window.getSelection();
-        const range = document.createRange();
-        range.selectNode(el);
-        if (selection) {
-          selection.removeAllRanges();
-          selection.addRange(range);
-        }
-        return window.getSelection()?.toString() as string;
-      });
-      console.log(extractedText);
+      try {
+        extractedText = await page.$eval('*', (el) => {
+          const selection = window.getSelection();
+          const range = document.createRange();
+          range.selectNode(el);
+          if (selection) {
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }
+          return window.getSelection()?.toString() as string;
+        });
+      } catch (e) {
+        console.log('Error scraping page text', e)
+      }
     } else {
       console.log('TODO');
     }
