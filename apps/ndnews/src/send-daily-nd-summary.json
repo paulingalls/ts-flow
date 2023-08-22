@@ -27,7 +27,7 @@
           "engineType": "HttpGetQueryEngine",
           "engineId": "get-latest-news",
           "engineConfig": {
-            "urlTemplate": "https://newsapi.org/v2/everything?apiKey=${NEWS_API_TOKEN}&q=%22Notre%20Dame%22%20-cathedral%20%2Bfootball&sortBy=publishedAt&pageSize=2&page=1&language=en",
+            "urlTemplate": "https://newsapi.org/v2/everything?apiKey=${NEWS_API_TOKEN}&q=%22Notre%20Dame%22%20-cathedral%20%2Bfootball&sortBy=relevancy&pageSize=2&page=1&language=en",
             "bodyType": "json"
           },
           "outputEventName": "latestNDNewsFound"
@@ -77,6 +77,7 @@
             "channel": "test-channel",
             "dataRoot": "articles",
             "userPrompt": "${urlToImage}\n${title}\n${summary}\n${url}",
+            "outputEventName": "summariesSent",
             "blocks": [
               {
                 "type": "image",
@@ -96,8 +97,7 @@
                 }
               }
             ]
-          },
-          "outputEventName": "xxx-summariesSent"
+          }
         }
       },
       {
@@ -108,7 +108,7 @@
           "engineType": "SlackYesNoQueryEngine",
           "engineId": "slack-yes-no-submit",
           "engineConfig": {
-            "channel": "C05P89EHS56",
+            "channel": "test-channel",
             "userPrompt": "Do you want to see more?",
             "yesOutputEventName": "findLatestNews",
             "noOutputEventName": "done",

@@ -1,5 +1,5 @@
 import { NodeBase, IQueryUserEngine, IContainer, JSONObject, WebServer, ContainerNode } from "@ai-flow/core";
-import axios from "axios";
+import axios, { AxiosHeaders } from "axios";
 
 @ContainerNode
 export class SlackYesNoQueryEngine extends NodeBase implements IQueryUserEngine {
@@ -20,23 +20,25 @@ export class SlackYesNoQueryEngine extends NodeBase implements IQueryUserEngine 
     const endpoint = config['interactiveEndpoint'] as string;
     const webServer = this.container.getInstance('WebServer') as WebServer;
     webServer.addPostEndpoint(endpoint, (req, res) => {
-      console.log('slack interaction endpoint', req);
-      const form = req.body as JSONObject;
-      const payload = JSON.parse(form['payload'] as string) as JSONObject;
-      console.log(payload);
+      console.log('slack interaction endpoint', req.body);
+      const form = req.body as Record<string, string>;
+      const payload = JSON.parse(form['payload']) as JSONObject;
+      const actions: JSONObject[] = payload['actions'] as JSONObject[];
       this.completeCallback && this.completeCallback(
-        payload['action'] === 'yes' ? this.yesEventName : this.noEventName,
+        actions[0]['value'] === 'yes' ? this.yesEventName : this.noEventName,
         payload);
-      res.send(200);
+      res.sendStatus(200);
     });
   }
 
   sendQuery(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
     this.completeCallback = completeCallback;
+    const headers: AxiosHeaders = new AxiosHeaders();
+    headers.setAuthorization(`Bearer ${process.env.SLACK_API_TOKEN}`)
+
     axios.post(
       'https://slack.com/api/chat.postMessage',
       {
-        token: process.env.SLACK_API_TOKEN || '',
         channel: this.slackChannel,
         text: this.userPrompt,
         blocks: [
@@ -74,11 +76,12 @@ export class SlackYesNoQueryEngine extends NodeBase implements IQueryUserEngine 
             ]
           }
         ]
-      }
+      },
+      {headers}
     ).then((res) => {
-      console.log(res);
+      console.log('SlackYesNoQueryEngine send query complete', res.status, res.data);
     }).catch(e => {
-      console.error(e);
+      console.error('SlackYesNoQueryEngine send query error', e);
     });
   }
 }

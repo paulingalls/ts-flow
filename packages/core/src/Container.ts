@@ -43,7 +43,7 @@ export async function bootstrap(additionalNodePaths: string[], initFunction: (co
   const coreNodePath = path.join(__dirname, 'coreNodes');
   console.log('about to load core nodes at location', coreNodePath)
   await mainContainer.loadNodes(coreNodePath);
-  const eventBus = mainContainer.createInstance('EventBus', 'EventBus', {devMode: true}) as EventBus;
+  const eventBus = mainContainer.createInstance('EventBus', 'EventBus', {devMode: false}) as EventBus;
   mainContainer.createInstance('WebServer', 'WebServer', { port: process.env.PORT || ''});
   for (const nodePath of additionalNodePaths) {
     await mainContainer.loadNodes(nodePath);

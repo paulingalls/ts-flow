@@ -10,10 +10,12 @@ export class WebServer extends NodeBase {
 
     this.app = express();
     this.app.use(express.json());
+    this.app.use(express.urlencoded({extended: true}))
     const port = config['port'];
-    if (typeof port === 'string') {
+    if (port && typeof port === 'string') {
       this.port = parseInt(port);
     }
+    console.log('loaded PORT', port, this.port);
   }
 
   getApp(): Express {
