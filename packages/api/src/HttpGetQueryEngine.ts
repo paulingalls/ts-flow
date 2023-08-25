@@ -1,23 +1,30 @@
-import { ContainerNode, IContainer, IQueryAPIEngine, JSONObject, NodeBase, QueryAPIResult, keywordReplacement } from "@ai-flow/core";
+import {
+  ContainerNode,
+  IContainer,
+  JSONObject,
+  NodeBase,
+  keywordReplacement,
+  IQueryEngine
+} from "@ai-flow/core";
 import axios from "axios";
 
 @ContainerNode
-export class HttpGetQueryEngine extends NodeBase implements IQueryAPIEngine {
+export class HttpGetQueryEngine extends NodeBase implements IQueryEngine {
   private readonly urlTemplate: string;
-  private bodyType: string;
+  private readonly bodyType: string;
+  private readonly outputEventName: string;
 
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
     this.urlTemplate = config['urlTemplate'] as string;
     this.bodyType = config['bodyType'] as string;
+    this.outputEventName = config['outputEventName'] as string;
   }
 
-  async sendQuery(payload: JSONObject): Promise<QueryAPIResult> {
+  execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
     const url: string = keywordReplacement(this.urlTemplate, payload);
-    const res = await axios.get(url);
-    console.log('response', res.data);
-    return {
-      result: res.data as JSONObject
-    };
+    axios.get(url).then((res) => {
+      completeCallback(this.outputEventName, res.data as JSONObject);
+    }).catch(e => {console.error('error getting http', e)});
   }
 }

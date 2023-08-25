@@ -14,28 +14,28 @@
           "triggerConfig": {
             "cron": "0 9 * * *",
             "payload": {},
-            "triggerOnStart": "true"
-          },
-          "outputEventName": "findLatestNews"
+            "triggerOnStart": "true",
+            "outputEventName": "findLatestNews"
+          }
         }
       },
       {
         "id": "send-daily-nd-summary-find-latest-news",
-        "type": "QueryAPI",
+        "type": "QueryEngine",
         "config": {
           "inputEventName": "findLatestNews",
           "engineType": "HttpGetQueryEngine",
           "engineId": "get-latest-news",
           "engineConfig": {
             "urlTemplate": "https://newsapi.org/v2/everything?apiKey=${NEWS_API_TOKEN}&q=%22Notre%20Dame%22%20-cathedral%20%2Bfootball&sortBy=relevancy&pageSize=2&page=1&language=en",
-            "bodyType": "json"
-          },
-          "outputEventName": "latestNDNewsFound"
+            "bodyType": "json",
+            "outputEventName": "latestNDNewsFound"
+          }
         }
       },
       {
         "id": "send-daily-nd-summary-scrape-article",
-        "type": "QueryWebpage",
+        "type": "QueryEngine",
         "config": {
           "inputEventName": "latestNDNewsFound",
           "engineType": "PuppeteerQueryWebEngine",
@@ -44,14 +44,14 @@
             "dataRoot": "articles",
             "urlPath": "url",
             "query": "allText",
-            "outputProperty": "content"
-          },
-          "outputEventName": "articlesScraped"
+            "outputProperty": "content",
+            "outputEventName": "articlesScraped"
+          }
         }
       },
       {
         "id": "send-daily-nd-summary-summarize-article",
-        "type": "QueryAI",
+        "type": "QueryEngine",
         "config": {
           "inputEventName": "articlesScraped",
           "engineType": "OpenAIQueryEngine",
@@ -61,14 +61,14 @@
             "systemPrompt": "You are an expert editor experienced in summarizing stories about The University of Notre Dame football",
             "userPrompt": "Please summarize the following text in less than 200 words:\n${content}",
             "dataRoot": "articles",
-            "outputProperty": "summary"
-          },
-          "outputEventName": "postAndImageReady"
+            "outputProperty": "summary",
+            "outputEventName": "postAndImageReady"
+          }
         }
       },
       {
         "id": "send-daily-nd-summary-send-to-user",
-        "type": "QueryUser",
+        "type": "QueryEngine",
         "config": {
           "inputEventName": "postAndImageReady",
           "engineType": "SlackBlocksOnlyQueryEngine",
@@ -102,7 +102,7 @@
       },
       {
         "id": "send-daily-nd-summary-check-for-more",
-        "type": "QueryUser",
+        "type": "QueryEngine",
         "config": {
           "inputEventName": "summariesSent",
           "engineType": "SlackYesNoQueryEngine",

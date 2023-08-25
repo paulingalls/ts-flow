@@ -1,7 +1,7 @@
 import {
   ContainerNode,
   IContainer,
-  IQueryUserEngine,
+  IQueryEngine,
   JSONObject,
   JSONValue,
   keywordReplacement,
@@ -10,7 +10,7 @@ import {
 import axios, { AxiosHeaders } from "axios";
 
 @ContainerNode
-export class SlackBlocksOnlyQueryEngine extends NodeBase implements IQueryUserEngine {
+export class SlackBlocksOnlyQueryEngine extends NodeBase implements IQueryEngine {
   private readonly userPrompt: string;
   private readonly slackChannel: string;
   private readonly outputEventName: string;
@@ -27,7 +27,7 @@ export class SlackBlocksOnlyQueryEngine extends NodeBase implements IQueryUserEn
     this.blocks = config['blocks'] as Array<JSONValue>;
   }
 
-  sendQuery(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
+  execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
     const data: JSONObject = payload[this.dataRoot] as JSONObject;
     if (data instanceof Array) {
       const promises: Promise<void>[] = [];

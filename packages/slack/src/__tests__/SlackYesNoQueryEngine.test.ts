@@ -37,7 +37,7 @@ describe("SlackYesNoQueryEngine", () => {
     const completeCallback = jest.fn();
 
     // Call the sendQuery method
-    engine.sendQuery(payload, completeCallback);
+    engine.execute(payload, completeCallback);
 
     // Assertions
     // eslint-disable-next-line @typescript-eslint/unbound-method

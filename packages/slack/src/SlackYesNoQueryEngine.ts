@@ -1,8 +1,15 @@
-import { NodeBase, IQueryUserEngine, IContainer, JSONObject, WebServer, ContainerNode } from "@ai-flow/core";
+import {
+  NodeBase,
+  IContainer,
+  JSONObject,
+  WebServer,
+  ContainerNode,
+  IQueryEngine
+} from "@ai-flow/core";
 import axios, { AxiosHeaders } from "axios";
 
 @ContainerNode
-export class SlackYesNoQueryEngine extends NodeBase implements IQueryUserEngine {
+export class SlackYesNoQueryEngine extends NodeBase implements IQueryEngine {
   private completeCallback: ((completeEventName: string, result: JSONObject) => void) | null = null;
   private userPrompt: string;
   private slackChannel: string;
@@ -31,7 +38,7 @@ export class SlackYesNoQueryEngine extends NodeBase implements IQueryUserEngine 
     });
   }
 
-  sendQuery(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
+  execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
     this.completeCallback = completeCallback;
     const headers: AxiosHeaders = new AxiosHeaders();
     headers.setAuthorization(`Bearer ${process.env.SLACK_API_TOKEN}`)

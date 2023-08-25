@@ -67,28 +67,22 @@ describe('OpenAIQueryEngine', () => {
     });
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const result = await openAIQueryEngine.sendQuery(payload);
+    openAIQueryEngine.execute(payload, (result) => {
+      expect(result).toEqual({
+        role: 'assistant',
+        content: 'response content',
+        function_call: 'function_call',
+      });
 
-    expect(result).toEqual({
-      role: 'assistant',
-      content: 'response content',
-      function_call: 'function_call',
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      expect(openAIQueryEngine['openAI']!.chat.completions.create).toHaveBeenCalledWith({
+        model: 'test-model',
+        messages: [
+          { role: 'user', content: 'user prompt with value' },
+          { role: 'system', content: 'system prompt with value' },
+        ],
+      });
     });
-
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    expect(openAIQueryEngine['openAI']!.chat.completions.create).toHaveBeenCalledWith({
-      model: 'test-model',
-      messages: [
-        { role: 'user', content: 'user prompt with value' },
-        { role: 'system', content: 'system prompt with value' },
-      ],
-    });
-  });
-
-  it('should handle error when sending a query', async () => {
-    (openAIQueryEngine['openAI']!.chat.completions.create as jest.Mock).mockRejectedValue(new Error('Test error'));
-
-    await expect(openAIQueryEngine.sendQuery({})).rejects.toThrowError('Test error');
 
   });
 

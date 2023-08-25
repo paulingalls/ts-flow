@@ -1,12 +1,13 @@
-import { ContainerNode, IContainer, IQueryWebEngine, JSONObject, NodeBase } from "@ai-flow/core";
+import { ContainerNode, IContainer, IQueryEngine, JSONObject, NodeBase } from "@ai-flow/core";
 import puppeteer, { Browser } from "puppeteer";
 
 @ContainerNode
-export class PuppeteerQueryWebEngine extends NodeBase implements IQueryWebEngine {
+export class PuppeteerQueryWebEngine extends NodeBase implements IQueryEngine {
   private readonly dataRoot: string;
   private readonly urlPath: string;
   private readonly outputProperty: string;
   private readonly query: string;
+  private readonly outputEventName: string;
 
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
@@ -14,33 +15,41 @@ export class PuppeteerQueryWebEngine extends NodeBase implements IQueryWebEngine
     this.urlPath = config['urlPath'] as string;
     this.outputProperty = config['outputProperty'] as string;
     this.query = config['query'] as string;
+    this.outputEventName = config['outputEventName'] as string;
   }
 
-  async loadAndQueryPage(payload: JSONObject): Promise<JSONObject> {
+  execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
     const data = payload[this.dataRoot] as JSONObject;
-    const browser = await puppeteer.launch({headless: false})
+    puppeteer.launch({headless: false}).then((browser) => {
+      if (this.urlPath.startsWith('http')) {
+        this.scrapeData(browser, this.urlPath, this.query).then((result) => {
+          data[this.outputProperty] = result;
+          completeCallback(this.outputEventName, payload);
+        }).catch(e => {console.error('error scraping data', e)});
+      } else if (data instanceof Array) {
+        const promises: Promise<void>[] = [];
+        data.forEach((value) => {
+          const item = value as JSONObject;
+          const url = item[this.urlPath] as string;
+          promises.push(new Promise<void>((resolve) => {
+            this.scrapeData(browser, url, this.query).then((result) => {
+              item[this.outputProperty] = result;
+              resolve();
+            }).catch(e => {console.error(e)})
+          }))
+        })
+        Promise.all(promises).then(() => {
+          completeCallback(this.outputEventName, payload);
+        }).catch(e => {console.error('error scraping data', e)});
+      } else {
+        const url = data[this.urlPath] as string;
+        this.scrapeData(browser, url, this.query).then((result) => {
+          data[this.outputProperty] = result;
+          completeCallback(this.outputEventName, payload);
+        }).catch(e => {console.error('error scraping data', e)});
+      }
+    }).catch(e => {console.error('error launching puppeteer', e)})
 
-    if (this.urlPath.startsWith('http')) {
-      data[this.outputProperty] = await this.scrapeData(browser, this.urlPath, this.query);
-    } else if (data instanceof Array) {
-      const promises: Promise<void>[] = [];
-      data.forEach((value) => {
-        const item = value as JSONObject;
-        const url = item[this.urlPath] as string;
-        promises.push(new Promise<void>((resolve) => {
-          this.scrapeData(browser, url, this.query).then((result) => {
-            item[this.outputProperty] = result;
-            resolve();
-          }).catch(e => {console.error(e)})
-        }))
-      })
-      await Promise.all(promises);
-    } else {
-      const url = data[this.urlPath] as string;
-      data[this.outputProperty] = await this.scrapeData(browser, url, this.query);
-    }
-
-    return payload;
   }
 
   async scrapeData(browser: Browser, url: string, query: string): Promise<string> {

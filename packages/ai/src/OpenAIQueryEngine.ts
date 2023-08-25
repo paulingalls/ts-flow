@@ -1,14 +1,22 @@
-import { NodeBase, ContainerNode, IQueryTargetAI, IContainer, JSONObject, keywordReplacement } from "@ai-flow/core";
+import {
+  NodeBase,
+  ContainerNode,
+  IContainer,
+  JSONObject,
+  keywordReplacement,
+  IQueryEngine
+} from "@ai-flow/core";
 import { OpenAI } from 'openai';
 
 @ContainerNode
-export class OpenAIQueryEngine extends NodeBase implements IQueryTargetAI {
-  private systemPrompt: string;
-  private userPrompt: string;
-  private modelName: string;
-  private openAI: OpenAI;
-  private dataRoot: string;
-  private outputProperty: string;
+export class OpenAIQueryEngine extends NodeBase implements IQueryEngine {
+  private readonly systemPrompt: string;
+  private readonly userPrompt: string;
+  private readonly modelName: string;
+  private readonly openAI: OpenAI;
+  private readonly dataRoot: string;
+  private readonly outputProperty: string;
+  private readonly outputEventName: string;
 
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
@@ -18,11 +26,12 @@ export class OpenAIQueryEngine extends NodeBase implements IQueryTargetAI {
     this.modelName = config['modelName'] as string;
     this.dataRoot = config['dataRoot'] as string;
     this.outputProperty = config['outputProperty'] as string;
+    this.outputEventName = config['outputEventName'] as string;
 
     this.openAI = new OpenAI();
   }
 
-  async sendQuery(payload: JSONObject): Promise<JSONObject> {
+  execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
     const data: JSONObject = payload[this.dataRoot] as JSONObject;
 
     if (data instanceof Array) {
@@ -36,12 +45,15 @@ export class OpenAIQueryEngine extends NodeBase implements IQueryTargetAI {
           }).catch(e => {reject(e)})
         }))
       });
-      await Promise.all(promises);
+      Promise.all(promises).then(() => {
+        completeCallback(this.outputEventName, payload);
+      }).catch(e => console.error('error executing query ai', e));
     } else {
-      await this.queryAI(data);
+      this.queryAI(data).then((result) => {
+        data[this.outputProperty] = result;
+        completeCallback(this.outputEventName, payload);
+      }).catch(e => {console.error('error executing query ai', e)});
     }
-
-    return payload;
   }
 
   async queryAI(payload: JSONObject): Promise<string> {
