@@ -6,7 +6,7 @@ import { IContainer, IQueryEngine } from "@ai-flow/core";
 jest.mock("axios");
 
 describe("HttpGetQueryEngine", () => {
-  it("sends a query and returns the result", async () => {
+  it("sends a query and returns the result", () => {
     // Arrange
     const urlTemplate = "http://example.com/api?q=${query}";
     const payload = { query: "test" };

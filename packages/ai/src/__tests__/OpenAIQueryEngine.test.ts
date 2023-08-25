@@ -49,7 +49,7 @@ describe('OpenAIQueryEngine', () => {
     expect(openAIQueryEngine['modelName']).toEqual('test-model');
   });
 
-  it('should send a query', async () => {
+  it('should send a query', () => {
     const payload = {
       keyword: 'value',
     };
