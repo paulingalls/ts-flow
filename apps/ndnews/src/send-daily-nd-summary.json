@@ -13,7 +13,11 @@
           "triggerId": "send-daily-nd-summary-cron",
           "triggerConfig": {
             "cron": "0 9 * * *",
-            "payload": {},
+            "payload": {
+              "page": 1,
+              "pageSize": 3,
+              "from": "2023-08-17"
+            },
             "triggerOnStart": "true",
             "outputEventName": "findLatestNews"
           }
@@ -27,7 +31,7 @@
           "engineType": "HttpGetQueryEngine",
           "engineId": "get-latest-news",
           "engineConfig": {
-            "urlTemplate": "https://newsapi.org/v2/everything?apiKey=${NEWS_API_TOKEN}&q=%22Notre%20Dame%22%20-cathedral%20%2Bfootball&sortBy=relevancy&pageSize=2&page=1&language=en",
+            "urlTemplate": "https://newsapi.org/v2/everything?apiKey=${NEWS_API_TOKEN}&q=%22Notre%20Dame%22%20-cathedral%20%2Bfootball&sortBy=relevancy&pageSize=${pageSize}&page=${page}&from=${from}&language=en",
             "bodyType": "json",
             "outputEventName": "latestNDNewsFound"
           }
@@ -110,9 +114,39 @@
           "engineConfig": {
             "channel": "test-channel",
             "userPrompt": "Do you want to see more?",
-            "yesOutputEventName": "findLatestNews",
+            "yesOutputEventName": "cleanup",
             "noOutputEventName": "done",
             "interactiveEndpoint": "/slack/interactive"
+          }
+        }
+      },
+      {
+        "id": "send-daily-nd-summary-cleanup",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "cleanup",
+          "engineType": "DeleteTransform",
+          "engineId": "delete-articles",
+          "engineConfig": {
+            "outputEventName": "nextPage",
+            "dataRoot": "",
+            "dataTarget": "articles"
+          }
+        }
+      },
+      {
+        "id": "send-daily-nd-summary-move-to-next-page",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "nextPage",
+          "engineType": "IncrementTransform",
+          "engineId": "increment-page",
+          "engineConfig": {
+            "outputEventName": "findLatestNews",
+            "dataRoot": "",
+            "dataTarget": "page",
+            "dataType": "number",
+            "dataIncrement": 1
           }
         }
       }

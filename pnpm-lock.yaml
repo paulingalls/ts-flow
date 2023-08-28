@@ -194,6 +194,9 @@ importers:
       '@ai-flow/slack':
         specifier: workspace:*
         version: link:../../packages/slack
+      '@ai-flow/transforms':
+        specifier: workspace:*
+        version: link:../../packages/transforms
       body-parser:
         specifier: 1.20.2
         version: 1.20.2
@@ -478,6 +481,37 @@ importers:
       express:
         specifier: 4.18.2
         version: 4.18.2
+      jest:
+        specifier: 29.6.2
+        version: 29.6.2(@types/node@20.4.9)
+      jest-presets:
+        specifier: workspace:*
+        version: link:../jest-presets
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: 5.1.6
+        version: 5.1.6
+
+  packages/transforms:
+    dependencies:
+      '@ai-flow/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      '@types/express':
+        specifier: 4.17.17
+        version: 4.17.17
+      '@types/jest':
+        specifier: 29.5.3
+        version: 29.5.3
+      '@types/node':
+        specifier: 20.4.9
+        version: 20.4.9
+      eslint:
+        specifier: 8.46.0
+        version: 8.46.0
       jest:
         specifier: 29.6.2
         version: 29.6.2(@types/node@20.4.9)

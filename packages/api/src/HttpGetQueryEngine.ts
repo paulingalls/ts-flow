@@ -24,7 +24,7 @@ export class HttpGetQueryEngine extends NodeBase implements IQueryEngine {
   execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
     const url: string = keywordReplacement(this.urlTemplate, payload);
     axios.get(url).then((res) => {
-      completeCallback(this.outputEventName, res.data as JSONObject);
+      completeCallback(this.outputEventName, {...payload, ...res.data} as JSONObject);
     }).catch(e => {console.error('error getting http', e)});
   }
 }
