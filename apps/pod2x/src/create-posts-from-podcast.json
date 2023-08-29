@@ -34,9 +34,27 @@
             "prompt": "${podcastText}\n\n\n=====\nThe above was the transcript of a podcast.  A great quote from above to share on social media is:\n\n",
             "numCompletions": 3,
             "maxTokens": 124,
+            "temperature": 1.1,
             "dataRoot": "",
-            "outputProperty": "quotes",
+            "outputProperty": "posts",
             "outputEventName": "quotesReady"
+          }
+        }
+      },
+      {
+        "id": "create-posts-from-podcast-get-images",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "quotesReady",
+          "engineType": "OpenAIImageEngine",
+          "engineId": "open-ai-podcast-images",
+          "engineConfig": {
+            "prompt": "An image for a social media post about a podcast with the following quote: ${text}\n\n",
+            "numImages": 1,
+            "size": "small",
+            "dataRoot": "posts",
+            "outputProperty": "image",
+            "outputEventName": "imagesReady"
           }
         }
       },
@@ -44,15 +62,25 @@
         "id": "create-posts-from-podcast-send-to-user",
         "type": "QueryEngine",
         "config": {
-          "inputEventName": "quotesReady",
+          "inputEventName": "imagesReady",
           "engineType": "SlackBlocksOnlyQueryEngine",
           "engineId": "slack-send-quotes",
           "engineConfig": {
             "channel": "test-channel",
-            "dataRoot": "quotes",
+            "dataRoot": "posts",
             "userPrompt": "${text}",
             "outputEventName": "summariesSent",
             "blocks": [
+              {
+                "type": "image",
+                "title": {
+                  "type": "plain_text",
+                  "text": "Post",
+                  "emoji": false
+                },
+                "image_url": "${image}",
+                "alt_text": ""
+              },
               {
                 "type": "section",
                 "text": {

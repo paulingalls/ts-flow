@@ -1,8 +1,8 @@
 import {
   ContainerNode,
   IContainer,
-  JSONObject,
-} from "@ai-flow/core";
+  JSONObject, JSONValue
+} from '@ai-flow/core';
 import { OpenAIEngineBase } from './OpenAIEngineBase';
 import { toFile } from 'openai';
 
@@ -18,7 +18,7 @@ export class OpenAIWhisperEngine extends OpenAIEngineBase {
     this.audioPrompt = config['audioPrompt'] as string;
   }
 
-  async queryAI(payload: JSONObject): Promise<string> {
+  async queryAI(payload: JSONObject): Promise<JSONValue> {
     const fileBuffer: Buffer = payload[this.inputProperty] as unknown as Buffer;
 
     const response = await this.openAI.audio.transcriptions.create({

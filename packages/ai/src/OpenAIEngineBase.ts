@@ -22,6 +22,8 @@ export abstract class OpenAIEngineBase extends NodeBase implements IQueryEngine 
   execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
     const data: JSONObject = this.dataRoot ? payload[this.dataRoot] as JSONObject : payload;
 
+    console.log('executing query for node', this.id);
+
     if (data instanceof Array) {
       const promises: Promise<void>[] = [];
       data.forEach((value) => {

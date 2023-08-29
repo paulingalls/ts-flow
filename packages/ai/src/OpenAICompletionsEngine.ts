@@ -11,13 +11,15 @@ export class OpenAICompletionsEngine extends OpenAIEngineBase {
   private readonly prompt: string;
   private readonly numCompletions: number;
   private readonly maxTokens: number;
+  private readonly temperature: number;
 
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
 
     this.prompt = config['prompt'] as string;
-    this.numCompletions = config['numCompletions'] as number;
-    this.maxTokens = config['maxTokens'] as number;
+    this.numCompletions = config['numCompletions'] as number || 1;
+    this.maxTokens = config['maxTokens'] as number || 256;
+    this.temperature = config['temperature'] as number || 1;
   }
 
   async queryAI(payload: JSONObject): Promise<JSONValue> {
@@ -27,7 +29,8 @@ export class OpenAICompletionsEngine extends OpenAIEngineBase {
       model: this.modelName,
       prompt,
       n: this.numCompletions,
-      max_tokens: this.maxTokens
+      max_tokens: this.maxTokens,
+      temperature: this.temperature,
     })
 
     return response.choices.map((completion) => {

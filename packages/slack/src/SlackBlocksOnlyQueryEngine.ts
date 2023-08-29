@@ -29,6 +29,8 @@ export class SlackBlocksOnlyQueryEngine extends NodeBase implements IQueryEngine
 
   execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
     const data: JSONObject = payload[this.dataRoot] as JSONObject;
+
+    console.log('slack payload', payload);
     if (data instanceof Array) {
       const promises: Promise<void>[] = [];
       data.forEach((value) => {
