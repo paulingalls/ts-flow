@@ -1,0 +1,69 @@
+  {
+  "id": "create-posts-from-podcast",
+  "type": "Workflow",
+  "config": {
+    "name": "Create X posts from a podcast",
+    "description": "Given the MP3 file of a podcast, generate some posts for X",
+    "nodes": [
+      {
+        "id": "create-posts-from-podcast-get-transcript",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "podcastUploaded",
+          "engineType": "OpenAIWhisperEngine",
+          "engineId": "open-ai-get-transcript",
+          "engineConfig": {
+            "modelName": "whisper-1",
+            "audioPrompt": "Hello, this is a podcast.",
+            "dataRoot": "",
+            "inputProperty": "fileBuffer",
+            "outputProperty": "podcastText",
+            "outputEventName": "textReady"
+          }
+        }
+      },
+      {
+        "id": "create-posts-from-podcast-get-quotes",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "textReady",
+          "engineType": "OpenAICompletionsEngine",
+          "engineId": "open-ai-podcast-quotes",
+          "engineConfig": {
+            "modelName": "text-davinci-003",
+            "prompt": "${podcastText}\n\n\n=====\nThe above was the transcript of a podcast.  A great quote from above to share on social media is:\n\n",
+            "numCompletions": 3,
+            "maxTokens": 124,
+            "dataRoot": "",
+            "outputProperty": "quotes",
+            "outputEventName": "quotesReady"
+          }
+        }
+      },
+      {
+        "id": "create-posts-from-podcast-send-to-user",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "quotesReady",
+          "engineType": "SlackBlocksOnlyQueryEngine",
+          "engineId": "slack-send-quotes",
+          "engineConfig": {
+            "channel": "test-channel",
+            "dataRoot": "quotes",
+            "userPrompt": "${text}",
+            "outputEventName": "summariesSent",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "${text}\n"
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

@@ -10,7 +10,6 @@ paths.push(path.join(__dirname, '..', 'node_modules', '@ai-flow', 'cron', 'dist'
 paths.push(path.join(__dirname, '..', 'node_modules', '@ai-flow', 'puppeteer', 'dist'))
 paths.push(path.join(__dirname, '..', 'node_modules', '@ai-flow', 'slack', 'dist'))
 paths.push(path.join(__dirname, '..', 'node_modules', '@ai-flow', 'transforms', 'dist'))
-console.log(paths);
 
 void bootstrap(paths, (container: IContainer) => {
   const webServer = container.getInstance('WebServer') as WebServer;

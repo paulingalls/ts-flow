@@ -1,5 +1,5 @@
 import { IContainer } from '@ai-flow/core';
-import {OpenAIQueryEngine} from '../OpenAIQueryEngine'; // Update the import path accordingly
+import {OpenAIChatEngine} from '../OpenAIChatEngine'; // Update the import path accordingly
 
 jest.mock('openai', () => {
   class MockOpenAI {
@@ -20,8 +20,8 @@ jest.mock('openai', () => {
   };
 });
 
-describe('OpenAIQueryEngine', () => {
-  let openAIQueryEngine: OpenAIQueryEngine;
+describe('OpenAIChatEngine', () => {
+  let openAIQueryEngine: OpenAIChatEngine;
 
   const mockContainer = {
     createInstance: jest.fn(),
@@ -31,7 +31,7 @@ describe('OpenAIQueryEngine', () => {
   };
 
   beforeEach(() => {
-    openAIQueryEngine = new OpenAIQueryEngine('test-id', mockContainer as IContainer, {
+    openAIQueryEngine = new OpenAIChatEngine('test-id', mockContainer as IContainer, {
       systemPrompt: 'system prompt with ${keyword}',
       userPrompt: 'user prompt with ${keyword}',
       modelName: 'test-model',

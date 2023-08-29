@@ -1,28 +1,16 @@
-import {
-  NodeBase,
-  ContainerNode,
-  IContainer,
-  JSONObject,
-  keywordReplacement,
-  IQueryEngine
-} from "@ai-flow/core";
+import { IContainer, IQueryEngine, JSONObject, JSONValue, NodeBase } from '@ai-flow/core';
 import { OpenAI } from 'openai';
 
-@ContainerNode
-export class OpenAIQueryEngine extends NodeBase implements IQueryEngine {
-  private readonly systemPrompt: string;
-  private readonly userPrompt: string;
-  private readonly modelName: string;
-  private readonly openAI: OpenAI;
-  private readonly dataRoot: string;
-  private readonly outputProperty: string;
-  private readonly outputEventName: string;
+export abstract class OpenAIEngineBase extends NodeBase implements IQueryEngine {
+  protected readonly modelName: string;
+  protected readonly openAI: OpenAI;
+  protected readonly dataRoot: string;
+  protected readonly outputProperty: string;
+  protected readonly outputEventName: string;
 
-  constructor(id: string, container: IContainer, config: JSONObject) {
+  protected constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
 
-    this.systemPrompt = config['systemPrompt'] as string;
-    this.userPrompt = config['userPrompt'] as string;
     this.modelName = config['modelName'] as string;
     this.dataRoot = config['dataRoot'] as string;
     this.outputProperty = config['outputProperty'] as string;
@@ -32,7 +20,7 @@ export class OpenAIQueryEngine extends NodeBase implements IQueryEngine {
   }
 
   execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
-    const data: JSONObject = payload[this.dataRoot] as JSONObject;
+    const data: JSONObject = this.dataRoot ? payload[this.dataRoot] as JSONObject : payload;
 
     if (data instanceof Array) {
       const promises: Promise<void>[] = [];
@@ -56,15 +44,5 @@ export class OpenAIQueryEngine extends NodeBase implements IQueryEngine {
     }
   }
 
-  async queryAI(payload: JSONObject): Promise<string> {
-    const systemPrompt = keywordReplacement(this.systemPrompt, payload);
-    const userPrompt = keywordReplacement(this.userPrompt, payload);
-
-    const response = await this.openAI.chat.completions.create({
-      model: this.modelName,
-      messages: [{role: 'user', content: userPrompt}, {role: 'system', content: systemPrompt}]
-    })
-
-    return response.choices[0].message.content || 'error';
-  }
+  abstract queryAI(payload: JSONObject): Promise<JSONValue>;
 }

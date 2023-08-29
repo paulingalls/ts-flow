@@ -1,0 +1,44 @@
+{
+  "name": "pod2x",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
+    "dev": "tsup src/index.ts --format cjs --watch --onSuccess \"node dist/index.js\"",
+    "lint": "tsc --noEmit && eslint \"src/**/*.ts*\"",
+    "start": "node dist/index.js",
+    "test": "jest --detectOpenHandles"
+  },
+  "jest": {
+    "preset": "jest-presets/jest/node"
+  },
+  "dependencies": {
+    "@ai-flow/ai": "workspace:*",
+    "@ai-flow/core": "workspace:*",
+    "@ai-flow/slack": "workspace:*",
+    "@ai-flow/transforms": "workspace:*",
+    "body-parser": "1.20.2",
+    "cors": "2.8.5",
+    "express": "4.18.2",
+    "morgan": "1.10.0",
+    "multer": "1.4.5-lts.1"
+  },
+  "devDependencies": {
+    "@types/body-parser": "1.19.2",
+    "@types/cors": "2.8.13",
+    "@types/express": "4.17.17",
+    "@types/jest": "29.5.3",
+    "@types/morgan": "1.9.4",
+    "@types/multer": "1.4.7",
+    "@types/node": "20.4.9",
+    "@types/supertest": "2.0.12",
+    "eslint": "8.46.0",
+    "jest": "29.6.2",
+    "jest-presets": "workspace:*",
+    "supertest": "6.3.3",
+    "tsconfig": "workspace:*",
+    "tsup": "7.2.0",
+    "typescript": "5.1.6"
+  }
+}

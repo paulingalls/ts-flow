@@ -58,7 +58,7 @@
         "type": "QueryEngine",
         "config": {
           "inputEventName": "articlesScraped",
-          "engineType": "OpenAIQueryEngine",
+          "engineType": "OpenAIChatEngine",
           "engineId": "open-ai-article-summarize",
           "engineConfig": {
             "modelName": "gpt-4",
