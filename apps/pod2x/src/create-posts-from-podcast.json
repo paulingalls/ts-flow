@@ -6,10 +6,25 @@
     "description": "Given the MP3 file of a podcast, generate some posts for X",
     "nodes": [
       {
-        "id": "create-posts-from-podcast-get-transcript",
+        "id": "create-posts-from-podcast-trim-audio",
         "type": "QueryEngine",
         "config": {
           "inputEventName": "podcastUploaded",
+          "engineType": "AudioTrimQueryEngine",
+          "engineId": "ffmpeg-trim-audio",
+          "engineConfig": {
+            "dataRoot": "",
+            "inputProperty": "fileBuffer",
+            "outputProperty": "fileBuffer",
+            "outputEventName": "trimmedAudioReady"
+          }
+        }
+      },
+      {
+        "id": "create-posts-from-podcast-get-transcript",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "trimmedAudioReady",
           "engineType": "OpenAIWhisperEngine",
           "engineId": "open-ai-get-transcript",
           "engineConfig": {
@@ -31,7 +46,7 @@
           "engineId": "open-ai-podcast-quotes",
           "engineConfig": {
             "modelName": "text-davinci-003",
-            "prompt": "${podcastText}\n\n\n=====\nThe above was the transcript of a podcast.  A great quote from above to share on social media is:\n\n",
+            "prompt": "${podcastText}\n\n\n=====\nThe above was the transcript of the first 5 minutes of a podcast.  A great quote from the podcast text above to share on social media, including good hashtags, is:\n\n",
             "numCompletions": 3,
             "maxTokens": 124,
             "temperature": 1.1,
@@ -49,12 +64,28 @@
           "engineType": "OpenAIImageEngine",
           "engineId": "open-ai-podcast-images",
           "engineConfig": {
-            "prompt": "An image for a social media post about a podcast with the following quote: ${text}\n\n",
+            "prompt": "A photo to include with a social media post about a podcast.  The photo should be a digitally created abstract that includes a microphone.  The photo may not include any text from any language at all.\n\n",
             "numImages": 1,
             "size": "small",
             "dataRoot": "posts",
             "outputProperty": "image",
-            "outputEventName": "imagesReady"
+            "outputEventName": "imagesGenerated"
+          }
+        }
+      },
+      {
+        "id": "create-posts-from-podcast-add-text-to-images",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "imagesGenerated",
+          "engineType": "AddTextToImageQueryEngine",
+          "engineId": "ffmpeg-add-text",
+          "engineConfig": {
+            "dataRoot": "posts",
+            "outputProperty": "image",
+            "outputEventName": "imagesReady",
+            "imageProperty": "image",
+            "textTemplate": "THIS IS TEXT"
           }
         }
       },

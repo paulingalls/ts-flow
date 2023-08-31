@@ -1,4 +1,4 @@
-import { IContainer, bootstrap, EventBus, JSONObject } from '@ai-flow/core';
+import { IContainer, bootstrap, EventBus, JSONObject, JSONValue } from '@ai-flow/core';
 import { WebServer } from '@ai-flow/core';
 import express, { Express, Request, Response } from 'express';
 import multer from 'multer';
@@ -10,6 +10,7 @@ const storage = multer.memoryStorage(); // Store the uploaded file in memory as 
 const upload = multer({ storage });
 const paths: string[] = [];
 paths.push(path.join(__dirname, '..', 'node_modules', '@ai-flow', 'ai', 'dist'))
+paths.push(path.join(__dirname, '..', 'node_modules', '@ai-flow', 'ffmpeg', 'dist'))
 paths.push(path.join(__dirname, '..', 'node_modules', '@ai-flow', 'slack', 'dist'))
 paths.push(path.join(__dirname, '..', 'node_modules', '@ai-flow', 'transforms', 'dist'))
 
@@ -27,7 +28,7 @@ void bootstrap(paths, (container: IContainer) => {
       }
 
       const fileBuffer: Buffer = req.file.buffer;
-      eventBus.sendEvent('podcastUploaded', {fileBuffer: fileBuffer as unknown as string})
+      eventBus.sendEvent('podcastUploaded', {fileBuffer: fileBuffer as unknown as JSONValue})
 
       res.status(200).json({ message: 'File data loaded into Buffer successfully' });
     });

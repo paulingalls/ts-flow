@@ -1,5 +1,5 @@
 {
-  "name": "@ai-flow/api",
+  "name": "@ai-flow/ffmpeg",
   "version": "0.0.1",
   "main": "./dist/index.js",
   "source": "./src/index.ts",
@@ -19,11 +19,17 @@
   },
   "dependencies": {
     "@ai-flow/core": "workspace:*",
-    "axios": "1.5.0"
+    "ffmpeg-static": "5.2.0",
+    "fluent-ffmpeg": "2.1.2",
+    "axios": "1.5.0",
+    "nanoid": "3.3.6"
   },
   "devDependencies": {
+    "@types/ffmpeg-static": "3.0.1",
+    "@types/fluent-ffmpeg": "2.1.21",
     "@types/jest": "29.5.3",
     "@types/node": "20.4.9",
+    "@types/node-cron": "3.0.8",
     "eslint": "8.46.0",
     "jest": "29.6.2",
     "jest-presets": "workspace:*",
