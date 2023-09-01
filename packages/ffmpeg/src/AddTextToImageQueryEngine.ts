@@ -19,6 +19,7 @@ export class AddTextToImageQueryEngine extends FfmpegEngineBase {
   runFfmpeg(payload: JSONObject): Promise<JSONValue> {
     const fileName: string = `${nanoid()}.png`;
     const imagePath: string = path.join(process.cwd(), 'tmp', fileName);
+    const intermediatePath: string = path.join(process.cwd(), 'tmp', `int_${fileName}`);
     const outputPath: string = path.join(process.cwd(), 'public', 'images', fileName);
 
     const text: string = keywordReplacement(this.textTemplate, payload);
@@ -29,12 +30,23 @@ export class AddTextToImageQueryEngine extends FfmpegEngineBase {
       this.downloadImage(payload[this.imageProperty] as string, imagePath).then(() => {
         Ffmpeg()
           .input(imagePath)
-          .videoFilters(filters)
-          .output(outputPath)
+          .complexFilter('[0]split[v0][v1];[v0]format=rgba,geq=r=0:g=0:b=0:a=128[fg];[v1][fg]overlay=format=auto')
+          .output(intermediatePath)
           .on('end', () => {
-            console.log('text:', text, 'written to image:', outputPath);
-            fs.unlinkSync(imagePath);
-            resolve(`https://${process.env.WEB_HOST_NAME}/images/${fileName}`);
+            Ffmpeg()
+              .input(intermediatePath)
+              .videoFilters(filters)
+              .output(outputPath)
+              .on('end', () => {
+                console.log('text:', text, 'written to image:', outputPath);
+                fs.unlinkSync(imagePath);
+                fs.unlinkSync(intermediatePath);
+                resolve(`https://${process.env.WEB_HOST_NAME}/images/${fileName}`);
+              })
+              .on('error', (e) => {
+                  reject(e);
+                })
+              .run();
           })
           .on('error', (e) => {
             reject(e);

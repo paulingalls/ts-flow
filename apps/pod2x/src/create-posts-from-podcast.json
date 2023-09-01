@@ -65,7 +65,7 @@
           "engineId": "open-ai-podcast-image-text",
           "engineConfig": {
             "modelName": "text-davinci-003",
-            "prompt": "${text}\n\n\n=====\nThe above is great quote from a podcast.  The best nine word or shorter statement from the quote to include on an image with a social media post about the podcast would be:\n\n",
+            "prompt": "${text}\n\n\n=====\nThe above is great quote from a podcast.  The best nine word or shorter statement from the quote to include on an image with a social media post about the podcast, not including hashtags, would be:\n\n",
             "numCompletions": 1,
             "maxTokens": 124,
             "temperature": 1.1,
