@@ -1,5 +1,6 @@
 import { ContainerNode, IContainer, JSONObject, JSONValue, keywordReplacement } from '@ai-flow/core';
 import { FfmpegEngineBase } from './FfmpegEngineBase';
+import Ffmpeg from 'fluent-ffmpeg';
 import path from 'path';
 import axios from 'axios';
 import * as fs from 'fs';
@@ -16,32 +17,24 @@ export class AddTextToImageQueryEngine extends FfmpegEngineBase {
   }
 
   runFfmpeg(payload: JSONObject): Promise<JSONValue> {
-    const text: string = keywordReplacement(this.textTemplate, payload);
     const fileName: string = `${nanoid()}.png`;
     const imagePath: string = path.join(process.cwd(), 'tmp', fileName);
-    const outputPath: string = path.join(process.cwd(), 'public', fileName)
+    const outputPath: string = path.join(process.cwd(), 'public', 'images', fileName);
+
+    const text: string = keywordReplacement(this.textTemplate, payload);
+    const textChunks = this.splitIntoThreeWordChunks(text);
+    const filters = this.getFiltersFromTextChunks(textChunks)
+
     return new Promise((resolve, reject) => {
       this.downloadImage(payload[this.imageProperty] as string, imagePath).then(() => {
-        this.ffmpeg
+        Ffmpeg()
           .input(imagePath)
-          .videoFilter([{
-            filter: 'drawtext',
-            options: {
-              fontfile:'/vagrant/fonts/LucidaGrande.ttc',
-              text: text,
-              fontsize: 20,
-              fontcolor: 'white',
-              x: '(main_w/2-text_w/2)',
-              y: 50,
-              shadowcolor: 'black',
-              shadowx: 2,
-              shadowy: 2
-            }
-          }])
+          .videoFilters(filters)
           .output(outputPath)
           .on('end', () => {
-            //fs.unlinkSync(imagePath);
-            resolve(outputPath);
+            console.log('text:', text, 'written to image:', outputPath);
+            fs.unlinkSync(imagePath);
+            resolve(`https://${process.env.WEB_HOST_NAME}/images/${fileName}`);
           })
           .on('error', (e) => {
             reject(e);
@@ -49,6 +42,25 @@ export class AddTextToImageQueryEngine extends FfmpegEngineBase {
           .run();
       }).catch(e => reject(e))
     })
+  }
+
+  private getFiltersFromTextChunks(textChunks: string[]) {
+    return textChunks.map((chunk, index) => {
+      return {
+        filter: 'drawtext',
+        options: {
+          fontfile: '/vagrant/fonts/LucidaGrande.ttc',
+          text: chunk,
+          fontsize: 20,
+          fontcolor: 'white',
+          x: '(main_w/2-text_w/2)',
+          y: 50 + index * 30,
+          shadowcolor: 'black',
+          shadowx: 2,
+          shadowy: 2
+        }
+      };
+    });
   }
 
   async downloadImage(url: string, destination: string): Promise<void> {
@@ -61,7 +73,7 @@ export class AddTextToImageQueryEngine extends FfmpegEngineBase {
       return new Promise((resolve, reject) => {
         fileStream.on('finish', () => {
           fileStream.close();
-          console.log('Image downloaded successfully.');
+          console.log('Image downloaded successfully to', destination);
           resolve();
         });
 
@@ -74,4 +86,16 @@ export class AddTextToImageQueryEngine extends FfmpegEngineBase {
       console.error('Error downloading image:', error);
     }
   };
+
+  splitIntoThreeWordChunks(text: string): string[] {
+    const words = text.split(/\s+/);
+    const chunks: string[] = [];
+
+    for (let i = 0; i < words.length; i += 3) {
+      const chunk = words.slice(i, i + 3).join(' ');
+      chunks.push(chunk);
+    }
+
+    return chunks;
+  }
 }

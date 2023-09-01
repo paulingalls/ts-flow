@@ -4,6 +4,9 @@ import express, { Express, Request, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
 import podcast2X from './create-posts-from-podcast.json';
+import dotenv from "dotenv"
+
+dotenv.config();
 
 // Configure Multer to handle file uploads
 const storage = multer.memoryStorage(); // Store the uploaded file in memory as a Buffer

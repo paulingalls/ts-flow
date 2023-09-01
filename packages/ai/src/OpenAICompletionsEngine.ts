@@ -33,6 +33,10 @@ export class OpenAICompletionsEngine extends OpenAIEngineBase {
       temperature: this.temperature,
     })
 
+    if (this.numCompletions === 1) {
+      return response.choices[0].text;
+    }
+
     return response.choices.map((completion) => {
       return { text: completion.text }
     });

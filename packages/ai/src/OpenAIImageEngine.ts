@@ -21,7 +21,6 @@ export class OpenAIImageEngine extends OpenAIEngineBase {
 
   async queryAI(payload: JSONObject): Promise<JSONValue> {
     const prompt = keywordReplacement(this.prompt, payload);
-    console.log('image prompt', prompt);
     const response = await this.openAI.images.generate({
       prompt,
       n: this.numImages,

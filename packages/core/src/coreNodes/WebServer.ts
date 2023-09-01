@@ -3,8 +3,8 @@ import express, { Express, Request, Response } from 'express';
 
 @ContainerNode
 export class WebServer extends NodeBase {
-  private app: Express;
-  private port: number = 3002;
+  private readonly app: Express;
+  private readonly port: number = 3002;
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
 
