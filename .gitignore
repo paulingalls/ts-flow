@@ -11,3 +11,6 @@ dist-ssr
 server/dist
 public/dist
 /.idea/
+/apps/pod2x/pods/*.mp3
+/apps/pod2x/tmp/*.png
+/apps/pod2x/public/images/*.png
