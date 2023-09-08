@@ -1,13 +1,14 @@
 import {
   ContainerNode,
   IContainer,
+  injectDataIntoJSONObject,
   IQueryEngine,
   JSONObject,
   JSONValue,
   keywordReplacement,
   NodeBase
-} from "@ai-flow/core";
-import axios, { AxiosHeaders } from "axios";
+} from '@ai-flow/core';
+import axios, { AxiosHeaders } from 'axios';
 
 @ContainerNode
 export class SlackBlocksOnlyQueryEngine extends NodeBase implements IQueryEngine {
@@ -36,7 +37,7 @@ export class SlackBlocksOnlyQueryEngine extends NodeBase implements IQueryEngine
       data.forEach((value) => {
         const item = value as JSONObject;
         promises.push(this.sendSlackMessage(item));
-      })
+      });
       Promise.all(promises).then(() => {
         completeCallback(this.outputEventName, payload);
       }).catch(e => {
@@ -52,43 +53,20 @@ export class SlackBlocksOnlyQueryEngine extends NodeBase implements IQueryEngine
   }
 
   async sendSlackMessage(data: JSONObject) {
-    const blocks = structuredClone(this.blocks);
-    const dataFullBlocks = this.injectDataToBlocks(data, blocks);
+    const dataFullBlocks = injectDataIntoJSONObject(data, { blocks: this.blocks });
     const text = keywordReplacement(this.userPrompt, data);
     const headers: AxiosHeaders = new AxiosHeaders();
-    headers.setAuthorization(`Bearer ${process.env.SLACK_API_TOKEN}`)
+    headers.setAuthorization(`Bearer ${process.env.SLACK_API_TOKEN}`);
     await axios.post(
       'https://slack.com/api/chat.postMessage',
       {
         channel: this.slackChannel,
         text,
-        blocks: dataFullBlocks
+        blocks: dataFullBlocks.blocks
       },
       {
         headers
       }
     );
-  }
-
-  injectDataToBlocks(data: JSONObject, blocks: Array<JSONValue>): Array<JSONValue> {
-    blocks.forEach((value) => {
-      this.injectData(data, value as JSONObject);
-    })
-    return blocks;
-  }
-
-  injectData(data: JSONObject, item: JSONObject) {
-    Object.keys(item).forEach((key) => {
-      if (typeof item[key] === 'string') {
-        item[key] = keywordReplacement(item[key] as string, data);
-      } else if (typeof item[key] === 'object') {
-        const subItem = item[key] as JSONObject;
-        Object.keys(subItem).forEach((subKey) => {
-          if (typeof subItem[subKey] === 'string') {
-            subItem[subKey] = keywordReplacement(subItem[subKey] as string, data);
-          }
-        })
-      }
-    })
   }
 }

@@ -42,6 +42,13 @@ function getValueForKeyword(keyword: string, payload: JSONObject): string {
       value = secondPart[parts[2]];
       break;
     }
+    case 4: {
+      const firstPart: JSONObject = payload[parts[0]] as JSONObject;
+      const secondPart: JSONObject = firstPart[parts[1]] as JSONObject;
+      const thirdPart: JSONObject = secondPart[parts[2]] as JSONObject;
+      value = thirdPart[parts[3]];
+      break;
+    }
     default: {
       value = '';
     }
