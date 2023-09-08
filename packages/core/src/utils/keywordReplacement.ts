@@ -4,14 +4,15 @@ export function keywordReplacement(template: string, payload: JSONObject): strin
   let result: string = template;
   const keywords: string[] = extractKeywords(template);
   keywords.forEach((keyword) => {
-    result = result.replace('${' + keyword + '}', (payload[keyword] ?? process.env[keyword]) as string);
+    const value = getValueForKeyword(keyword, payload);
+    result = result.replace('${' + keyword + '}', (value ?? process.env[keyword]));
   })
 
   return result;
 }
 
-export function extractKeywords(input: string): string[] {
-  const regex = /\${(\w+)}/g;
+function extractKeywords(input: string): string[] {
+  const regex = /\${([\w.]+)}/g;
   const keywords: string[] = [];
 
   let match;
@@ -20,4 +21,33 @@ export function extractKeywords(input: string): string[] {
   }
 
   return keywords;
+}
+
+function getValueForKeyword(keyword: string, payload: JSONObject): string {
+  const parts = keyword.split('.');
+  let value;
+  switch(parts.length) {
+    case 1: {
+      value = payload[parts[0]];
+      break;
+    }
+    case 2: {
+      const firstPart: JSONObject = payload[parts[0]] as JSONObject;
+      value = firstPart[parts[1]];
+      break;
+    }
+    case 3: {
+      const firstPart: JSONObject = payload[parts[0]] as JSONObject;
+      const secondPart: JSONObject = firstPart[parts[1]] as JSONObject;
+      value = secondPart[parts[2]];
+      break;
+    }
+    default: {
+      value = '';
+    }
+  }
+  if (typeof value === 'string') {
+    return value;
+  }
+  return JSON.stringify(value);
 }

@@ -372,6 +372,61 @@ importers:
         specifier: 5.1.6
         version: 5.1.6
 
+  apps/ticketremind:
+    dependencies:
+      '@ai-flow/ai':
+        specifier: workspace:*
+        version: link:../../packages/ai
+      '@ai-flow/api':
+        specifier: workspace:*
+        version: link:../../packages/api
+      '@ai-flow/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@ai-flow/cron':
+        specifier: workspace:*
+        version: link:../../packages/cron
+      '@ai-flow/slack':
+        specifier: workspace:*
+        version: link:../../packages/slack
+      '@ai-flow/transforms':
+        specifier: workspace:*
+        version: link:../../packages/transforms
+      dotenv:
+        specifier: 16.3.1
+        version: 16.3.1
+    devDependencies:
+      '@types/jest':
+        specifier: 29.5.3
+        version: 29.5.3
+      '@types/node':
+        specifier: 20.4.9
+        version: 20.4.9
+      '@types/supertest':
+        specifier: 2.0.12
+        version: 2.0.12
+      eslint:
+        specifier: 8.46.0
+        version: 8.46.0
+      jest:
+        specifier: 29.6.2
+        version: 29.6.2(@types/node@20.4.9)
+      jest-presets:
+        specifier: workspace:*
+        version: link:../../packages/jest-presets
+      supertest:
+        specifier: 6.3.3
+        version: 6.3.3
+      tsconfig:
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
+      tsup:
+        specifier: 7.2.0
+        version: 7.2.0(typescript@5.1.6)
+      typescript:
+        specifier: 5.1.6
+        version: 5.1.6
+
   packages/ai:
     dependencies:
       '@ai-flow/core':
