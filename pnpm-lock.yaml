@@ -253,6 +253,85 @@ importers:
         specifier: 5.1.6
         version: 5.1.6
 
+  apps/newsflash:
+    dependencies:
+      '@ai-flow/ai':
+        specifier: workspace:*
+        version: link:../../packages/ai
+      '@ai-flow/api':
+        specifier: workspace:*
+        version: link:../../packages/api
+      '@ai-flow/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@ai-flow/puppeteer':
+        specifier: workspace:*
+        version: link:../../packages/puppeteer
+      '@ai-flow/slack':
+        specifier: workspace:*
+        version: link:../../packages/slack
+      '@ai-flow/transforms':
+        specifier: workspace:*
+        version: link:../../packages/transforms
+      body-parser:
+        specifier: 1.20.2
+        version: 1.20.2
+      cors:
+        specifier: 2.8.5
+        version: 2.8.5
+      dotenv:
+        specifier: 16.3.1
+        version: 16.3.1
+      express:
+        specifier: 4.18.2
+        version: 4.18.2
+      morgan:
+        specifier: 1.10.0
+        version: 1.10.0
+    devDependencies:
+      '@types/body-parser':
+        specifier: 1.19.2
+        version: 1.19.2
+      '@types/cors':
+        specifier: 2.8.13
+        version: 2.8.13
+      '@types/express':
+        specifier: 4.17.17
+        version: 4.17.17
+      '@types/jest':
+        specifier: 29.5.3
+        version: 29.5.3
+      '@types/morgan':
+        specifier: 1.9.4
+        version: 1.9.4
+      '@types/node':
+        specifier: 20.4.9
+        version: 20.4.9
+      '@types/supertest':
+        specifier: 2.0.12
+        version: 2.0.12
+      eslint:
+        specifier: 8.46.0
+        version: 8.46.0
+      jest:
+        specifier: 29.6.2
+        version: 29.6.2(@types/node@20.4.9)
+      jest-presets:
+        specifier: workspace:*
+        version: link:../../packages/jest-presets
+      supertest:
+        specifier: 6.3.3
+        version: 6.3.3
+      tsconfig:
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
+      tsup:
+        specifier: 7.2.0
+        version: 7.2.0(typescript@5.1.6)
+      typescript:
+        specifier: 5.1.6
+        version: 5.1.6
+
   apps/pod2x:
     dependencies:
       '@ai-flow/ai':

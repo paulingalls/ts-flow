@@ -1,0 +1,188 @@
+  {
+  "id": "news-flash",
+  "type": "Workflow",
+  "config": {
+    "name": "Get a news flash about any topic",
+    "description": "In a slack app home page, kick off a news flash about a selected topic",
+    "nodes": [
+      {
+        "id": "news-flash-trigger",
+        "type": "Trigger",
+        "config": {
+          "triggerType": "SlackHomePageTrigger",
+          "triggerId": "news-flash-home-page",
+          "triggerConfig": {
+            "outputEventName": "topicReady",
+            "payloadTemplate": {
+              "page": 1,
+              "pageSize": 3,
+              "query": "${value}",
+              "from": "2023-08-31"
+            },
+            "triggerBlockId": "search-news",
+            "interactiveEndpoint": "/slack/interactive",
+            "eventsEndpoint": "/slack/events",
+            "blocks": [
+              {
+                "type": "input",
+                "dispatch_action": true,
+                "block_id": "search-news",
+                "element": {
+                  "type": "plain_text_input",
+                  "action_id": "search-news-action"
+                },
+                "label": {
+                  "type": "plain_text",
+                  "text": "Get latest news summaries about:",
+                  "emoji": false
+                }
+              }
+            ]
+
+          }
+        }
+      },
+      {
+        "id": "news-flash-encode-value",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "topicReady",
+          "engineType": "UrlEncodeTransform",
+          "engineId": "encode-value",
+          "engineConfig": {
+            "outputEventName": "findLatestNews",
+            "dataRoot": "",
+            "dataTarget": "query"
+          }
+        }
+      },
+      {
+        "id": "news-flash-find-latest-news",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "findLatestNews",
+          "engineType": "HttpGetQueryEngine",
+          "engineId": "get-latest-news",
+          "engineConfig": {
+            "urlTemplate": "https://newsapi.org/v2/everything?apiKey=${NEWS_API_TOKEN}&q=${query}&sortBy=relevancy&pageSize=${pageSize}&page=${page}&from=${from}&language=en",
+            "bodyType": "json",
+            "outputEventName": "latestNDNewsFound"
+          }
+        }
+      },
+      {
+        "id": "news-flash-scrape-article",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "latestNDNewsFound",
+          "engineType": "PuppeteerQueryWebEngine",
+          "engineId": "puppeteer-scrape-article-page",
+          "engineConfig": {
+            "dataRoot": "articles",
+            "urlPath": "url",
+            "query": "allText",
+            "outputProperty": "content",
+            "outputEventName": "articlesScraped"
+          }
+        }
+      },
+      {
+        "id": "news-flash-summarize-article",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "articlesScraped",
+          "engineType": "OpenAIChatEngine",
+          "engineId": "open-ai-article-summarize",
+          "engineConfig": {
+            "modelName": "gpt-4",
+            "systemPrompt": "You are an expert editor experienced in summarizing news stories about various topics",
+            "userPrompt": "Please summarize the following text in less than 200 words:\n${content}",
+            "dataRoot": "articles",
+            "outputProperty": "summary",
+            "outputEventName": "postAndImageReady"
+          }
+        }
+      },
+      {
+        "id": "news-flash-send-to-user",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "postAndImageReady",
+          "engineType": "SlackBlocksOnlyQueryEngine",
+          "engineId": "slack-send-summary",
+          "engineConfig": {
+            "channel": "test-channel",
+            "dataRoot": "articles",
+            "userPrompt": "${urlToImage}\n${title}\n${summary}\n${url}",
+            "outputEventName": "summariesSent",
+            "blocks": [
+              {
+                "type": "image",
+                "title": {
+                  "type": "plain_text",
+                  "text": "${title}",
+                  "emoji": false
+                },
+                "image_url": "${urlToImage}",
+                "alt_text": ""
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*${title}*\n${summary}\n<${url}|read more...>\n"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "news-flash-check-for-more",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "summariesSent",
+          "engineType": "SlackYesNoQueryEngine",
+          "engineId": "slack-yes-no-submit",
+          "engineConfig": {
+            "channel": "test-channel",
+            "userPrompt": "Do you want to see more?",
+            "yesOutputEventName": "cleanup",
+            "noOutputEventName": "done",
+            "interactiveEndpoint": "/slack/interactive"
+          }
+        }
+      },
+      {
+        "id": "news-flash-cleanup",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "cleanup",
+          "engineType": "DeleteTransform",
+          "engineId": "delete-articles",
+          "engineConfig": {
+            "outputEventName": "nextPage",
+            "dataRoot": "",
+            "dataTarget": "articles"
+          }
+        }
+      },
+      {
+        "id": "news-flash-move-to-next-page",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "nextPage",
+          "engineType": "IncrementTransform",
+          "engineId": "increment-page",
+          "engineConfig": {
+            "outputEventName": "findLatestNews",
+            "dataRoot": "",
+            "dataTarget": "page",
+            "dataType": "number",
+            "dataIncrement": 1
+          }
+        }
+      }
+    ]
+  }
+}

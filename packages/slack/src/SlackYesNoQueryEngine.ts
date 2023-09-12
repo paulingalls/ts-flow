@@ -2,14 +2,15 @@ import {
   NodeBase,
   IContainer,
   JSONObject,
-  WebServer,
   ContainerNode,
   IQueryEngine
-} from "@ai-flow/core";
-import axios, { AxiosHeaders } from "axios";
+} from '@ai-flow/core';
+import axios, { AxiosHeaders } from 'axios';
+import { ISlackInteractiveListener, SlackInteractiveEndpoint } from './SlackInteractiveEndpoint';
 
+const BLOCK_ID = 'YesNo';
 @ContainerNode
-export class SlackYesNoQueryEngine extends NodeBase implements IQueryEngine {
+export class SlackYesNoQueryEngine extends NodeBase implements IQueryEngine, ISlackInteractiveListener {
   private completeCallback: ((completeEventName: string, result: JSONObject) => void) | null = null;
   private userPrompt: string;
   private slackChannel: string;
@@ -24,24 +25,24 @@ export class SlackYesNoQueryEngine extends NodeBase implements IQueryEngine {
     this.yesEventName = config['yesOutputEventName'] as string;
     this.noEventName = config['noOutputEventName'] as string;
 
-    const endpoint = config['interactiveEndpoint'] as string;
-    const webServer = this.container.getInstance('WebServer') as WebServer;
-    webServer.addPostEndpoint(endpoint, (req, res) => {
-      console.log('slack interaction endpoint', req.body);
-      const form = req.body as Record<string, string>;
-      const payload = JSON.parse(form['payload']) as JSONObject;
+    const endpoint = this.container.createInstance('SlackInteractiveEndpoint', 'SlackInteractiveEndpoint', config) as SlackInteractiveEndpoint;
+    endpoint.addListener(this);
+  }
+
+  onInteraction(payload: JSONObject): void {
+    const blockId = payload['block_id'] as string;
+    if (blockId === BLOCK_ID) {
       const actions: JSONObject[] = payload['actions'] as JSONObject[];
       this.completeCallback && this.completeCallback(
         actions[0]['value'] === 'yes' ? this.yesEventName : this.noEventName,
         payload);
-      res.sendStatus(200);
-    });
+    }
   }
 
   execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
     this.completeCallback = completeCallback;
     const headers: AxiosHeaders = new AxiosHeaders();
-    headers.setAuthorization(`Bearer ${process.env.SLACK_API_TOKEN}`)
+    headers.setAuthorization(`Bearer ${process.env.SLACK_API_TOKEN}`);
 
     axios.post(
       'https://slack.com/api/chat.postMessage',
@@ -50,41 +51,42 @@ export class SlackYesNoQueryEngine extends NodeBase implements IQueryEngine {
         text: this.userPrompt,
         blocks: [
           {
-            type: "section",
+            type: 'section',
             text: {
-              type: "plain_text",
+              type: 'plain_text',
               text: this.userPrompt,
               emoji: true
             }
           },
           {
-            type: "actions",
+            type: 'actions',
+            block_id: BLOCK_ID,
             elements: [
               {
-                type: "button",
+                type: 'button',
                 text: {
-                  type: "plain_text",
-                  text: "Yes",
+                  type: 'plain_text',
+                  text: 'Yes',
                   emoji: true
                 },
-                value: "yes",
-                action_id: "yes"
+                value: 'yes',
+                action_id: 'yes'
               },
               {
-                type: "button",
+                type: 'button',
                 text: {
-                  type: "plain_text",
-                  text: "No",
+                  type: 'plain_text',
+                  text: 'No',
                   emoji: true
                 },
-                value: "no",
-                action_id: "no"
+                value: 'no',
+                action_id: 'no'
               }
             ]
           }
         ]
       },
-      {headers}
+      { headers }
     ).then((res) => {
       console.log('SlackYesNoQueryEngine send query complete', res.status, res.data);
     }).catch(e => {

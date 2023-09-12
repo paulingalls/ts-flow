@@ -23,7 +23,9 @@ export class PuppeteerQueryWebEngine extends NodeBase implements IQueryEngine {
     puppeteer.launch({headless: false}).then((browser) => {
       if (this.urlPath.startsWith('http')) {
         this.scrapeData(browser, this.urlPath, this.query).then((result) => {
-          data[this.outputProperty] = result;
+          if (result) {
+            data[this.outputProperty] = result;
+          }
           completeCallback(this.outputEventName, payload);
         }).catch(e => {console.error('error scraping data', e)});
       } else if (data instanceof Array) {
@@ -33,7 +35,9 @@ export class PuppeteerQueryWebEngine extends NodeBase implements IQueryEngine {
           const url = item[this.urlPath] as string;
           promises.push(new Promise<void>((resolve) => {
             this.scrapeData(browser, url, this.query).then((result) => {
-              item[this.outputProperty] = result;
+              if (result) {
+                item[this.outputProperty] = result;
+              }
               resolve();
             }).catch(e => {console.error(e)})
           }))
