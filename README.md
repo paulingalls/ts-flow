@@ -18,8 +18,10 @@ AI Flow is a TypeScript-based extensible workflow system designed for use in Nod
 
 This project includes several examples to help you get started:
 
-NewsFlash: Simple workflow triggered from a slack app homepage that finds news articles about a specific topic and slacks a summary of each
-Pod2X: Simple workflow triggered from a web form where you select an mp3 file for a podcast and in return receive 3 sample tweets
+- **NewsFlash**: Simple workflow triggered from a slack app homepage that finds news articles about a specific topic and slacks a summary of each
+- **Pod2X**: Simple workflow triggered from a web form where you select an mp3 file for a podcast and in return receive 3 sample tweets
+- **TicketRemind**: Workflow that finds Jira tickets in a particular project that have not been updated recently and sends them to slack. 
+
 You can run these examples by executing the corresponding TypeScript files.
 
 ## License
