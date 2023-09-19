@@ -1,39 +1,31 @@
-# Turborepo kitchen sink starter
+# AI Flow
 
-This is an official starter Turborepo with multiple meta-frameworks all working in harmony and sharing packages.
+## Overview
 
-This example also shows how to use [Workspace Configurations](https://turbo.build/repo/docs/core-concepts/monorepos/configuring-workspaces).
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-## Using this example
+AI Flow is a TypeScript-based extensible workflow system designed for use in Node.js environments. It facilitates asynchronous interactions between users, data, and AI, all driven by JSON-based workflows. At its core, this project employs an Inversion of Control (IoC) container, which workflow nodes can register with. The `@ContainerNode` decorator provides access to all the essential elements of the system.
 
-Run the following command:
+## Features
 
-```sh
-npx create-turbo@latest -e kitchen-sink
-```
+- **Extensible Workflows**: Easily create and extend workflows to suit your needs.
+- **Asynchronous Interactions**: Support for asynchronous interactions between users, data, and AI.
+- **JSON-Driven**: Define your workflows using JSON.
+- **Inversion of Control**: Leverage the IoC container to manage dependencies and components.
+- **Examples**: Explore various workflow examples included in the project.
 
-## What's inside?
+## Examples
 
-This Turborepo includes the following packages and apps:
+This project includes several examples to help you get started:
 
-### Apps and Packages
+NewsFlash: Simple workflow triggered from a slack app homepage that finds news articles about a specific topic and slacks a summary of each
+Pod2X: Simple workflow triggered from a web form where you select an mp3 file for a podcast and in return receive 3 sample tweets
+You can run these examples by executing the corresponding TypeScript files.
 
-- `api`: an [Express](https://expressjs.com/) server
-- `storefront`: a [Next.js](https://nextjs.org/) app
-- `admin`: a [Vite](https://vitejs.dev/) single page app
-- `blog`: a [Remix](https://remix.run/) blog
-- `logger`: isomorphic logger (a small wrapper around console.log)
-- `ui`: a dummy React UI library (which contains a single `<CounterButton>` component)
-- `scripts`: Jest and ESLint configurations
-- `tsconfig`: tsconfig.json's used throughout the monorepo
+## License
 
-Each package and app is 100% [TypeScript](https://www.typescriptlang.org/).
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-### Utilities
+## Support
 
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Jest](https://jestjs.io) test runner for all things JavaScript
-- [Prettier](https://prettier.io) for code formatting
+If you have questions or need assistance, please open an issue on the GitHub repository.
