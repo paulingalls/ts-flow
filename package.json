@@ -1,5 +1,22 @@
 {
+  "name": "ai-flow",
+  "description": "Simple, data driven workflow system leveraging an IoC container and event manager",
+  "version": "1.0.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paulingalls/ai-flow.git"
+  },
+  "keywords": [
+    "ai",
+    "workflow"
+  ],
+  "author": "paulingalls",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/paulingalls/ai-flow/issues"
+  },
+  "homepage": "https://github.com/paulingalls/ai-flow#readme",
   "scripts": {
     "build": "turbo build",
     "clean": "turbo clean",

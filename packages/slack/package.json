@@ -1,6 +1,20 @@
 {
   "name": "@ai-flow/slack",
   "version": "0.0.1",
+  "description": "AI-Flow nodes that interact with slack",
+  "author": "paulingalls",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paulingalls/ai-flow/tree/main/packages/slack"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/paulingalls/ai-flow/issues"
+  },
+  "homepage": "https://github.com/paulingalls/ai-flow#readme",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./dist/index.js",
   "source": "./src/index.ts",
   "types": "./dist/index.d.ts",
@@ -12,7 +26,8 @@
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "dev": "tsc -w",
     "lint": "eslint \"src/**/*.ts*\"",
-    "test": "jest"
+    "test": "jest",
+    "prepublish": "tsc"
   },
   "jest": {
     "preset": "jest-presets/jest/node"
