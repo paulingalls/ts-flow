@@ -6,7 +6,7 @@ import {
   JSONObject,
   JSONValue,
   NodeBase
-} from '@ai-flow/core';
+} from '@ts-flow/core';
 import { ISlackInteractiveListener, SlackInteractiveEndpoint } from './SlackInteractiveEndpoint';
 import axios, { AxiosHeaders } from 'axios';
 import { ISlackEventsListener, SlackEventsEndpoint } from './SlackEventsEndpoint';

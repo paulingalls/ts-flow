@@ -4,7 +4,7 @@ import {
   JSONObject,
   ContainerNode,
   IQueryEngine
-} from '@ai-flow/core';
+} from '@ts-flow/core';
 import axios, { AxiosHeaders } from 'axios';
 import { ISlackInteractiveListener, SlackInteractiveEndpoint } from './SlackInteractiveEndpoint';
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { SlackYesNoQueryEngine } from "../SlackYesNoQueryEngine"; // Make sure to provide the correct path
-import { IContainer, JSONObject } from "@ai-flow/core";
+import { IContainer, JSONObject } from "@ts-flow/core";
 
 // Mock Axios
 jest.mock("axios");

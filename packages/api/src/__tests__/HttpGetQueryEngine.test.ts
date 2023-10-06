@@ -1,6 +1,6 @@
 import axios from "axios";
 import { HttpGetQueryEngine } from "../HttpGetQueryEngine";
-import { IContainer, IQueryEngine } from "@ai-flow/core";
+import { IContainer, IQueryEngine } from "@ts-flow/core";
 
 // Mock axios for the test
 jest.mock("axios");

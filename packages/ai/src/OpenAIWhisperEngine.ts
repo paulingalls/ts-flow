@@ -2,7 +2,7 @@ import {
   ContainerNode,
   IContainer,
   JSONObject, JSONValue
-} from '@ai-flow/core';
+} from '@ts-flow/core';
 import { OpenAIEngineBase } from './OpenAIEngineBase';
 import { toFile } from 'openai';
 

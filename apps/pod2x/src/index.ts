@@ -1,5 +1,5 @@
-import { IContainer, bootstrap, EventBus, JSONObject, JSONValue } from '@ai-flow/core';
-import { WebServer } from '@ai-flow/core';
+import { IContainer, bootstrap, EventBus, JSONObject, JSONValue } from '@ts-flow/core';
+import { WebServer } from '@ts-flow/core';
 import express, { Express, Request, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
@@ -12,10 +12,10 @@ dotenv.config();
 const storage = multer.memoryStorage(); // Store the uploaded file in memory as a Buffer
 const upload = multer({ storage });
 const paths: string[] = [];
-paths.push(path.join(__dirname, '..', 'node_modules', '@ai-flow', 'ai', 'dist'))
-paths.push(path.join(__dirname, '..', 'node_modules', '@ai-flow', 'ffmpeg', 'dist'))
-paths.push(path.join(__dirname, '..', 'node_modules', '@ai-flow', 'slack', 'dist'))
-paths.push(path.join(__dirname, '..', 'node_modules', '@ai-flow', 'transforms', 'dist'))
+paths.push(path.join(__dirname, '..', 'node_modules', '@ts-flow', 'ai', 'dist'))
+paths.push(path.join(__dirname, '..', 'node_modules', '@ts-flow', 'ffmpeg', 'dist'))
+paths.push(path.join(__dirname, '..', 'node_modules', '@ts-flow', 'slack', 'dist'))
+paths.push(path.join(__dirname, '..', 'node_modules', '@ts-flow', 'transforms', 'dist'))
 
 
 void bootstrap(paths, (container: IContainer) => {

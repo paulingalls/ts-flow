@@ -1,4 +1,4 @@
-import { ContainerNode, IContainer, JSONObject, NodeBase, WebServer } from '@ai-flow/core';
+import { ContainerNode, IContainer, JSONObject, NodeBase, WebServer } from '@ts-flow/core';
 
 export interface ISlackInteractiveListener {
   onInteraction(payload: JSONObject): void;

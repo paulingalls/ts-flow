@@ -1,6 +1,6 @@
 import { setupServer } from "./server";
-import { IContainer, bootstrap } from '@ai-flow/core';
-import { WebServer } from '@ai-flow/core';
+import { IContainer, bootstrap } from '@ts-flow/core';
+import { WebServer } from '@ts-flow/core';
 import { Express, Request, Response } from 'express';
 
 void bootstrap([], (container: IContainer) => {
@@ -13,11 +13,11 @@ void bootstrap([], (container: IContainer) => {
     setupServer(app);
 
     webServer.addGetEndpoint('/instances', (req: Request, res: Response) => {
-      res.send(container.getInstances().map((instance) => instance.getId()).reduce((prev, cur) => prev += '\n' + cur));
+      res.send(container.getInstances().map((instance) => instance.getId()).reduce((prev, cur) => prev + '\n' + cur));
     });
 
     webServer.addGetEndpoint('/nodes', (req: Request, res: Response) => {
-      res.send(container.getNodeNames().reduce((prev, cur) => prev += '\n' + cur));
+      res.send(container.getNodeNames().reduce((prev, cur) => prev + '\n' + cur));
     });
 
     webServer.startServer();

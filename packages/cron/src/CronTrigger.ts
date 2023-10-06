@@ -1,4 +1,4 @@
-import { ContainerNode, EventBus, IContainer, IEventListener, ITrigger, JSONObject, NodeBase } from "@ai-flow/core";
+import { ContainerNode, EventBus, IContainer, IEventListener, ITrigger, JSONObject, NodeBase } from "@ts-flow/core";
 import cron from 'node-cron';
 
 @ContainerNode

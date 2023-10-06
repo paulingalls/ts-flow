@@ -1,4 +1,4 @@
-import { IContainer, IQueryEngine, JSONObject, JSONValue, NodeBase } from '@ai-flow/core';
+import { IContainer, IQueryEngine, JSONObject, JSONValue, NodeBase } from '@ts-flow/core';
 import Ffmpeg from 'fluent-ffmpeg';
 import FfmpegStatic from "ffmpeg-static";
 

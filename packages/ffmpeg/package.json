@@ -1,17 +1,17 @@
 {
-  "name": "@ai-flow/ffmpeg",
+  "name": "@ts-flow/ffmpeg",
   "version": "0.0.1",
-  "description": "AI-Flow nodes that interact with ffmpeg",
+  "description": "ts-flow nodes that interact with ffmpeg",
   "author": "paulingalls",
   "repository": {
     "type": "git",
-    "url": "https://github.com/paulingalls/ai-flow/tree/main/packages/ffmpeg"
+    "url": "https://github.com/paulingalls/ts-flow/tree/main/packages/ffmpeg"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/paulingalls/ai-flow/issues"
+    "url": "https://github.com/paulingalls/ts-flow/issues"
   },
-  "homepage": "https://github.com/paulingalls/ai-flow#readme",
+  "homepage": "https://github.com/paulingalls/ts-flow#readme",
   "publishConfig": {
     "access": "public"
   },
@@ -33,7 +33,7 @@
     "preset": "jest-presets/jest/node"
   },
   "dependencies": {
-    "@ai-flow/core": "workspace:*",
+    "@ts-flow/core": "workspace:*",
     "ffmpeg-static": "5.2.0",
     "fluent-ffmpeg": "2.1.2",
     "axios": "1.5.0",

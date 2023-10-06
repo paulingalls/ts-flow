@@ -1,4 +1,4 @@
-import { ContainerNode, IContainer, IQueryEngine, JSONObject, NodeBase } from "@ai-flow/core";
+import { ContainerNode, IContainer, IQueryEngine, JSONObject, NodeBase } from "@ts-flow/core";
 import puppeteer, { Browser } from "puppeteer";
 
 @ContainerNode

@@ -1,4 +1,4 @@
-import { IContainer } from '@ai-flow/core';
+import { IContainer } from '@ts-flow/core';
 import {OpenAIChatEngine} from '../OpenAIChatEngine'; // Update the import path accordingly
 
 jest.mock('openai', () => {

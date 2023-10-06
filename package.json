@@ -1,11 +1,11 @@
 {
-  "name": "ai-flow",
+  "name": "ts-flow",
   "description": "Simple, data driven workflow system leveraging an IoC container and event manager",
   "version": "1.0.0",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/paulingalls/ai-flow.git"
+    "url": "git+https://github.com/paulingalls/ts-flow.git"
   },
   "keywords": [
     "ai",
@@ -14,9 +14,9 @@
   "author": "paulingalls",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/paulingalls/ai-flow/issues"
+    "url": "https://github.com/paulingalls/ts-flow/issues"
   },
-  "homepage": "https://github.com/paulingalls/ai-flow#readme",
+  "homepage": "https://github.com/paulingalls/ts-flow#readme",
   "scripts": {
     "build": "turbo build",
     "clean": "turbo clean",

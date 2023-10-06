@@ -1,17 +1,17 @@
 {
-  "name": "@ai-flow/puppeteer",
+  "name": "@ts-flow/puppeteer",
   "version": "0.0.1",
-  "description": "AI-Flow nodes that interact with puppeteer",
+  "description": "ts-flow nodes that interact with puppeteer",
   "author": "paulingalls",
   "repository": {
     "type": "git",
-    "url": "https://github.com/paulingalls/ai-flow/tree/main/packages/puppeteer"
+    "url": "https://github.com/paulingalls/ts-flow/tree/main/packages/puppeteer"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/paulingalls/ai-flow/issues"
+    "url": "https://github.com/paulingalls/ts-flow/issues"
   },
-  "homepage": "https://github.com/paulingalls/ai-flow#readme",
+  "homepage": "https://github.com/paulingalls/ts-flow#readme",
   "publishConfig": {
     "access": "public"
   },
@@ -33,7 +33,7 @@
     "preset": "jest-presets/jest/node"
   },
   "dependencies": {
-    "@ai-flow/core": "workspace:*",
+    "@ts-flow/core": "workspace:*",
     "puppeteer": "21.0.3"
   },
   "devDependencies": {

@@ -2,7 +2,7 @@ import {
   ContainerNode,
   IContainer,
   JSONObject, JSONValue, keywordReplacement
-} from '@ai-flow/core';
+} from '@ts-flow/core';
 import { OpenAIEngineBase } from './OpenAIEngineBase';
 
 @ContainerNode

@@ -1,17 +1,17 @@
 {
-  "name": "@ai-flow/transforms",
+  "name": "@ts-flow/transforms",
   "version": "0.0.1",
-  "description": "AI-Flow nodes that transform data during workflows",
+  "description": "ts-flow nodes that transform data during workflows",
   "author": "paulingalls",
   "repository": {
     "type": "git",
-    "url": "https://github.com/paulingalls/ai-flow/tree/main/packages/transform"
+    "url": "https://github.com/paulingalls/ts-flow/tree/main/packages/transform"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/paulingalls/ai-flow/issues"
+    "url": "https://github.com/paulingalls/ts-flow/issues"
   },
-  "homepage": "https://github.com/paulingalls/ai-flow#readme",
+  "homepage": "https://github.com/paulingalls/ts-flow#readme",
   "publishConfig": {
     "access": "public"
   },
@@ -33,7 +33,7 @@
     "preset": "jest-presets/jest/node"
   },
   "dependencies": {
-    "@ai-flow/core": "workspace:*"
+    "@ts-flow/core": "workspace:*"
   },
   "devDependencies": {
     "@types/express": "4.17.17",

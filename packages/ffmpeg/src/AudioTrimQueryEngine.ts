@@ -1,4 +1,4 @@
-import { ContainerNode, IContainer, JSONObject, JSONValue } from '@ai-flow/core';
+import { ContainerNode, IContainer, JSONObject, JSONValue } from '@ts-flow/core';
 import * as fs from 'fs';
 import path from 'path';
 import { FfmpegEngineBase } from './FfmpegEngineBase';

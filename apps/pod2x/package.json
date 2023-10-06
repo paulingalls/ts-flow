@@ -14,11 +14,11 @@
     "preset": "jest-presets/jest/node"
   },
   "dependencies": {
-    "@ai-flow/ai": "workspace:*",
-    "@ai-flow/core": "workspace:*",
-    "@ai-flow/ffmpeg": "workspace:*",
-    "@ai-flow/slack": "workspace:*",
-    "@ai-flow/transforms": "workspace:*",
+    "@ts-flow/ai": "workspace:*",
+    "@ts-flow/core": "workspace:*",
+    "@ts-flow/ffmpeg": "workspace:*",
+    "@ts-flow/slack": "workspace:*",
+    "@ts-flow/transforms": "workspace:*",
     "body-parser": "1.20.2",
     "cors": "2.8.5",
     "dotenv": "16.3.1",

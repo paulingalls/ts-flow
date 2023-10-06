@@ -5,7 +5,7 @@ import {
   NodeBase,
   keywordReplacement,
   IQueryEngine
-} from "@ai-flow/core";
+} from "@ts-flow/core";
 import axios from "axios";
 
 @ContainerNode

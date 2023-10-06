@@ -14,12 +14,12 @@
     "preset": "jest-presets/jest/node"
   },
   "dependencies": {
-    "@ai-flow/ai": "workspace:*",
-    "@ai-flow/api": "workspace:*",
-    "@ai-flow/core": "workspace:*",
-    "@ai-flow/cron": "workspace:*",
-    "@ai-flow/slack": "workspace:*",
-    "@ai-flow/transforms": "workspace:*",
+    "@ts-flow/ai": "workspace:*",
+    "@ts-flow/api": "workspace:*",
+    "@ts-flow/core": "workspace:*",
+    "@ts-flow/cron": "workspace:*",
+    "@ts-flow/slack": "workspace:*",
+    "@ts-flow/transforms": "workspace:*",
     "dotenv": "16.3.1"
   },
   "devDependencies": {

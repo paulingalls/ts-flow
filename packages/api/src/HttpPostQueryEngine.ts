@@ -6,7 +6,7 @@ import {
   JSONObject,
   keywordReplacement,
   NodeBase
-} from '@ai-flow/core';
+} from '@ts-flow/core';
 import axios, { AxiosHeaders } from 'axios';
 
 @ContainerNode
