@@ -15,6 +15,7 @@ export class HttpPostQueryEngine extends NodeBase implements IQueryEngine {
   private readonly bodyType: string;
   private readonly bodySchema: JSONObject;
   private readonly outputEventName: string;
+  private readonly outputProperty: string;
   private readonly bodyAdditionsFromPayload: JSONObject;
   private readonly headerSchema: JSONObject;
 
@@ -26,6 +27,7 @@ export class HttpPostQueryEngine extends NodeBase implements IQueryEngine {
     this.headerSchema = config['headerSchema'] as JSONObject;
     this.bodyAdditionsFromPayload = config['bodyAdditionsFromPayload'] as JSONObject;
     this.outputEventName = config['outputEventName'] as string;
+    this.outputProperty = config['outputProperty'] as string;
   }
 
   execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
@@ -39,7 +41,12 @@ export class HttpPostQueryEngine extends NodeBase implements IQueryEngine {
       const headers: AxiosHeaders = injectDataIntoJSONObject(payload, this.headerSchema) as AxiosHeaders;
       axios.post(url, postBody, {headers}).then((res) => {
         console.log(JSON.stringify(res.data));
-        completeCallback(this.outputEventName, res.data as JSONObject);
+        if (this.outputProperty) {
+          payload[this.outputProperty] = res.data as JSONObject;
+        } else {
+          payload = res.data as JSONObject;
+        }
+        completeCallback(this.outputEventName, payload);
       }).catch(e => {console.error('error posting http', e)});
     }
   }
