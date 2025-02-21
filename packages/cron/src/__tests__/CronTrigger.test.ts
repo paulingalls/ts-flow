@@ -59,17 +59,17 @@ describe('CronTrigger', () => {
     expect(mockExecute).toHaveBeenCalledWith(mockConfig.outputEventName, mockConfig.payload);
   });
 
-  it('should trigger the event on startup if triggerOnStart is true', () => {
+  it('should trigger the event on startup if triggerOnStart is true', async () => {
     cronTrigger.registerTriggerCallback(mockExecute);
 
     // Ensure that eventTriggered method triggers the execute function
-    cronTrigger.eventTriggered();
+    await cronTrigger.eventTriggered();
 
     // Ensure that the execute function was called with the expected arguments
     expect(mockExecute).toHaveBeenCalledWith(mockConfig.outputEventName, mockConfig.payload);
   });
 
-  it('should not trigger the event on startup if triggerOnStart is false', () => {
+  it('should not trigger the event on startup if triggerOnStart is false', async () => {
     // Change the config to set triggerOnStart to false
     mockConfig.triggerOnStart = false;
 
@@ -79,7 +79,7 @@ describe('CronTrigger', () => {
     cronTrigger.registerTriggerCallback(mockExecute);
 
     // Ensure that eventTriggered method does not trigger the execute function
-    cronTrigger.eventTriggered();
+    await cronTrigger.eventTriggered();
 
     // Ensure that the execute function was not called
     expect(mockExecute).not.toHaveBeenCalled();

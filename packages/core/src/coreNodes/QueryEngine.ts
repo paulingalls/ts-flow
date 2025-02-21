@@ -2,7 +2,7 @@ import { ContainerNode, JSONObject, NodeBase, IContainer } from "../Container";
 import { EventBus, IEventListener } from "./EventBus";
 
 export interface IQueryEngine {
-  execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void;
+  execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): Promise<void>;
 }
 
 @ContainerNode
@@ -23,8 +23,8 @@ export class QueryEngine extends NodeBase implements IEventListener {
     eventBus.addListener(inputEventName, this);
   }
 
-  eventTriggered(payload: JSONObject): void {
-    this.queryEngine.execute(payload, (eventName, result) => {
+  async eventTriggered(payload: JSONObject): Promise<void> {
+    await this.queryEngine.execute(payload, (eventName, result) => {
       const eventBus = this.container.getInstance('EventBus') as EventBus;
       eventBus.sendEvent(eventName, {...payload, ...result});
     });

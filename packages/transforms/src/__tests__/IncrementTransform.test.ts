@@ -29,7 +29,7 @@ describe('IncrementTransform', () => {
     expect(incrementTransform).toBeInstanceOf(IncrementTransform);
   });
 
-  it('should increment numeric data in the payload', () => {
+  it('should increment numeric data in the payload', async () => {
     const mockPayload: JSONObject = {
       data: {},
     };
@@ -37,7 +37,7 @@ describe('IncrementTransform', () => {
 
     const completeCallback = jest.fn();
 
-    incrementTransform.execute(mockPayload, completeCallback);
+    await incrementTransform.execute(mockPayload, completeCallback);
 
     // Ensure that the data was correctly incremented
     expect(mockPayload.data.value).toEqual(15);
@@ -46,7 +46,7 @@ describe('IncrementTransform', () => {
     expect(completeCallback).toHaveBeenCalledWith(mockConfig.outputEventName, mockPayload);
   });
 
-  it('should increment date data in the payload', () => {
+  it('should increment date data in the payload', async () => {
     mockConfig.dataType = 'date';
     mockConfig.dataIncrement = 3; // Increment by 3 days
 
@@ -61,7 +61,7 @@ describe('IncrementTransform', () => {
     const completeCallback = jest.fn();
 
     incrementTransform = new IncrementTransform('testId', mockContainer, mockConfig);
-    incrementTransform.execute(mockPayload, completeCallback);
+    await incrementTransform.execute(mockPayload, completeCallback);
 
     // Ensure that the date was correctly incremented by 3 days
     const expectedDate = new Date('2023-10-04T00:00:00.000Z');
@@ -71,7 +71,7 @@ describe('IncrementTransform', () => {
     expect(completeCallback).toHaveBeenCalledWith(mockConfig.outputEventName, mockPayload);
   });
 
-  it('should handle an array of data in the payload', () => {
+  it('should handle an array of data in the payload', async () => {
     const mockPayload: JSONObject = {
       data: [],
     };
@@ -83,7 +83,7 @@ describe('IncrementTransform', () => {
 
     const completeCallback = jest.fn();
 
-    incrementTransform.execute(mockPayload, completeCallback);
+    await incrementTransform.execute(mockPayload, completeCallback);
 
     // Ensure that each item in the array was correctly incremented
     expect((mockPayload.data[0] as JSONObject).value).toEqual(10);

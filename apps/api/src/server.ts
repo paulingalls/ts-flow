@@ -1,7 +1,11 @@
 import { json, urlencoded } from "body-parser";
-import { Express } from "express";
+import { Express, Request, Response } from "express";
 import morgan from "morgan";
 import cors from "cors";
+
+interface MessageParams extends Record<string, string> {
+  name: string;
+}
 
 export function setupServer(app: Express) {
   app
@@ -10,11 +14,11 @@ export function setupServer(app: Express) {
     .use(urlencoded({ extended: true }))
     .use(json())
     .use(cors())
-    .get("/message/:name", (req, res) => {
-      return res.json({ message: `hello ${req.params.name}` });
+    .get<MessageParams>("/message/:name", (req: Request, res: Response): void => {
+      res.json({ message: `hello ${req.params.name}` });
     })
-    .get("/healthz", (req, res) => {
-      return res.json({ ok: true });
+    .get("/healthz", (_: Request, res: Response): void => {
+      res.json({ ok: true });
     });
 
   return app;

@@ -13,7 +13,7 @@ export class DeleteTransform extends NodeBase implements IQueryEngine {
     this.dataTarget = config['dataTarget'] as string;
   }
 
-  execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
+  execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): Promise<void> {
     let data: JSONObject;
     if (this.dataRoot) {
       data = payload[this.dataRoot] as JSONObject;
@@ -28,5 +28,6 @@ export class DeleteTransform extends NodeBase implements IQueryEngine {
       delete data[this.dataTarget];
     }
     completeCallback(this.outputEventName, payload);
+    return Promise.resolve();
   }
 }

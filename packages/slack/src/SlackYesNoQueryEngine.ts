@@ -14,8 +14,8 @@ export class SlackYesNoQueryEngine extends NodeBase implements IQueryEngine, ISl
   private completeCallback: ((completeEventName: string, result: JSONObject) => void) | null = null;
   private userPrompt: string;
   private slackChannel: string;
-  private yesEventName: string;
-  private noEventName: string;
+  private readonly yesEventName: string;
+  private readonly noEventName: string;
 
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
@@ -30,21 +30,25 @@ export class SlackYesNoQueryEngine extends NodeBase implements IQueryEngine, ISl
   }
 
   onInteraction(payload: JSONObject): void {
-    const blockId = payload['block_id'] as string;
+    console.log('SlackYesNoQueryEngine onInteraction', payload);
+    const actions: JSONObject[] = payload['actions'] as JSONObject[];
+    const blockId = actions[0]['block_id'] as string;
     if (blockId === BLOCK_ID) {
-      const actions: JSONObject[] = payload['actions'] as JSONObject[];
-      this.completeCallback && this.completeCallback(
-        actions[0]['value'] === 'yes' ? this.yesEventName : this.noEventName,
-        payload);
+      if (this.completeCallback) {
+        this.completeCallback(
+          actions[0]["value"] === "yes" ? this.yesEventName : this.noEventName,
+          payload,
+        );
+      }
     }
   }
 
-  execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
+  async execute(_: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): Promise<void> {
     this.completeCallback = completeCallback;
     const headers: AxiosHeaders = new AxiosHeaders();
     headers.setAuthorization(`Bearer ${process.env.SLACK_API_TOKEN}`);
 
-    axios.post(
+    return axios.post(
       'https://slack.com/api/chat.postMessage',
       {
         channel: this.slackChannel,

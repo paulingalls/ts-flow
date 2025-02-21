@@ -26,10 +26,11 @@ export class CronTrigger extends NodeBase implements ITrigger, IEventListener {
     });
   }
 
-  eventTriggered(): void {
+  eventTriggered(): Promise<void> {
     if (this.triggerOnStart) {
       this.execute(this.outputEventName, this.payload)
     }
+    return Promise.resolve();
   }
 
 }

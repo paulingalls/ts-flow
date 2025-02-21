@@ -28,7 +28,7 @@ export class SlackBlocksOnlyQueryEngine extends NodeBase implements IQueryEngine
     this.blocks = config['blocks'] as Array<JSONValue>;
   }
 
-  execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
+  async execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): Promise<void> {
     const data: JSONObject = payload[this.dataRoot] as JSONObject;
 
     console.log('slack payload', payload);
@@ -38,13 +38,13 @@ export class SlackBlocksOnlyQueryEngine extends NodeBase implements IQueryEngine
         const item = value as JSONObject;
         promises.push(this.sendSlackMessage(item));
       });
-      Promise.all(promises).then(() => {
+      return Promise.all(promises).then(() => {
         completeCallback(this.outputEventName, payload);
       }).catch(e => {
         console.error('error sending slack message', e);
       });
     } else {
-      this.sendSlackMessage(data).then(() => {
+      return this.sendSlackMessage(data).then(() => {
         completeCallback(this.outputEventName, payload);
       }).catch(e => {
         console.error('error sending slack message', e);

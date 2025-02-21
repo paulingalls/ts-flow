@@ -30,7 +30,7 @@ export class OpenAIChatEngine extends OpenAIEngineBase {
 
     const result = response.choices[0].message.content ?? 'error'
 
-    console.log(result);
+    console.log("Chat completion result", result);
 
     return result as JSONValue;
   }

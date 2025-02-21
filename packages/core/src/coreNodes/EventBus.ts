@@ -1,7 +1,7 @@
 import { ContainerNode, IContainer, NodeBase, JSONObject } from "../Container";
 
 export interface IEventListener {
-  eventTriggered(payload: JSONObject): void;
+  eventTriggered(payload: JSONObject): Promise<void>;
 }
 
 @ContainerNode
@@ -30,8 +30,10 @@ export class EventBus extends NodeBase {
     if (this.devMode) {
       console.log('EventBus sendEvent', eventName, payload);
     }
+    const promises: Promise<void>[] = [];
     this.listeners[eventName]?.forEach((listener) => {
-      listener.eventTriggered(payload);
+      promises.push(listener.eventTriggered(payload));
     })
+    Promise.all(promises).catch(e => console.error('error sending event', eventName, e));
   }
 }

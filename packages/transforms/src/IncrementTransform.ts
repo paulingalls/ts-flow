@@ -21,7 +21,7 @@ export class IncrementTransform extends NodeBase implements IQueryEngine {
     }
   }
 
-  execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
+  execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): Promise<void> {
     let data: JSONObject;
     if (this.dataRoot) {
       data = payload[this.dataRoot] as JSONObject;
@@ -36,6 +36,7 @@ export class IncrementTransform extends NodeBase implements IQueryEngine {
       this.increment(data);
     }
     completeCallback(this.outputEventName, payload);
+    return Promise.resolve();
   }
 
   increment(dataRoot: JSONObject) {

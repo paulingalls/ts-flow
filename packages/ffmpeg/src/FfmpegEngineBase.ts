@@ -16,7 +16,7 @@ export abstract class FfmpegEngineBase extends NodeBase implements IQueryEngine 
     this.outputEventName = config['outputEventName'] as string;
   }
 
-  async execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void) {
+  async execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): Promise<void> {
     const data: JSONObject = this.dataRoot ? payload[this.dataRoot] as JSONObject : payload;
 
     console.log('executing ffmpeg engine for node', this.id);

@@ -18,9 +18,9 @@ export class PuppeteerQueryWebEngine extends NodeBase implements IQueryEngine {
     this.outputEventName = config['outputEventName'] as string;
   }
 
-  execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
+  async execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): Promise<void> {
     const data = payload[this.dataRoot] as JSONObject;
-    puppeteer.launch({headless: false}).then((browser) => {
+    return puppeteer.launch({headless: false}).then((browser) => {
       if (this.urlPath.startsWith('http')) {
         this.scrapeData(browser, this.urlPath, this.query).then((result) => {
           if (result) {

@@ -18,12 +18,12 @@ export class HttpGetQueryEngine extends NodeBase implements IQueryEngine {
     super(id, container, config);
     this.urlTemplate = config['urlTemplate'] as string;
     this.outputEventName = config['outputEventName'] as string;
-    this.outputProperty = config['outputEventName'] as string;
+    this.outputProperty = config['outputEventProperty'] as string;
   }
 
-  execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
+  async execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): Promise<void> {
     const url: string = keywordReplacement(this.urlTemplate, payload);
-    axios.get(url).then((res) => {
+    return axios.get(url).then((res) => {
       if (this.outputProperty) {
         payload[this.outputProperty] = res.data as JSONObject;
       } else {

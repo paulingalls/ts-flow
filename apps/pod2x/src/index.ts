@@ -27,7 +27,8 @@ void bootstrap(paths, (container: IContainer) => {
 
     app.post('/start', upload.single('file'), (req: Request, res: Response) => {
       if (!req.file) {
-        return res.status(400).json({ error: 'No file uploaded' });
+        res.status(400).json({ error: 'No file uploaded' });
+        return;
       }
 
       const fileBuffer: Buffer = req.file.buffer;

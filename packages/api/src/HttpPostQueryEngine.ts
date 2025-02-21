@@ -30,7 +30,7 @@ export class HttpPostQueryEngine extends NodeBase implements IQueryEngine {
     this.outputProperty = config['outputProperty'] as string;
   }
 
-  execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
+  async execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): Promise<void> {
     const url = keywordReplacement(this.urlTemplate, payload);
     if (this.bodyType.toLowerCase() === 'json') {
       const postBody: JSONObject = injectDataIntoJSONObject(payload , this.bodySchema );
@@ -39,7 +39,7 @@ export class HttpPostQueryEngine extends NodeBase implements IQueryEngine {
       });
 
       const headers: AxiosHeaders = injectDataIntoJSONObject(payload, this.headerSchema) as AxiosHeaders;
-      axios.post(url, postBody, {headers}).then((res) => {
+      return axios.post(url, postBody, {headers}).then((res) => {
         console.log(JSON.stringify(res.data));
         if (this.outputProperty) {
           payload[this.outputProperty] = res.data as JSONObject;

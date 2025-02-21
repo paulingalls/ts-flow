@@ -19,7 +19,7 @@ export abstract class OpenAIEngineBase extends NodeBase implements IQueryEngine 
     this.openAI = new OpenAI();
   }
 
-  execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): void {
+  async execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): Promise<void> {
     const data: JSONObject = this.dataRoot ? payload[this.dataRoot] as JSONObject : payload;
 
     console.log('executing query for node', this.id);
@@ -32,14 +32,17 @@ export abstract class OpenAIEngineBase extends NodeBase implements IQueryEngine 
           this.queryAI(item).then((result) => {
             item[this.outputProperty] = result;
             resolve()
-          }).catch(e => {reject(e)})
+          }).catch(e => {
+            console.error('error executing query ai', e);
+            reject(new Error('error executing query ai'));
+          })
         }))
       });
-      Promise.all(promises).then(() => {
+      return Promise.all(promises).then(() => {
         completeCallback(this.outputEventName, payload);
       }).catch(e => console.error('error executing query ai', e));
     } else {
-      this.queryAI(data).then((result) => {
+      return this.queryAI(data).then((result) => {
         data[this.outputProperty] = result;
         completeCallback(this.outputEventName, payload);
       }).catch(e => {console.error('error executing query ai', e)});
