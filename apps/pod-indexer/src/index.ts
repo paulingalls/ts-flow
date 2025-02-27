@@ -5,6 +5,8 @@ import multer from 'multer';
 import path from 'path';
 import podIndexer from './index-podcast-topics.json';
 import dotenv from "dotenv"
+import { promises as fs } from "fs";
+import { nanoid } from "nanoid";
 
 dotenv.config();
 
@@ -25,18 +27,36 @@ void bootstrap(paths, (container: IContainer) => {
   if (app) {
     app.use(express.static('public'))
 
-    app.post('/start', upload.single('file'), (req: Request, res: Response) => {
-      if (!req.file) {
-        res.status(400).json({ error: 'No file uploaded' });
-        return;
-      }
+    app.post(
+      "/start",
+      upload.single("file"),
+      async (req: Request, res: Response) => {
+        if (!req.file) {
+          res.status(400).json({ error: "No file uploaded" });
+          return;
+        }
 
-      const fileBuffer: Buffer = req.file.buffer;
-      eventBus.sendEvent('podcastUploaded', {fileBuffer: fileBuffer as unknown as JSONValue})
+        const fileBuffer: Buffer = req.file.buffer;
+        const extension = path.extname(req.file.originalname);
+        const localPath = path.join(
+          process.cwd(),
+          "uploads",
+          `${nanoid()}${extension}`,
+        );
 
-      res.status(200).json({ message: 'File data loaded into Buffer successfully' });
-    });
-
+        try {
+          await fs.writeFile(localPath, fileBuffer);
+          console.log("wrote file", localPath);
+          eventBus.sendEvent("podcastUploaded", { filePath: localPath });
+          res
+            .status(200)
+            .json({ message: "File data loaded into Buffer successfully" });
+        } catch (e) {
+          console.log("error", e);
+          res.status(500).json({ message: e });
+        }
+      },
+    );
     container.createInstance(podIndexer.id, podIndexer.type, podIndexer.config as unknown as JSONObject);
 
     webServer.startServer();

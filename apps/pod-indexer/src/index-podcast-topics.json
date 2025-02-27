@@ -17,7 +17,7 @@
             "audioPrompt": "Please, will you kindly transcribe this podcast into vtt?",
             "dataRoot": "",
             "responseFormat": "vtt",
-            "inputProperty": "fileBuffer",
+            "inputProperty": "filePath",
             "outputProperty": "podcastVTT",
             "outputEventName": "vttReady"
           }
@@ -86,15 +86,35 @@
           "engineId": "ffmpeg-trim-audio",
           "engineConfig": {
             "dataRoot": "",
-            "inputProperty": "fileBuffer",
+            "inputProperty": "filePath",
             "fileFolderName": "public/pods",
             "trimRoot": "podcastTopics.topics",
             "trimStartProperty": "start",
             "trimStopProperty": "end",
-            "trimmedFilenameProperty": "filename",
-            "outputProperty": "fileBuffers",
+            "trimmedFilenameProperty": "trimmedFilename",
+            "outputProperty": "filePaths",
             "outputEventName": "trimmedAudioReady",
-            "keepTrimmedFiles": true
+            "keepOriginalFile": false
+          }
+        }
+      },
+      {
+        "id": "index-podcast-topics-resample-audio",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "trimmedAudioReady",
+          "engineType": "ResampleAudioQueryEngine",
+          "engineId": "ffmpeg-resample-audio",
+          "engineConfig": {
+            "dataRoot": "podcastTopics.topics",
+            "inputProperty": "trimmedFilename",
+            "audioSampleRate": 24000,
+            "audioChannels": 1,
+            "audioCodec": "pcm_s16le",
+            "audioFileFormat": "wav",
+            "outputEventName": "resampledAudioReady",
+            "outputProperty": "filename",
+            "keepInputFiles": true
           }
         }
       },
@@ -102,7 +122,7 @@
         "id": "index-podcast-topics-get-embeddings",
         "type": "QueryEngine",
         "config": {
-          "inputEventName": "trimmedAudioReady",
+          "inputEventName": "resampledAudioReady",
           "engineType": "OpenAIEmbeddingEngine",
           "engineId": "open-ai-get-embedding",
           "engineConfig": {

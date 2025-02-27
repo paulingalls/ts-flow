@@ -21,7 +21,7 @@ export class AudioTrimQueryEngine extends FfmpegEngineBase {
   private readonly trimRoot: string;
   private readonly trimStartProperty: string;
   private readonly trimStopProperty: string;
-  private readonly keepTrimmedFiles: boolean;
+  private readonly keepOriginalFile: boolean;
   private readonly trimmedFilenameProperty: string;
 
   constructor(id: string, container: IContainer, config: JSONObject) {
@@ -33,21 +33,15 @@ export class AudioTrimQueryEngine extends FfmpegEngineBase {
     this.trimRoot = config["trimRoot"] as string;
     this.trimStartProperty = config["trimStartProperty"] as string;
     this.trimStopProperty = config["trimStopProperty"] as string;
-    this.keepTrimmedFiles = (config["keepTrimmedFiles"] as boolean) ?? false;
+    this.keepOriginalFile = (config["keepOriginalFile"] as boolean) ?? false;
     this.trimmedFilenameProperty = config["trimmedFilenameProperty"] as string;
   }
 
   async runFfmpeg(payload: JSONObject): Promise<JSONValue> {
-    const buffer: Buffer = payload[this.inputProperty] as unknown as Buffer;
-    const fileId: string = nanoid();
-    const fileName: string = `${fileId}.mp3`;
-    const inputFilePath: string = path.join(
-      process.cwd(),
-      this.fileFolderName,
-      fileName,
-    );
+    const inputFilePath: string = payload[this.inputProperty] as string;
     const extension = path.extname(inputFilePath);
-    fs.writeFileSync(inputFilePath, buffer);
+
+    const fileId: string = nanoid();
     fs.mkdirSync(path.join(process.cwd(), this.fileFolderName, fileId));
 
     if (this.trimRoot && this.trimStartProperty) {
@@ -80,6 +74,9 @@ export class AudioTrimQueryEngine extends FfmpegEngineBase {
             ),
           );
         }
+        if (!this.keepOriginalFile) {
+          fs.unlinkSync(inputFilePath);
+        }
         return results;
       } else {
         const trimStart = trimData[this.trimStartProperty] as string;
@@ -92,12 +89,16 @@ export class AudioTrimQueryEngine extends FfmpegEngineBase {
           `clip${extension}`,
         );
         trimData[this.trimmedFilenameProperty] = outputFileSubPath;
-        return await this.trimAudioFile(
+        const result = await this.trimAudioFile(
           inputFilePath,
           path.join(process.cwd(), outputFileSubPath),
           trimStart,
           trimDuration,
         );
+        if (!this.keepOriginalFile) {
+          fs.unlinkSync(inputFilePath);
+        }
+        return result;
       }
     }
 
@@ -106,12 +107,17 @@ export class AudioTrimQueryEngine extends FfmpegEngineBase {
       this.fileFolderName,
       `clip_${fileId}${extension}`,
     );
-    return this.trimAudioFile(
+    console.log('debug', inputFilePath, outputFilePath, this.trimStart, this.trimLength);
+    const result = await this.trimAudioFile(
       inputFilePath,
       outputFilePath,
       this.trimStart,
       this.trimLength,
     );
+    if (!this.keepOriginalFile) {
+      fs.unlinkSync(inputFilePath);
+    }
+    return result;
   }
 
   calculateDuration(trimStart: string, trimStop: string): string {
@@ -126,8 +132,7 @@ export class AudioTrimQueryEngine extends FfmpegEngineBase {
     outputFilePath: string,
     trimStart: string,
     trimDuration: string,
-  ): Promise<JSONValue> {
-    const keepTrimmedFile = this.keepTrimmedFiles;
+  ): Promise<string> {
     return new Promise((resolve, reject) => {
       Ffmpeg()
         .input(inputFilePath)
@@ -136,11 +141,7 @@ export class AudioTrimQueryEngine extends FfmpegEngineBase {
         .output(outputFilePath)
         .on("end", () => {
           console.log("Trimming complete");
-          const file = fs.readFileSync(outputFilePath);
-          if (!keepTrimmedFile) {
-            fs.unlinkSync(outputFilePath);
-          }
-          resolve(file as unknown as JSONValue);
+          resolve(outputFilePath);
         })
         .on("error", (e) => {
           console.error("Error trimming audio file", e);

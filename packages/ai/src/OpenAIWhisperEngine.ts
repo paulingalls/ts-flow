@@ -6,6 +6,7 @@ import {
 import { OpenAIEngineBase } from './OpenAIEngineBase';
 import { toFile } from 'openai';
 import { AudioResponseFormat } from "openai/src/resources/audio/audio";
+import * as fs from "fs";
 
 @ContainerNode
 export class OpenAIWhisperEngine extends OpenAIEngineBase {
@@ -22,15 +23,13 @@ export class OpenAIWhisperEngine extends OpenAIEngineBase {
   }
 
   async queryAI(payload: JSONObject): Promise<JSONValue> {
-    const fileBuffer: Buffer = payload[this.inputProperty] as unknown as Buffer;
-
-    console.log("buffer", fileBuffer.length);
+    const inputFilename: string = payload[this.inputProperty] as string;
 
     const response = await this.openAI.audio.transcriptions.create({
       model: this.modelName,
       language: 'en',
       response_format: this.responseFormat,
-      file: await toFile(fileBuffer, 'podcast.mp3'),
+      file: fs.createReadStream(inputFilename),
       prompt: this.audioPrompt || 'Hello, this is some audio'
     })
 

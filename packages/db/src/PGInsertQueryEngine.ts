@@ -31,6 +31,8 @@ export class PGInsertQueryEngine extends NodeBase implements IQueryEngine {
     payload: JSONObject,
     completeCallback: (completeEventName: string, result: JSONObject) => void,
   ): Promise<void> {
+    console.log("executing query for node", this.id);
+
     if (this.client === null) {
       const connectionString = keywordReplacement(this.connectionString, payload);
       this.client = new pg.Client({ connectionString });

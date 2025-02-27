@@ -14,8 +14,8 @@
           "engineId": "ffmpeg-trim-audio",
           "engineConfig": {
             "dataRoot": "",
-            "inputProperty": "fileBuffer",
-            "outputProperty": "fileBuffer",
+            "inputProperty": "filePath",
+            "outputProperty": "trimmedFilePath",
             "outputEventName": "trimmedAudioReady"
           }
         }
@@ -31,7 +31,7 @@
             "modelName": "whisper-1",
             "audioPrompt": "Hello, this is a podcast.",
             "dataRoot": "",
-            "inputProperty": "fileBuffer",
+            "inputProperty": "trimmedFilePath",
             "outputProperty": "podcastText",
             "outputEventName": "textReady"
           }

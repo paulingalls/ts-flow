@@ -42,6 +42,8 @@ export class AddTextToImageQueryEngine extends FfmpegEngineBase {
     const textChunks = this.splitIntoThreeWordChunks(text);
     const filters = this.getFiltersFromTextChunks(textChunks);
 
+    console.log('trying to add text to image', text, filters);
+
     return new Promise((resolve, reject) => {
       this.downloadImage(payload[this.imageProperty] as string, imagePath)
         .then(() => {
@@ -87,7 +89,7 @@ export class AddTextToImageQueryEngine extends FfmpegEngineBase {
         filter: "drawtext",
         options: {
           fontfile: "/vagrant/fonts/LucidaGrande.ttc",
-          text: chunk,
+          text: chunk.replace(/'/g, "//'").replace(/:/g, "//:"),
           fontsize: 20,
           fontcolor: "white",
           x: "(main_w/2-text_w/2)",
