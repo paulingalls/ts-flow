@@ -16,7 +16,7 @@
             "payload": {
               "page": 1,
               "pageSize": 3,
-              "from": "2023-08-17"
+              "from": "2025-02-17"
             },
             "triggerOnStart": "true",
             "outputEventName": "findLatestNews"
@@ -61,7 +61,7 @@
           "engineType": "OpenAIChatEngine",
           "engineId": "open-ai-article-summarize",
           "engineConfig": {
-            "modelName": "gpt-4",
+            "modelName": "gpt-4o-mini",
             "systemPrompt": "You are an expert editor experienced in summarizing stories about The University of Notre Dame football",
             "userPrompt": "Please summarize the following text in less than 200 words:\n${content}",
             "dataRoot": "articles",

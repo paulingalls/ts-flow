@@ -19,7 +19,7 @@ export class Endpoint extends NodeBase {
         eventBus.sendEvent(eventName, data);
         res.sendStatus(200);
       })
-    } else if (endpointPath === 'get') {
+    } else if (endpointType === 'get') {
       webServer.addGetEndpoint(endpointPath, (req: Request, res: Response) => {
         eventBus.sendEvent(eventName, {...req.params});
         res.sendStatus(200);

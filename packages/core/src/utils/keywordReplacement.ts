@@ -58,3 +58,33 @@ function getValueForKeyword(keyword: string, payload: JSONObject): string {
   }
   return JSON.stringify(value);
 }
+
+export function getJSONObjectFromPath(keyword: string, payload: JSONObject): JSONObject {
+  const parts = keyword.split('.');
+  let jsonObject: JSONObject = {};
+  switch(parts.length) {
+    case 1: {
+      jsonObject = payload[parts[0]] as JSONObject;
+      break;
+    }
+    case 2: {
+      const firstPart: JSONObject = payload[parts[0]] as JSONObject;
+      jsonObject = firstPart[parts[1]] as JSONObject;
+      break;
+    }
+    case 3: {
+      const firstPart: JSONObject = payload[parts[0]] as JSONObject;
+      const secondPart: JSONObject = firstPart[parts[1]] as JSONObject;
+      jsonObject = secondPart[parts[2]] as JSONObject;
+      break;
+    }
+    case 4: {
+      const firstPart: JSONObject = payload[parts[0]] as JSONObject;
+      const secondPart: JSONObject = firstPart[parts[1]] as JSONObject;
+      const thirdPart: JSONObject = secondPart[parts[2]] as JSONObject;
+      jsonObject = thirdPart[parts[3]] as JSONObject;
+      break;
+    }
+  }
+  return jsonObject;
+}

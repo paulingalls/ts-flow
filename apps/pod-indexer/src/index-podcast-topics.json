@@ -1,0 +1,135 @@
+{
+  "id": "index-podcast-topics",
+  "type": "Workflow",
+  "config": {
+    "name": "Create a RAG index from podcast topics",
+    "description": "Break a podcast into topics and index their embeddings for later RAG use",
+    "nodes": [
+      {
+        "id": "index-podcast-topics-get-vtt",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "podcastUploaded",
+          "engineType": "OpenAIWhisperEngine",
+          "engineId": "open-ai-get-vtt",
+          "engineConfig": {
+            "modelName": "whisper-1",
+            "audioPrompt": "Please, will you kindly transcribe this podcast into vtt?",
+            "dataRoot": "",
+            "responseFormat": "vtt",
+            "inputProperty": "fileBuffer",
+            "outputProperty": "podcastVTT",
+            "outputEventName": "vttReady"
+          }
+        }
+      },
+      {
+        "id": "index-podcast-topics-get-topics",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "vttReady",
+          "engineType": "OpenAIChatEngine",
+          "engineId": "open-ai-get-topics",
+          "engineConfig": {
+            "modelName": "gpt-4o-mini",
+            "dataRoot": "",
+            "systemPrompt": "You are a podcast editor.  You are expert at taking a VTT file of a podcast, and grouping the phrases into topics, each with a start and and time within the podcast.  You generate a json file with entries like the following:\n{ \"topics\": [{\"topic\":\"title of the topic\", \"summary\": \"a paragraph summary of the topic\", \"start\":\"00:00:52.520\", \"end\":\"00:03:12.923\"}] }\nThe contents of a VTT file will be given, generate the correct JSON for it.",
+            "userPrompt": "${podcastVTT}",
+            "outputProperty": "podcastTopics",
+            "outputEventName": "topicsReady",
+            "responseFormat": {
+              "type": "json_schema",
+              "json_schema": {
+                "name": "podcastTopics",
+                "description": "A list of topics in a podcast, each with a start and end time",
+                "strict": true,
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "topics": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "topic": {
+                            "type": "string"
+                          },
+                          "summary": {
+                            "type": "string"
+                          },
+                          "start": {
+                            "type": "string"
+                          },
+                          "end": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["topic", "summary", "start", "end"],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": ["topics"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "index-podcast-topics-trim-audio",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "topicsReady",
+          "engineType": "AudioTrimQueryEngine",
+          "engineId": "ffmpeg-trim-audio",
+          "engineConfig": {
+            "dataRoot": "",
+            "inputProperty": "fileBuffer",
+            "fileFolderName": "public/pods",
+            "trimRoot": "podcastTopics.topics",
+            "trimStartProperty": "start",
+            "trimStopProperty": "end",
+            "trimmedFilenameProperty": "filename",
+            "outputProperty": "fileBuffers",
+            "outputEventName": "trimmedAudioReady",
+            "keepTrimmedFiles": true
+          }
+        }
+      },
+      {
+        "id": "index-podcast-topics-get-embeddings",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "trimmedAudioReady",
+          "engineType": "OpenAIEmbeddingEngine",
+          "engineId": "open-ai-get-embedding",
+          "engineConfig": {
+            "modelName": "text-embedding-3-small",
+            "dataRoot": "podcastTopics.topics",
+            "keyToEmbed": "summary",
+            "outputProperty": "embedding",
+            "outputEventName": "embeddingsReady"
+          }
+        }
+      },
+      {
+        "id": "index-podcast-topics-insert-data",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "embeddingsReady",
+          "engineType": "PGInsertQueryEngine",
+          "engineId": "postgres-save-embeddings",
+          "engineConfig": {
+            "dataRoot": "podcastTopics.topics",
+            "connectionString": "${POSTGRES_CONNECTION_STRING}",
+            "sqlInsertTemplate": "insert into podcast_topics (title, summary, filename, embedding) values ($1, $2, $3, $4)",
+            "sqlValuesTemplate": ["topic", "summary", "filename", "embedding"],
+            "outputEventName": "dataInserted"
+          }
+        }
+      }
+    ]
+  }
+}
