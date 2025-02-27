@@ -1,6 +1,6 @@
 {
   "name": "@ts-flow/core",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Simple, data driven workflow system leveraging an IoC container and event manager",
   "author": "paulingalls",
   "repository": {

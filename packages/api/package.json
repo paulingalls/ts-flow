@@ -1,6 +1,6 @@
 {
   "name": "@ts-flow/api",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "ts-flow nodes that interact with open http APIs",
   "author": "paulingalls",
   "repository": {
