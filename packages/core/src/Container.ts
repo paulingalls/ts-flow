@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 import { EventBus } from "./coreNodes";
 
 export type JSONValue =
@@ -10,7 +10,7 @@ export type JSONValue =
   | Array<JSONValue>;
 
 export interface JSONObject {
-  [name: string] : JSONValue;
+  [name: string]: JSONValue;
 }
 
 export interface ContainerNode {
@@ -18,40 +18,56 @@ export interface ContainerNode {
 }
 
 export class NodeBase implements ContainerNode {
-  constructor(protected id: string, protected container: IContainer, protected config: JSONObject) {}
+  constructor(
+    protected id: string,
+    protected container: IContainer,
+    protected config: JSONObject,
+  ) {}
 
   getId(): string {
     return this.id;
-  };
+  }
 }
 
 export interface IContainer {
   getInstance(id: string): NodeBase;
+
   getInstances(): ReadonlyArray<NodeBase>;
+
   getNodeNames(): ReadonlyArray<string>;
+
   createInstance(id: string, type: string, config: JSONObject): NodeBase | null;
 }
 
-export function ContainerNode(originalClass: typeof NodeBase, context: ClassDecoratorContext) {
-  console.log('setting up container', context);
-  if (context.name && context.kind === 'class') {
+export function ContainerNode(
+  originalClass: typeof NodeBase,
+  context: ClassDecoratorContext,
+) {
+  console.log("setting up container", context);
+  if (context.name && context.kind === "class") {
     mainContainer.addNode(originalClass, context.name);
   }
 }
 
-export async function bootstrap(additionalNodePaths: string[], initFunction: (container: IContainer) => void) {
-  const coreNodePath = path.join(__dirname, 'coreNodes');
-  console.log('about to load core nodes at location', coreNodePath)
+export async function bootstrap(
+  additionalNodePaths: string[],
+  initFunction: (container: IContainer) => void,
+) {
+  const coreNodePath = path.join(__dirname, "coreNodes");
+  console.log("about to load core nodes at location", coreNodePath);
   await mainContainer.loadNodes(coreNodePath);
-  const eventBus = mainContainer.createInstance('EventBus', 'EventBus', {devMode: false}) as EventBus;
-  mainContainer.createInstance('WebServer', 'WebServer', { port: process.env.PORT || ''});
+  const eventBus = mainContainer.createInstance("EventBus", "EventBus", {
+    devMode: false,
+  }) as EventBus;
+  mainContainer.createInstance("WebServer", "WebServer", {
+    port: process.env.PORT || "",
+  });
   for (const nodePath of additionalNodePaths) {
     await mainContainer.loadNodes(nodePath);
   }
   initFunction(mainContainer);
-  eventBus.sendEvent('bootstrapComplete', {});
+  eventBus.sendEvent("bootstrapComplete", {});
 }
-
 
 class Container implements IContainer {
   private instances: Record<string, NodeBase> = {};
@@ -73,14 +89,18 @@ class Container implements IContainer {
     return Object.keys(this.nodes);
   }
 
-  createInstance(id: string, type: string, config: JSONObject): NodeBase | null {
+  createInstance(
+    id: string,
+    type: string,
+    config: JSONObject,
+  ): NodeBase | null {
     const existingInstance = this.getInstance(id);
     if (existingInstance) {
       return existingInstance;
     }
 
     const node: typeof NodeBase = this.nodes[type];
-    console.log('checking for node type', type, node);
+    console.log("checking for node type", type, node);
     if (node) {
       const instance = new node(id, this, config);
       this.instances[id] = instance;
@@ -91,13 +111,13 @@ class Container implements IContainer {
   }
 
   async loadNodes(nodeDirectoryPath: string) {
-    console.log('loading', nodeDirectoryPath);
+    console.log("loading", nodeDirectoryPath);
     const files: string[] = fs.readdirSync(nodeDirectoryPath);
-    console.log('files', files);
+    console.log("files", files);
     for (const file of files) {
-      if (file.endsWith('.js') || file.endsWith('.cjs')) {
+      if (file.endsWith(".js") || file.endsWith(".cjs")) {
         const filePath = path.join(nodeDirectoryPath, file);
-        console.log('trying to import file:', file, filePath);
+        console.log("trying to import file:", file, filePath);
         await import(filePath);
       }
     }
@@ -105,4 +125,3 @@ class Container implements IContainer {
 }
 
 const mainContainer: Container = new Container();
-

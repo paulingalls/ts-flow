@@ -1,23 +1,31 @@
-import { ContainerNode, IContainer, JSONObject, NodeBase, WebServer } from '@ts-flow/core';
+import {
+  ContainerNode,
+  IContainer,
+  JSONObject,
+  NodeBase,
+  WebServer,
+} from "@ts-flow/core";
 
 export interface ISlackInteractiveListener {
   onInteraction(payload: JSONObject): void;
 }
+
 @ContainerNode
 export class SlackInteractiveEndpoint extends NodeBase {
   private listeners: ISlackInteractiveListener[] = [];
+
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
 
-    const endpoint = config['interactiveEndpoint'] as string;
-    const webServer = this.container.getInstance('WebServer') as WebServer;
+    const endpoint = config["interactiveEndpoint"] as string;
+    const webServer = this.container.getInstance("WebServer") as WebServer;
     webServer.addPostEndpoint(endpoint, (req, res) => {
-      console.log('slack interaction endpoint', req.body);
+      console.log("slack interaction endpoint", req.body);
       const form = req.body as Record<string, string>;
-      const payload = JSON.parse(form['payload']) as JSONObject;
-      this.listeners.forEach(listener => {
+      const payload = JSON.parse(form["payload"]) as JSONObject;
+      this.listeners.forEach((listener) => {
         listener.onInteraction(payload);
-      })
+      });
       res.sendStatus(200);
     });
   }

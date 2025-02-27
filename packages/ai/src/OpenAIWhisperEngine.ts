@@ -1,10 +1,10 @@
 import {
   ContainerNode,
   IContainer,
-  JSONObject, JSONValue
-} from '@ts-flow/core';
-import { OpenAIEngineBase } from './OpenAIEngineBase';
-import { toFile } from 'openai';
+  JSONObject,
+  JSONValue,
+} from "@ts-flow/core";
+import { OpenAIEngineBase } from "./OpenAIEngineBase";
 import { AudioResponseFormat } from "openai/src/resources/audio/audio";
 import * as fs from "fs";
 
@@ -17,9 +17,10 @@ export class OpenAIWhisperEngine extends OpenAIEngineBase {
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
 
-    this.inputProperty = config['inputProperty'] as string;
-    this.audioPrompt = config['audioPrompt'] as string;
-    this.responseFormat = config['responseFormat'] as AudioResponseFormat || 'json';
+    this.inputProperty = config["inputProperty"] as string;
+    this.audioPrompt = config["audioPrompt"] as string;
+    this.responseFormat =
+      (config["responseFormat"] as AudioResponseFormat) || "json";
   }
 
   async queryAI(payload: JSONObject): Promise<JSONValue> {
@@ -27,15 +28,19 @@ export class OpenAIWhisperEngine extends OpenAIEngineBase {
 
     const response = await this.openAI.audio.transcriptions.create({
       model: this.modelName,
-      language: 'en',
+      language: "en",
       response_format: this.responseFormat,
       file: fs.createReadStream(inputFilename),
-      prompt: this.audioPrompt || 'Hello, this is some audio'
-    })
+      prompt: this.audioPrompt || "Hello, this is some audio",
+    });
 
-    if (this.responseFormat === 'text' || this.responseFormat === 'srt' || this.responseFormat === 'vtt') {
+    if (
+      this.responseFormat === "text" ||
+      this.responseFormat === "srt" ||
+      this.responseFormat === "vtt"
+    ) {
       return response as unknown as JSONValue;
     }
-    return response.text || 'error';
+    return response.text || "error";
   }
 }

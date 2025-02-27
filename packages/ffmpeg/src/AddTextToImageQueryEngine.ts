@@ -42,7 +42,7 @@ export class AddTextToImageQueryEngine extends FfmpegEngineBase {
     const textChunks = this.splitIntoThreeWordChunks(text);
     const filters = this.getFiltersFromTextChunks(textChunks);
 
-    console.log('trying to add text to image', text, filters);
+    console.log("trying to add text to image", text, filters);
 
     return new Promise((resolve, reject) => {
       this.downloadImage(payload[this.imageProperty] as string, imagePath)

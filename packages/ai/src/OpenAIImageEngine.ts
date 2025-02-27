@@ -1,9 +1,11 @@
 import {
   ContainerNode,
   IContainer,
-  JSONObject, JSONValue, keywordReplacement
-} from '@ts-flow/core';
-import { OpenAIEngineBase } from './OpenAIEngineBase';
+  JSONObject,
+  JSONValue,
+  keywordReplacement,
+} from "@ts-flow/core";
+import { OpenAIEngineBase } from "./OpenAIEngineBase";
 
 @ContainerNode
 export class OpenAIImageEngine extends OpenAIEngineBase {
@@ -14,9 +16,9 @@ export class OpenAIImageEngine extends OpenAIEngineBase {
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
 
-    this.prompt = config['prompt'] as string;
-    this.numImages = config['numImages'] as number;
-    this.size = config['size'] as string;
+    this.prompt = config["prompt"] as string;
+    this.numImages = config["numImages"] as number;
+    this.size = config["size"] as string;
   }
 
   async queryAI(payload: JSONObject): Promise<JSONValue> {
@@ -24,14 +26,19 @@ export class OpenAIImageEngine extends OpenAIEngineBase {
     const response = await this.openAI.images.generate({
       prompt,
       n: this.numImages,
-      size: this.size === 'small' ? '256x256' : this.size === 'medium' ? '512x512' : '1024x1024'
-    })
+      size:
+        this.size === "small"
+          ? "256x256"
+          : this.size === "medium"
+            ? "512x512"
+            : "1024x1024",
+    });
 
     if (this.numImages === 1) {
-      return response.data[0].url || 'error';
+      return response.data[0].url || "error";
     }
     return response.data.map((image) => {
-      return {url: image.url || 'error'}
+      return { url: image.url || "error" };
     });
   }
 }

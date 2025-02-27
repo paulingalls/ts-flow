@@ -1,5 +1,5 @@
 import supertest, { Response } from "supertest";
-import express, { Express } from 'express';
+import express, { Express } from "express";
 import { setupServer } from "../server";
 import { App } from "supertest/types";
 
@@ -11,7 +11,7 @@ describe("server", () => {
       .get("/healthz")
       .expect(200)
       .then((res: Response) => {
-        expect((res.body as {ok: boolean}).ok).toBe(true);
+        expect((res.body as { ok: boolean }).ok).toBe(true);
         done();
       })
       .catch(done);

@@ -64,12 +64,19 @@
                             "type": "string"
                           }
                         },
-                        "required": ["topic", "summary", "start", "end"],
+                        "required": [
+                          "topic",
+                          "summary",
+                          "start",
+                          "end"
+                        ],
                         "additionalProperties": false
                       }
                     }
                   },
-                  "required": ["topics"],
+                  "required": [
+                    "topics"
+                  ],
                   "additionalProperties": false
                 }
               }
@@ -145,7 +152,12 @@
             "dataRoot": "podcastTopics.topics",
             "connectionString": "${POSTGRES_CONNECTION_STRING}",
             "sqlInsertTemplate": "insert into podcast_topics (title, summary, filename, embedding) values ($1, $2, $3, $4)",
-            "sqlValuesTemplate": ["topic", "summary", "filename", "embedding"],
+            "sqlValuesTemplate": [
+              "topic",
+              "summary",
+              "filename",
+              "embedding"
+            ],
             "outputEventName": "dataInserted"
           }
         }

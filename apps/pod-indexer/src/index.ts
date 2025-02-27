@@ -1,10 +1,15 @@
-import { IContainer, bootstrap, EventBus, JSONObject, JSONValue } from '@ts-flow/core';
-import { WebServer } from '@ts-flow/core';
-import express, { Express, Request, Response } from 'express';
-import multer from 'multer';
-import path from 'path';
-import podIndexer from './index-podcast-topics.json';
-import dotenv from "dotenv"
+import {
+  bootstrap,
+  EventBus,
+  IContainer,
+  JSONObject,
+  WebServer,
+} from "@ts-flow/core";
+import express, { Express, Request, Response } from "express";
+import multer from "multer";
+import path from "path";
+import podIndexer from "./index-podcast-topics.json";
+import dotenv from "dotenv";
 import { promises as fs } from "fs";
 import { nanoid } from "nanoid";
 
@@ -14,18 +19,25 @@ dotenv.config();
 const storage = multer.memoryStorage(); // Store the uploaded file in memory as a Buffer
 const upload = multer({ storage });
 const paths: string[] = [];
-paths.push(path.join(__dirname, '..', 'node_modules', '@ts-flow', 'ai', 'dist'))
-paths.push(path.join(__dirname, '..', 'node_modules', '@ts-flow', 'db', 'dist'))
-paths.push(path.join(__dirname, '..', 'node_modules', '@ts-flow', 'ffmpeg', 'dist'))
-paths.push(path.join(__dirname, '..', 'node_modules', '@ts-flow', 'slack', 'dist'))
-
+paths.push(
+  path.join(__dirname, "..", "node_modules", "@ts-flow", "ai", "dist"),
+);
+paths.push(
+  path.join(__dirname, "..", "node_modules", "@ts-flow", "db", "dist"),
+);
+paths.push(
+  path.join(__dirname, "..", "node_modules", "@ts-flow", "ffmpeg", "dist"),
+);
+paths.push(
+  path.join(__dirname, "..", "node_modules", "@ts-flow", "slack", "dist"),
+);
 
 void bootstrap(paths, (container: IContainer) => {
-  const eventBus: EventBus = container.getInstance('EventBus') as EventBus;
-  const webServer: WebServer = container.getInstance('WebServer') as WebServer;
+  const eventBus: EventBus = container.getInstance("EventBus") as EventBus;
+  const webServer: WebServer = container.getInstance("WebServer") as WebServer;
   const app: Express | null = webServer.getApp();
   if (app) {
-    app.use(express.static('public'))
+    app.use(express.static("public"));
 
     app.post(
       "/start",
@@ -57,9 +69,13 @@ void bootstrap(paths, (container: IContainer) => {
         }
       },
     );
-    container.createInstance(podIndexer.id, podIndexer.type, podIndexer.config as unknown as JSONObject);
+    container.createInstance(
+      podIndexer.id,
+      podIndexer.type,
+      podIndexer.config as unknown as JSONObject,
+    );
 
     webServer.startServer();
-    console.log('started server');
+    console.log("started server");
   }
 });

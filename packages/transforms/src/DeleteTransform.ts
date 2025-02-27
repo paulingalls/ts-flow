@@ -1,4 +1,10 @@
-import { ContainerNode, IContainer, IQueryEngine, JSONObject, NodeBase } from '@ts-flow/core';
+import {
+  ContainerNode,
+  IContainer,
+  IQueryEngine,
+  JSONObject,
+  NodeBase,
+} from "@ts-flow/core";
 
 @ContainerNode
 export class DeleteTransform extends NodeBase implements IQueryEngine {
@@ -8,12 +14,15 @@ export class DeleteTransform extends NodeBase implements IQueryEngine {
 
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
-    this.outputEventName = config['outputEventName'] as string;
-    this.dataRoot = config['dataRoot'] as string;
-    this.dataTarget = config['dataTarget'] as string;
+    this.outputEventName = config["outputEventName"] as string;
+    this.dataRoot = config["dataRoot"] as string;
+    this.dataTarget = config["dataTarget"] as string;
   }
 
-  execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): Promise<void> {
+  execute(
+    payload: JSONObject,
+    completeCallback: (completeEventName: string, result: JSONObject) => void,
+  ): Promise<void> {
     let data: JSONObject;
     if (this.dataRoot) {
       data = payload[this.dataRoot] as JSONObject;
@@ -23,7 +32,7 @@ export class DeleteTransform extends NodeBase implements IQueryEngine {
     if (data instanceof Array) {
       data.forEach((item: JSONObject) => {
         delete item[this.dataTarget];
-      })
+      });
     } else {
       delete data[this.dataTarget];
     }

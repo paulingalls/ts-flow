@@ -7,9 +7,9 @@ import {
 } from "@ts-flow/core";
 import { OpenAIEngineBase } from "./OpenAIEngineBase";
 import {
-  ResponseFormatText,
   ResponseFormatJSONObject,
   ResponseFormatJSONSchema,
+  ResponseFormatText,
 } from "openai/resources";
 
 @ContainerNode
@@ -50,7 +50,10 @@ export class OpenAIChatEngine extends OpenAIEngineBase {
     const result = response.choices[0].message.content ?? "error";
 
     console.log("Chat completion result", result);
-    if (this.responseFormat?.type === "json_object" || this.responseFormat?.type === "json_schema") {
+    if (
+      this.responseFormat?.type === "json_object" ||
+      this.responseFormat?.type === "json_schema"
+    ) {
       return JSON.parse(result) as JSONValue;
     }
     return result as JSONValue;

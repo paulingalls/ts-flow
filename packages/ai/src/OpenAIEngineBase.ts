@@ -59,7 +59,10 @@ export abstract class OpenAIEngineBase
       });
       return Promise.all(promises)
         .then(() => {
-          console.log("all promises resolved, sending event: ", this.outputEventName);
+          console.log(
+            "all promises resolved, sending event: ",
+            this.outputEventName,
+          );
           completeCallback(this.outputEventName, payload);
         })
         .catch((e) => console.error("error executing query ai", e));

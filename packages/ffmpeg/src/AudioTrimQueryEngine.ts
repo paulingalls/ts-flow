@@ -107,7 +107,13 @@ export class AudioTrimQueryEngine extends FfmpegEngineBase {
       this.fileFolderName,
       `clip_${fileId}${extension}`,
     );
-    console.log('debug', inputFilePath, outputFilePath, this.trimStart, this.trimLength);
+    console.log(
+      "debug",
+      inputFilePath,
+      outputFilePath,
+      this.trimStart,
+      this.trimLength,
+    );
     const result = await this.trimAudioFile(
       inputFilePath,
       outputFilePath,

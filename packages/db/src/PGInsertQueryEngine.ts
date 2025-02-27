@@ -1,10 +1,11 @@
 import {
   ContainerNode,
-  IQueryEngine,
-  NodeBase,
-  keywordReplacement,
+  getJSONObjectFromPath,
   IContainer,
-  JSONObject, getJSONObjectFromPath, JSONValue
+  IQueryEngine,
+  JSONObject,
+  keywordReplacement,
+  NodeBase,
 } from "@ts-flow/core";
 import pg from "pg";
 
@@ -34,7 +35,10 @@ export class PGInsertQueryEngine extends NodeBase implements IQueryEngine {
     console.log("executing query for node", this.id);
 
     if (this.client === null) {
-      const connectionString = keywordReplacement(this.connectionString, payload);
+      const connectionString = keywordReplacement(
+        this.connectionString,
+        payload,
+      );
       this.client = new pg.Client({ connectionString });
       await this.client.connect();
     }
@@ -43,10 +47,13 @@ export class PGInsertQueryEngine extends NodeBase implements IQueryEngine {
       const data = getJSONObjectFromPath(this.dataRoot, payload);
       if (data instanceof Array) {
         for (const item of data) {
-          const sqlInsert = keywordReplacement(this.sqlInsertTemplate, item as JSONObject);
+          const sqlInsert = keywordReplacement(
+            this.sqlInsertTemplate,
+            item as JSONObject,
+          );
           const values = this.sqlValuesTemplate.map((key) => {
             const value = (item as JSONObject)[key];
-            if(value instanceof Array) {
+            if (value instanceof Array) {
               return JSON.stringify(value);
             }
             return value;

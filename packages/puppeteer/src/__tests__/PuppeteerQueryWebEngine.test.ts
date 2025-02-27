@@ -1,18 +1,18 @@
-import { PuppeteerQueryWebEngine } from '../PuppeteerQueryWebEngine';
-import { IContainer, JSONObject } from '@ts-flow/core';
+import { PuppeteerQueryWebEngine } from "../PuppeteerQueryWebEngine";
+import { IContainer, JSONObject } from "@ts-flow/core";
 
-describe('PuppeteerQueryWebEngine', () => {
+describe("PuppeteerQueryWebEngine", () => {
   let puppeteerQueryWebEngine: PuppeteerQueryWebEngine;
   let mockContainer: IContainer;
   let mockConfig: JSONObject;
 
   beforeEach(() => {
     mockConfig = {
-      dataRoot: 'pageData',
-      urlPath: 'https://example.com',
-      outputProperty: 'content',
-      query: 'allText',
-      outputEventName: 'dataProcessed',
+      dataRoot: "pageData",
+      urlPath: "https://example.com",
+      outputProperty: "content",
+      query: "allText",
+      outputEventName: "dataProcessed",
     };
 
     mockContainer = {
@@ -22,10 +22,14 @@ describe('PuppeteerQueryWebEngine', () => {
       createInstance: jest.fn(),
     };
 
-    puppeteerQueryWebEngine = new PuppeteerQueryWebEngine('testId', mockContainer, mockConfig);
+    puppeteerQueryWebEngine = new PuppeteerQueryWebEngine(
+      "testId",
+      mockContainer,
+      mockConfig,
+    );
   });
 
-  it('should create an instance of PuppeteerQueryWebEngine', () => {
+  it("should create an instance of PuppeteerQueryWebEngine", () => {
     expect(puppeteerQueryWebEngine).toBeInstanceOf(PuppeteerQueryWebEngine);
   });
 

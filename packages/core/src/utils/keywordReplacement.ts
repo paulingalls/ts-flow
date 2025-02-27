@@ -1,12 +1,18 @@
 import { JSONObject } from "../Container";
 
-export function keywordReplacement(template: string, payload: JSONObject): string {
+export function keywordReplacement(
+  template: string,
+  payload: JSONObject,
+): string {
   let result: string = template;
   const keywords: string[] = extractKeywords(template);
   keywords.forEach((keyword) => {
     const value = getValueForKeyword(keyword, payload);
-    result = result.replace('${' + keyword + '}', (value ?? process.env[keyword]));
-  })
+    result = result.replace(
+      "${" + keyword + "}",
+      value ?? process.env[keyword],
+    );
+  });
 
   return result;
 }
@@ -24,9 +30,9 @@ function extractKeywords(input: string): string[] {
 }
 
 function getValueForKeyword(keyword: string, payload: JSONObject): string {
-  const parts = keyword.split('.');
+  const parts = keyword.split(".");
   let value;
-  switch(parts.length) {
+  switch (parts.length) {
     case 1: {
       value = payload[parts[0]];
       break;
@@ -50,19 +56,22 @@ function getValueForKeyword(keyword: string, payload: JSONObject): string {
       break;
     }
     default: {
-      value = '';
+      value = "";
     }
   }
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     return value;
   }
   return JSON.stringify(value);
 }
 
-export function getJSONObjectFromPath(keyword: string, payload: JSONObject): JSONObject {
-  const parts = keyword.split('.');
+export function getJSONObjectFromPath(
+  keyword: string,
+  payload: JSONObject,
+): JSONObject {
+  const parts = keyword.split(".");
   let jsonObject: JSONObject = {};
-  switch(parts.length) {
+  switch (parts.length) {
     case 1: {
       jsonObject = payload[parts[0]] as JSONObject;
       break;
