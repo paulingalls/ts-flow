@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Podcast Indexer</title>
+</head>
+<body>
+<h1>File Upload Form</h1>
+<form id="upload-form" enctype="multipart/form-data">
+  <label for="file-input">Select a File:</label>
+  <input type="file" id="file-input" name="file">
+  <br>
+  <button type="submit">Upload and Start</button>
+</form>
+
+<script>
+  document.getElementById("upload-form").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const formData = new FormData();
+    const fileInput = document.getElementById("file-input");
+    formData.append("file", fileInput.files[0]);
+
+    try {
+      const response = await fetch("/start", {
+        method: "POST",
+        body: formData
+      });
+
+      if (response.ok) {
+        alert("File uploaded and processing started!");
+      } else {
+        alert("Failed to upload file. Please try again.");
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+      alert("An error occurred while uploading the file.");
+    }
+  });
+</script>
+</body>
+</html>

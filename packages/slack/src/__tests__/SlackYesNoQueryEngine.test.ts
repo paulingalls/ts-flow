@@ -1,7 +1,7 @@
-import { SlackYesNoQueryEngine } from '../SlackYesNoQueryEngine';
-import { IContainer, JSONObject } from '@ts-flow/core';
+import { SlackYesNoQueryEngine } from "../SlackYesNoQueryEngine";
+import { IContainer, JSONObject } from "@ts-flow/core";
 
-describe('SlackYesNoQueryEngine', () => {
+describe("SlackYesNoQueryEngine", () => {
   let slackYesNoQueryEngine: SlackYesNoQueryEngine;
   let mockContainer: IContainer;
   let mockConfig: JSONObject;
@@ -12,7 +12,7 @@ describe('SlackYesNoQueryEngine', () => {
       channel: "test-channel",
       yesOutputEventName: "yes-event",
       noOutputEventName: "no-event",
-      interactiveEndpoint: "test-endpoint"
+      interactiveEndpoint: "test-endpoint",
     };
 
     mockContainer = {
@@ -20,14 +20,18 @@ describe('SlackYesNoQueryEngine', () => {
       getInstances: jest.fn(),
       getNodeNames: jest.fn(),
       createInstance: jest.fn().mockReturnValue({
-        addListener: jest.fn()
+        addListener: jest.fn(),
       }),
     };
 
-    slackYesNoQueryEngine = new SlackYesNoQueryEngine('testId', mockContainer, mockConfig);
+    slackYesNoQueryEngine = new SlackYesNoQueryEngine(
+      "testId",
+      mockContainer,
+      mockConfig,
+    );
   });
 
-  it('should create an instance of SlackYesNoQueryEngine', () => {
+  it("should create an instance of SlackYesNoQueryEngine", () => {
     expect(slackYesNoQueryEngine).toBeInstanceOf(SlackYesNoQueryEngine);
   });
 

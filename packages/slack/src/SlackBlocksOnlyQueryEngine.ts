@@ -6,12 +6,15 @@ import {
   JSONObject,
   JSONValue,
   keywordReplacement,
-  NodeBase
-} from '@ts-flow/core';
-import axios, { AxiosHeaders } from 'axios';
+  NodeBase,
+} from "@ts-flow/core";
+import axios, { AxiosHeaders } from "axios";
 
 @ContainerNode
-export class SlackBlocksOnlyQueryEngine extends NodeBase implements IQueryEngine {
+export class SlackBlocksOnlyQueryEngine
+  extends NodeBase
+  implements IQueryEngine
+{
   private readonly userPrompt: string;
   private readonly slackChannel: string;
   private readonly outputEventName: string;
@@ -21,52 +24,61 @@ export class SlackBlocksOnlyQueryEngine extends NodeBase implements IQueryEngine
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
 
-    this.userPrompt = config['userPrompt'] as string;
-    this.slackChannel = config['channel'] as string;
-    this.outputEventName = config['outputEventName'] as string;
-    this.dataRoot = config['dataRoot'] as string;
-    this.blocks = config['blocks'] as Array<JSONValue>;
+    this.userPrompt = config["userPrompt"] as string;
+    this.slackChannel = config["channel"] as string;
+    this.outputEventName = config["outputEventName"] as string;
+    this.dataRoot = config["dataRoot"] as string;
+    this.blocks = config["blocks"] as Array<JSONValue>;
   }
 
-  async execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): Promise<void> {
+  async execute(
+    payload: JSONObject,
+    completeCallback: (completeEventName: string, result: JSONObject) => void,
+  ): Promise<void> {
     const data: JSONObject = payload[this.dataRoot] as JSONObject;
 
-    console.log('slack payload', payload);
+    console.log("slack payload", payload);
     if (data instanceof Array) {
       const promises: Promise<void>[] = [];
       data.forEach((value) => {
         const item = value as JSONObject;
         promises.push(this.sendSlackMessage(item));
       });
-      return Promise.all(promises).then(() => {
-        completeCallback(this.outputEventName, payload);
-      }).catch(e => {
-        console.error('error sending slack message', e);
-      });
+      return Promise.all(promises)
+        .then(() => {
+          completeCallback(this.outputEventName, payload);
+        })
+        .catch((e) => {
+          console.error("error sending slack message", e);
+        });
     } else {
-      return this.sendSlackMessage(data).then(() => {
-        completeCallback(this.outputEventName, payload);
-      }).catch(e => {
-        console.error('error sending slack message', e);
-      });
+      return this.sendSlackMessage(data)
+        .then(() => {
+          completeCallback(this.outputEventName, payload);
+        })
+        .catch((e) => {
+          console.error("error sending slack message", e);
+        });
     }
   }
 
   async sendSlackMessage(data: JSONObject) {
-    const dataFullBlocks = injectDataIntoJSONObject(data, { blocks: this.blocks });
+    const dataFullBlocks = injectDataIntoJSONObject(data, {
+      blocks: this.blocks,
+    });
     const text = keywordReplacement(this.userPrompt, data);
     const headers: AxiosHeaders = new AxiosHeaders();
     headers.setAuthorization(`Bearer ${process.env.SLACK_API_TOKEN}`);
     await axios.post(
-      'https://slack.com/api/chat.postMessage',
+      "https://slack.com/api/chat.postMessage",
       {
         channel: this.slackChannel,
         text,
-        blocks: dataFullBlocks.blocks
+        blocks: dataFullBlocks.blocks,
       },
       {
-        headers
-      }
+        headers,
+      },
     );
   }
 }

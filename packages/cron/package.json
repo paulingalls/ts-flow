@@ -1,6 +1,6 @@
 {
   "name": "@ts-flow/cron",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "ts-flow nodes that trigger based on cron",
   "author": "paulingalls",
   "repository": {

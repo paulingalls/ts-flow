@@ -1,4 +1,10 @@
-import { ContainerNode, IContainer, IQueryEngine, JSONObject, NodeBase } from "@ts-flow/core";
+import {
+  ContainerNode,
+  IContainer,
+  IQueryEngine,
+  JSONObject,
+  NodeBase,
+} from "@ts-flow/core";
 import puppeteer, { Browser } from "puppeteer";
 
 @ContainerNode
@@ -11,65 +17,94 @@ export class PuppeteerQueryWebEngine extends NodeBase implements IQueryEngine {
 
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
-    this.dataRoot = config['dataRoot'] as string;
-    this.urlPath = config['urlPath'] as string;
-    this.outputProperty = config['outputProperty'] as string;
-    this.query = config['query'] as string;
-    this.outputEventName = config['outputEventName'] as string;
+    this.dataRoot = config["dataRoot"] as string;
+    this.urlPath = config["urlPath"] as string;
+    this.outputProperty = config["outputProperty"] as string;
+    this.query = config["query"] as string;
+    this.outputEventName = config["outputEventName"] as string;
   }
 
-  async execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): Promise<void> {
+  async execute(
+    payload: JSONObject,
+    completeCallback: (completeEventName: string, result: JSONObject) => void,
+  ): Promise<void> {
     const data = payload[this.dataRoot] as JSONObject;
-    return puppeteer.launch({headless: false}).then((browser) => {
-      if (this.urlPath.startsWith('http')) {
-        this.scrapeData(browser, this.urlPath, this.query).then((result) => {
-          if (result) {
-            data[this.outputProperty] = result;
-          }
-          completeCallback(this.outputEventName, payload);
-        }).catch(e => {console.error('error scraping data', e)});
-      } else if (data instanceof Array) {
-        const promises: Promise<void>[] = [];
-        data.forEach((value) => {
-          const item = value as JSONObject;
-          const url = item[this.urlPath] as string;
-          promises.push(new Promise<void>((resolve) => {
-            this.scrapeData(browser, url, this.query).then((result) => {
+    return puppeteer
+      .launch({ headless: false })
+      .then((browser) => {
+        if (this.urlPath.startsWith("http")) {
+          this.scrapeData(browser, this.urlPath, this.query)
+            .then((result) => {
               if (result) {
-                item[this.outputProperty] = result;
+                data[this.outputProperty] = result;
               }
-              resolve();
-            }).catch(e => {console.error(e)})
-          }))
-        })
-        Promise.all(promises).then(() => {
-          completeCallback(this.outputEventName, payload);
-        }).catch(e => {console.error('error scraping data', e)});
-      } else {
-        const url = data[this.urlPath] as string;
-        this.scrapeData(browser, url, this.query).then((result) => {
-          data[this.outputProperty] = result;
-          completeCallback(this.outputEventName, payload);
-        }).catch(e => {console.error('error scraping data', e)});
-      }
-    }).catch(e => {console.error('error launching puppeteer', e)})
-
+              completeCallback(this.outputEventName, payload);
+            })
+            .catch((e) => {
+              console.error("error scraping data", e);
+            });
+        } else if (data instanceof Array) {
+          const promises: Promise<void>[] = [];
+          data.forEach((value) => {
+            const item = value as JSONObject;
+            const url = item[this.urlPath] as string;
+            promises.push(
+              new Promise<void>((resolve) => {
+                this.scrapeData(browser, url, this.query)
+                  .then((result) => {
+                    if (result) {
+                      item[this.outputProperty] = result;
+                    }
+                    resolve();
+                  })
+                  .catch((e) => {
+                    console.error(e);
+                  });
+              }),
+            );
+          });
+          Promise.all(promises)
+            .then(() => {
+              completeCallback(this.outputEventName, payload);
+            })
+            .catch((e) => {
+              console.error("error scraping data", e);
+            });
+        } else {
+          const url = data[this.urlPath] as string;
+          this.scrapeData(browser, url, this.query)
+            .then((result) => {
+              data[this.outputProperty] = result;
+              completeCallback(this.outputEventName, payload);
+            })
+            .catch((e) => {
+              console.error("error scraping data", e);
+            });
+        }
+      })
+      .catch((e) => {
+        console.error("error launching puppeteer", e);
+      });
   }
 
-  async scrapeData(browser: Browser, url: string, query: string): Promise<string> {
+  async scrapeData(
+    browser: Browser,
+    url: string,
+    query: string,
+  ): Promise<string> {
     const page = await browser.newPage();
-    let extractedText: string = '';
+    let extractedText: string = "";
 
     try {
-      await page.goto(url, {timeout: 60000});
+      await page.goto(url, { timeout: 60000 });
     } catch (e) {
-      console.log('error loading page', e);
+      console.log("error loading page", e);
       return extractedText;
     }
 
-    if (query === 'allText') {
+    if (query === "allText") {
       try {
-        extractedText = await page.$eval('*', (el) => {
+        extractedText = await page.$eval("*", (el) => {
           const selection = window.getSelection();
           const range = document.createRange();
           range.selectNode(el);
@@ -80,15 +115,14 @@ export class PuppeteerQueryWebEngine extends NodeBase implements IQueryEngine {
           return window.getSelection()?.toString() as string;
         });
       } catch (e) {
-        console.log('Error scraping page text', e)
+        console.log("Error scraping page text", e);
       }
     } else {
-      console.log('TODO');
+      console.log("TODO");
     }
 
     await page.close();
 
     return extractedText;
   }
-
 }

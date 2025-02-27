@@ -1,10 +1,10 @@
 import {
   ContainerNode,
   IContainer,
+  IQueryEngine,
   JSONObject,
-  NodeBase,
   keywordReplacement,
-  IQueryEngine
+  NodeBase,
 } from "@ts-flow/core";
 import axios from "axios";
 
@@ -16,20 +16,28 @@ export class HttpGetQueryEngine extends NodeBase implements IQueryEngine {
 
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
-    this.urlTemplate = config['urlTemplate'] as string;
-    this.outputEventName = config['outputEventName'] as string;
-    this.outputProperty = config['outputEventProperty'] as string;
+    this.urlTemplate = config["urlTemplate"] as string;
+    this.outputEventName = config["outputEventName"] as string;
+    this.outputProperty = config["outputEventProperty"] as string;
   }
 
-  async execute(payload: JSONObject, completeCallback: (completeEventName: string, result: JSONObject) => void): Promise<void> {
+  async execute(
+    payload: JSONObject,
+    completeCallback: (completeEventName: string, result: JSONObject) => void,
+  ): Promise<void> {
     const url: string = keywordReplacement(this.urlTemplate, payload);
-    return axios.get(url).then((res) => {
-      if (this.outputProperty) {
-        payload[this.outputProperty] = res.data as JSONObject;
-      } else {
-        payload = {...payload, ...res.data} as JSONObject;
-      }
-      completeCallback(this.outputEventName, payload);
-    }).catch(e => {console.error('error getting http', e)});
+    return axios
+      .get(url)
+      .then((res) => {
+        if (this.outputProperty) {
+          payload[this.outputProperty] = res.data as JSONObject;
+        } else {
+          payload = { ...payload, ...res.data } as JSONObject;
+        }
+        completeCallback(this.outputEventName, payload);
+      })
+      .catch((e) => {
+        console.error("error getting http", e);
+      });
   }
 }

@@ -1,10 +1,11 @@
 import {
   ContainerNode,
   IContainer,
-  JSONObject, JSONValue,
-  keywordReplacement
-} from '@ts-flow/core';
-import { OpenAIEngineBase } from './OpenAIEngineBase';
+  JSONObject,
+  JSONValue,
+  keywordReplacement,
+} from "@ts-flow/core";
+import { OpenAIEngineBase } from "./OpenAIEngineBase";
 
 @ContainerNode
 export class OpenAICompletionsEngine extends OpenAIEngineBase {
@@ -16,10 +17,10 @@ export class OpenAICompletionsEngine extends OpenAIEngineBase {
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
 
-    this.prompt = config['prompt'] as string;
-    this.numCompletions = config['numCompletions'] as number || 1;
-    this.maxTokens = config['maxTokens'] as number || 256;
-    this.temperature = config['temperature'] as number || 1;
+    this.prompt = config["prompt"] as string;
+    this.numCompletions = (config["numCompletions"] as number) || 1;
+    this.maxTokens = (config["maxTokens"] as number) || 256;
+    this.temperature = (config["temperature"] as number) || 1;
   }
 
   async queryAI(payload: JSONObject): Promise<JSONValue> {
@@ -31,14 +32,14 @@ export class OpenAICompletionsEngine extends OpenAIEngineBase {
       n: this.numCompletions,
       max_tokens: this.maxTokens,
       temperature: this.temperature,
-    })
+    });
 
     if (this.numCompletions === 1) {
       return response.choices[0].text;
     }
 
     return response.choices.map((completion) => {
-      return { text: completion.text }
+      return { text: completion.text };
     });
   }
 }

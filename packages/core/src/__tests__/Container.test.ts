@@ -1,9 +1,9 @@
-import { NodeBase, IContainer, JSONObject} from '../Container'; // Replace with the actual path to your module
+import { IContainer, JSONObject, NodeBase } from "../Container"; // Replace with the actual path to your module
 
 // Mock fs module methods used in the Container class
-jest.mock('fs');
+jest.mock("fs");
 
-describe('NodeBase', () => {
+describe("NodeBase", () => {
   const mockContainer: IContainer = {
     getInstance: jest.fn(),
     getInstances: jest.fn(),
@@ -15,9 +15,9 @@ describe('NodeBase', () => {
     // Define your mock config here
   };
 
-  const nodeBase = new NodeBase('node-id', mockContainer, mockConfig);
+  const nodeBase = new NodeBase("node-id", mockContainer, mockConfig);
 
-  it('should return the correct ID', () => {
-    expect(nodeBase.getId()).toBe('node-id');
+  it("should return the correct ID", () => {
+    expect(nodeBase.getId()).toBe("node-id");
   });
 });

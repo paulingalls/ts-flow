@@ -1,6 +1,6 @@
 {
   "name": "@ts-flow/ai",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "ts-flow nodes that interact with open AI",
   "author": "paulingalls",
   "repository": {
@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@ts-flow/core": "workspace:*",
-    "openai": "4.85.3"
+    "openai": "4.85.4"
   },
   "devDependencies": {
     "@types/express": "5.0.0",

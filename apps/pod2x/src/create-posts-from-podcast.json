@@ -1,4 +1,4 @@
-  {
+{
   "id": "create-posts-from-podcast",
   "type": "Workflow",
   "config": {
@@ -14,8 +14,8 @@
           "engineId": "ffmpeg-trim-audio",
           "engineConfig": {
             "dataRoot": "",
-            "inputProperty": "fileBuffer",
-            "outputProperty": "fileBuffer",
+            "inputProperty": "filePath",
+            "outputProperty": "trimmedFilePath",
             "outputEventName": "trimmedAudioReady"
           }
         }
@@ -31,7 +31,7 @@
             "modelName": "whisper-1",
             "audioPrompt": "Hello, this is a podcast.",
             "dataRoot": "",
-            "inputProperty": "fileBuffer",
+            "inputProperty": "trimmedFilePath",
             "outputProperty": "podcastText",
             "outputEventName": "textReady"
           }
@@ -45,7 +45,7 @@
           "engineType": "OpenAICompletionsEngine",
           "engineId": "open-ai-podcast-quotes",
           "engineConfig": {
-            "modelName": "text-davinci-003",
+            "modelName": "gpt-3.5-turbo-instruct",
             "prompt": "${podcastText}\n\n\n=====\nThe above was the transcript of the first 5 minutes of a podcast.  A great quote from the podcast text above to share on social media, including good hashtags, is:\n\n",
             "numCompletions": 3,
             "maxTokens": 124,
@@ -64,7 +64,7 @@
           "engineType": "OpenAICompletionsEngine",
           "engineId": "open-ai-podcast-image-text",
           "engineConfig": {
-            "modelName": "text-davinci-003",
+            "modelName": "gpt-3.5-turbo-instruct",
             "prompt": "${text}\n\n\n=====\nThe above is great quote from a podcast.  The best nine word or shorter statement from the quote to include on an image with a social media post about the podcast, not including hashtags, would be:\n\n",
             "numCompletions": 1,
             "maxTokens": 124,

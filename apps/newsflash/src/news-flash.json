@@ -1,4 +1,4 @@
-  {
+{
   "id": "news-flash",
   "type": "Workflow",
   "config": {
@@ -38,7 +38,6 @@
                 }
               }
             ]
-
           }
         }
       },
