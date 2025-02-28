@@ -36,7 +36,6 @@ export class OpenAIChatEngine extends OpenAIEngineBase {
   async queryAI(payload: JSONObject): Promise<JSONValue> {
     const systemPrompt = keywordReplacement(this.systemPrompt, payload);
     const userPrompt = keywordReplacement(this.userPrompt, payload);
-    console.log(payload, systemPrompt, "\n", userPrompt);
 
     const response = await this.openAI.chat.completions.create({
       model: this.modelName,
@@ -49,7 +48,6 @@ export class OpenAIChatEngine extends OpenAIEngineBase {
 
     const result = response.choices[0].message.content ?? "error";
 
-    console.log("Chat completion result", result);
     if (
       this.responseFormat?.type === "json_object" ||
       this.responseFormat?.type === "json_schema"

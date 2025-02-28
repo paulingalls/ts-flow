@@ -40,7 +40,6 @@ export abstract class FfmpegEngineBase
       for (let i = 0; i < data.length; i++) {
         const item = data[i] as JSONObject;
         item[this.outputProperty] = await this.runFfmpeg(item);
-        console.log("item", item);
       }
       completeCallback(this.outputEventName, payload);
     } else {

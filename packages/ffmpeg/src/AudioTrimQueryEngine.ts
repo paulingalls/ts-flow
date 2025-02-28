@@ -49,7 +49,6 @@ export class AudioTrimQueryEngine extends FfmpegEngineBase {
         this.trimRoot,
         payload,
       );
-      console.log("trimData", trimData);
       const results: JSONValue[] = [];
       if (trimData instanceof Array) {
         for (let i = 0; i < trimData.length; i++) {
@@ -57,7 +56,6 @@ export class AudioTrimQueryEngine extends FfmpegEngineBase {
           const trimStart = item[this.trimStartProperty] as string;
           const trimStop = item[this.trimStopProperty] as string;
           const trimDuration = this.calculateDuration(trimStart, trimStop);
-          console.log("debug", trimStart, trimStop, trimDuration);
 
           const outputFileSubPath: string = path.join(
             this.fileFolderName,
@@ -146,7 +144,6 @@ export class AudioTrimQueryEngine extends FfmpegEngineBase {
         .setDuration(trimDuration)
         .output(outputFilePath)
         .on("end", () => {
-          console.log("Trimming complete");
           resolve(outputFilePath);
         })
         .on("error", (e) => {

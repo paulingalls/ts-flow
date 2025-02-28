@@ -5,7 +5,7 @@ import {
   JSONValue,
 } from "@ts-flow/core";
 import { OpenAIEngineBase } from "./OpenAIEngineBase";
-import { AudioResponseFormat } from "openai/src/resources/audio/audio";
+import { AudioResponseFormat } from "openai/resources";
 import * as fs from "fs";
 
 @ContainerNode
