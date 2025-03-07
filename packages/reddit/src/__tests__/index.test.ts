@@ -61,13 +61,15 @@ describe("RedditPostQueryEngine", () => {
     });
 
     // Verify token request
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(axios.post).toHaveBeenCalledWith(
       "https://www.reddit.com/api/v1/access_token",
       expect.any(URLSearchParams),
       expect.objectContaining({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         headers: expect.objectContaining({
-          'Authorization': expect.stringContaining('Basic'),
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Authorization': expect.stringContaining('Basic') as string,
+          'Content-Type': 'application/x-www-form-urlencoded' as string
         })
       })
     );

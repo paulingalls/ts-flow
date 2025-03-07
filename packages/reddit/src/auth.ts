@@ -92,6 +92,7 @@ export class RedditAuthManager {
       return this.accessToken!;
     } catch (error) {
       // If refresh fails, try getting a new token
+      console.error("[RedditAuthManager] Error refreshing access token:", error);
       return this.getNewToken();
     }
   }
