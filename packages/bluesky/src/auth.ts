@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 interface BlueskyToken {
   accessJwt: string;
@@ -22,7 +22,7 @@ export class BlueskyAuthManager {
   }) {
     this.identifier = config.identifier;
     this.password = config.password;
-    this.apiUrl = config.apiUrl || 'https://bsky.social/xrpc';
+    this.apiUrl = config.apiUrl || "https://bsky.social/xrpc";
   }
 
   async getValidToken(): Promise<string> {
@@ -49,8 +49,8 @@ export class BlueskyAuthManager {
       `${this.apiUrl}/com.atproto.server.createSession`,
       {
         identifier: this.identifier,
-        password: this.password
-      }
+        password: this.password,
+      },
     );
 
     this.updateTokens(response.data);
@@ -64,15 +64,18 @@ export class BlueskyAuthManager {
         {},
         {
           headers: {
-            'Authorization': `Bearer ${this.refreshToken}`
-          }
-        }
+            Authorization: `Bearer ${this.refreshToken}`,
+          },
+        },
       );
 
       this.updateTokens(response.data);
       return this.accessToken!;
     } catch (error) {
-      console.error("[BlueskyAuthManager] Error refreshing access token:", error);
+      console.error(
+        "[BlueskyAuthManager] Error refreshing access token:",
+        error,
+      );
       return this.getNewToken();
     }
   }
@@ -82,4 +85,4 @@ export class BlueskyAuthManager {
     this.refreshToken = tokenData.refreshJwt;
     this.did = tokenData.did;
   }
-} 
+}

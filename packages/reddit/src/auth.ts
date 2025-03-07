@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 interface RedditToken {
   access_token: string;
@@ -12,7 +12,7 @@ export class RedditAuthManager {
   private accessToken: string | null = null;
   private refreshToken: string | null = null;
   private expiresAt: number = 0;
-  private scope: string = 'submit';
+  private scope: string = "submit";
   private readonly clientId: string;
   private readonly clientSecret: string;
   private readonly userAgent: string;
@@ -49,7 +49,9 @@ export class RedditAuthManager {
   }
 
   private async getNewToken(): Promise<string> {
-    const auth = Buffer.from(`${this.clientId}:${this.clientSecret}`).toString('base64');
+    const auth = Buffer.from(`${this.clientId}:${this.clientSecret}`).toString(
+      "base64",
+    );
     const data = new URLSearchParams();
     data.append("grant_type", "password");
     data.append("username", this.username);
@@ -57,15 +59,15 @@ export class RedditAuthManager {
     data.append("scope", this.scope);
 
     const response = await axios.post<RedditToken>(
-      'https://www.reddit.com/api/v1/access_token',
+      "https://www.reddit.com/api/v1/access_token",
       data,
       {
         headers: {
-          'Authorization': `Basic ${auth}`,
-          'User-Agent': this.userAgent,
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      }
+          Authorization: `Basic ${auth}`,
+          "User-Agent": this.userAgent,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      },
     );
 
     this.updateTokens(response.data);
@@ -73,26 +75,31 @@ export class RedditAuthManager {
   }
 
   private async refreshAccessToken(): Promise<string> {
-    const auth = Buffer.from(`${this.clientId}:${this.clientSecret}`).toString('base64');
-    
+    const auth = Buffer.from(`${this.clientId}:${this.clientSecret}`).toString(
+      "base64",
+    );
+
     try {
       const response = await axios.post<RedditToken>(
-        'https://www.reddit.com/api/v1/access_token',
+        "https://www.reddit.com/api/v1/access_token",
         `grant_type=refresh_token&refresh_token=${this.refreshToken}`,
         {
           headers: {
-            'Authorization': `Basic ${auth}`,
-            'User-Agent': this.userAgent,
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
-        }
+            Authorization: `Basic ${auth}`,
+            "User-Agent": this.userAgent,
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        },
       );
 
       this.updateTokens(response.data);
       return this.accessToken!;
     } catch (error) {
       // If refresh fails, try getting a new token
-      console.error("[RedditAuthManager] Error refreshing access token:", error);
+      console.error(
+        "[RedditAuthManager] Error refreshing access token:",
+        error,
+      );
       return this.getNewToken();
     }
   }
@@ -100,6 +107,6 @@ export class RedditAuthManager {
   private updateTokens(tokenData: RedditToken): void {
     this.accessToken = tokenData.access_token;
     this.refreshToken = tokenData.refresh_token;
-    this.expiresAt = Date.now() + (tokenData.expires_in * 1000);
+    this.expiresAt = Date.now() + tokenData.expires_in * 1000;
   }
-} 
+}

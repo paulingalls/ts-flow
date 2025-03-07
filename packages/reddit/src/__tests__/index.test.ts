@@ -28,8 +28,8 @@ describe("RedditPostQueryEngine", () => {
       data: {
         access_token: "test-token",
         expires_in: 3600,
-        token_type: "bearer"
-      }
+        token_type: "bearer",
+      },
     };
 
     const mockPostResponse = {
@@ -37,20 +37,20 @@ describe("RedditPostQueryEngine", () => {
         json: {
           data: {
             url: "https://reddit.com/r/test/comments/123/test",
-            id: "123"
-          }
-        }
-      }
+            id: "123",
+          },
+        },
+      },
     };
 
     (axios.post as jest.Mock)
-      .mockResolvedValueOnce(mockTokenResponse)  // First call for token
-      .mockResolvedValueOnce(mockPostResponse);  // Second call for post
+      .mockResolvedValueOnce(mockTokenResponse) // First call for token
+      .mockResolvedValueOnce(mockPostResponse); // Second call for post
 
     const queryEngine: IQueryEngine = new RedditLinkPostingEngine(
       "test-id",
       {} as IContainer,
-      mockConfig
+      mockConfig,
     );
 
     const payload = { value: "test-value" };
@@ -68,10 +68,10 @@ describe("RedditPostQueryEngine", () => {
       expect.objectContaining({
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         headers: expect.objectContaining({
-          'Authorization': expect.stringContaining('Basic') as string,
-          'Content-Type': 'application/x-www-form-urlencoded' as string
-        })
-      })
+          Authorization: expect.stringContaining("Basic") as string,
+          "Content-Type": "application/x-www-form-urlencoded" as string,
+        }),
+      }),
     );
   });
 
@@ -80,9 +80,9 @@ describe("RedditPostQueryEngine", () => {
       response: {
         data: {
           error: "invalid_grant",
-          error_description: "Invalid credentials"
-        }
-      }
+          error_description: "Invalid credentials",
+        },
+      },
     };
 
     (axios.post as jest.Mock).mockRejectedValue(mockError);
@@ -90,11 +90,13 @@ describe("RedditPostQueryEngine", () => {
     const queryEngine: IQueryEngine = new RedditLinkPostingEngine(
       "test-id",
       {} as IContainer,
-      mockConfig
+      mockConfig,
     );
 
     const payload = { value: "test-value" };
 
-    await expect(queryEngine.execute(payload, jest.fn())).rejects.toEqual(mockError);
+    await expect(queryEngine.execute(payload, jest.fn())).rejects.toEqual(
+      mockError,
+    );
   });
 });
