@@ -27,11 +27,11 @@ export class RedditLinkPostingEngine extends NodeBase implements IQueryEngine {
 		super(id, container, config);
 		this.apiUrl = "https://oauth.reddit.com/api/submit";
 		const appName = config["appName"] as string;
-		this.username = config["username"] as string;
+		this.username = keywordReplacement(config["username"] as string, {});
+		this.clientID = keywordReplacement(config["clientID"] as string, {});
+		this.clientSecret = keywordReplacement(config["clientSecret"] as string, {});
+		this.password = keywordReplacement(config["password"] as string, {});
 		this.userAgent = `${appName} (by /u/${this.username})`;
-		this.clientID = config["clientID"] as string;
-		this.clientSecret = config["clientSecret"] as string;
-		this.password = config["password"] as string;
 		this.subreddit = config["subreddit"] as string;
 		this.postTitle = config["title"] as string;
 		this.postUrl = config["url"] as string;

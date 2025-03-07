@@ -48,8 +48,8 @@ export class BlueSkyLinkPostingEngine extends NodeBase implements IQueryEngine {
 	constructor(id: string, container: IContainer, config: JSONObject) {
 		super(id, container, config);
 		this.apiUrl = config["apiUrl"] as string || 'https://bsky.social/xrpc';
-		this.identifier = config["identifier"] as string;
-		this.password = config["password"] as string;
+		this.identifier = keywordReplacement(config["identifier"] as string, {});
+		this.password = keywordReplacement(config["password"] as string, {});
 		this.postText = config["text"] as string;
 		this.postUrl = config["url"] as string;
 		this.utmCampaign = (config["utmCampaign"] as string) || "ts-flow";
