@@ -30,7 +30,11 @@ export class PGSelectQueryEngine extends NodeBase implements IQueryEngine {
     completeCallback: (completeEventName: string, result: JSONObject) => void,
   ): Promise<void> {
     if (this.client === null) {
-      this.client = new pg.Client({ connectionString: this.connectionString });
+      const connectionString = keywordReplacement(
+        this.connectionString,
+        payload,
+      );
+      this.client = new pg.Client({ connectionString: connectionString });
       await this.client.connect();
     }
 
