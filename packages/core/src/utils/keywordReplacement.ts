@@ -39,20 +39,20 @@ function getValueForKeyword(keyword: string, payload: JSONObject): string {
     }
     case 2: {
       const firstPart: JSONObject = payload[parts[0]] as JSONObject;
-      value = firstPart[parts[1]];
+      value = firstPart?.[parts[1]];
       break;
     }
     case 3: {
       const firstPart: JSONObject = payload[parts[0]] as JSONObject;
-      const secondPart: JSONObject = firstPart[parts[1]] as JSONObject;
-      value = secondPart[parts[2]];
+      const secondPart: JSONObject = firstPart?.[parts[1]] as JSONObject;
+      value = secondPart?.[parts[2]];
       break;
     }
     case 4: {
       const firstPart: JSONObject = payload[parts[0]] as JSONObject;
-      const secondPart: JSONObject = firstPart[parts[1]] as JSONObject;
-      const thirdPart: JSONObject = secondPart[parts[2]] as JSONObject;
-      value = thirdPart[parts[3]];
+      const secondPart: JSONObject = firstPart?.[parts[1]] as JSONObject;
+      const thirdPart: JSONObject = secondPart?.[parts[2]] as JSONObject;
+      value = thirdPart?.[parts[3]];
       break;
     }
     default: {
@@ -71,29 +71,60 @@ export function getJSONObjectFromPath(
 ): JSONObject {
   const parts = keyword.split(".");
   let jsonObject: JSONObject = {};
-  switch (parts.length) {
-    case 1: {
-      jsonObject = payload[parts[0]] as JSONObject;
-      break;
+
+  try {
+    switch (parts.length) {
+      case 1: {
+        const firstPart = payload[parts[0]];
+        if (firstPart && typeof firstPart === "object") {
+          jsonObject = firstPart as JSONObject;
+        }
+        break;
+      }
+      case 2: {
+        const firstPart = payload[parts[0]];
+        if (firstPart && typeof firstPart === "object") {
+          const secondPart = (firstPart as JSONObject)[parts[1]];
+          if (secondPart && typeof secondPart === "object") {
+            jsonObject = secondPart as JSONObject;
+          }
+        }
+        break;
+      }
+      case 3: {
+        const firstPart = payload[parts[0]];
+        if (firstPart && typeof firstPart === "object") {
+          const secondPart = (firstPart as JSONObject)[parts[1]];
+          if (secondPart && typeof secondPart === "object") {
+            const thirdPart = (secondPart as JSONObject)[parts[2]];
+            if (thirdPart && typeof thirdPart === "object") {
+              jsonObject = thirdPart as JSONObject;
+            }
+          }
+        }
+        break;
+      }
+      case 4: {
+        const firstPart = payload[parts[0]];
+        if (firstPart && typeof firstPart === "object") {
+          const secondPart = (firstPart as JSONObject)[parts[1]];
+          if (secondPart && typeof secondPart === "object") {
+            const thirdPart = (secondPart as JSONObject)[parts[2]];
+            if (thirdPart && typeof thirdPart === "object") {
+              const fourthPart = (thirdPart as JSONObject)[parts[3]];
+              if (fourthPart && typeof fourthPart === "object") {
+                jsonObject = fourthPart as JSONObject;
+              }
+            }
+          }
+        }
+        break;
+      }
     }
-    case 2: {
-      const firstPart: JSONObject = payload[parts[0]] as JSONObject;
-      jsonObject = firstPart[parts[1]] as JSONObject;
-      break;
-    }
-    case 3: {
-      const firstPart: JSONObject = payload[parts[0]] as JSONObject;
-      const secondPart: JSONObject = firstPart[parts[1]] as JSONObject;
-      jsonObject = secondPart[parts[2]] as JSONObject;
-      break;
-    }
-    case 4: {
-      const firstPart: JSONObject = payload[parts[0]] as JSONObject;
-      const secondPart: JSONObject = firstPart[parts[1]] as JSONObject;
-      const thirdPart: JSONObject = secondPart[parts[2]] as JSONObject;
-      jsonObject = thirdPart[parts[3]] as JSONObject;
-      break;
-    }
+  } catch (error) {
+    // If any error occurs during path traversal, return empty object
+    console.warn(`Error accessing path "${keyword}": ${String(error)}`);
   }
+
   return jsonObject;
 }

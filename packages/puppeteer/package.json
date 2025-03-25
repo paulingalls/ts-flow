@@ -1,6 +1,6 @@
 {
   "name": "@ts-flow/puppeteer",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "ts-flow nodes that interact with puppeteer",
   "author": "paulingalls",
   "repository": {
@@ -30,7 +30,9 @@
     "prepublish": "tsc"
   },
   "jest": {
-    "preset": "jest-presets/jest/node"
+    "preset": "jest-presets/jest/node",
+    "collectCoverage": true,
+    "coverageDirectory": "coverage"
   },
   "dependencies": {
     "@ts-flow/core": "workspace:*",

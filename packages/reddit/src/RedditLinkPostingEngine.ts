@@ -1,5 +1,5 @@
-import { ContainerNode, keywordReplacement, NodeBase } from "@ts-flow/core";
 import type { IContainer, IQueryEngine, JSONObject } from "@ts-flow/core";
+import { ContainerNode, keywordReplacement, NodeBase } from "@ts-flow/core";
 import axios from "axios";
 import { RedditAuthManager } from "./auth";
 

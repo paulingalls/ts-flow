@@ -9,7 +9,6 @@ import puppeteer, { Browser } from "puppeteer";
 
 @ContainerNode
 export class PuppeteerQueryWebEngine extends NodeBase implements IQueryEngine {
-  private readonly dataRoot: string;
   private readonly urlPath: string;
   private readonly outputProperty: string;
   private readonly query: string;
@@ -17,7 +16,6 @@ export class PuppeteerQueryWebEngine extends NodeBase implements IQueryEngine {
 
   constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
-    this.dataRoot = config["dataRoot"] as string;
     this.urlPath = config["urlPath"] as string;
     this.outputProperty = config["outputProperty"] as string;
     this.query = config["query"] as string;
@@ -25,10 +23,9 @@ export class PuppeteerQueryWebEngine extends NodeBase implements IQueryEngine {
   }
 
   async execute(
-    payload: JSONObject,
+    data: JSONObject,
     completeCallback: (completeEventName: string, result: JSONObject) => void,
   ): Promise<void> {
-    const data = payload[this.dataRoot] as JSONObject;
     return puppeteer
       .launch({ headless: false })
       .then((browser) => {
@@ -38,7 +35,7 @@ export class PuppeteerQueryWebEngine extends NodeBase implements IQueryEngine {
               if (result) {
                 data[this.outputProperty] = result;
               }
-              completeCallback(this.outputEventName, payload);
+              completeCallback(this.outputEventName, data);
             })
             .catch((e) => {
               console.error("error scraping data", e);
@@ -65,7 +62,7 @@ export class PuppeteerQueryWebEngine extends NodeBase implements IQueryEngine {
           });
           Promise.all(promises)
             .then(() => {
-              completeCallback(this.outputEventName, payload);
+              completeCallback(this.outputEventName, data);
             })
             .catch((e) => {
               console.error("error scraping data", e);
@@ -75,7 +72,7 @@ export class PuppeteerQueryWebEngine extends NodeBase implements IQueryEngine {
           this.scrapeData(browser, url, this.query)
             .then((result) => {
               data[this.outputProperty] = result;
-              completeCallback(this.outputEventName, payload);
+              completeCallback(this.outputEventName, data);
             })
             .catch((e) => {
               console.error("error scraping data", e);

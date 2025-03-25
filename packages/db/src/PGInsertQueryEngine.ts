@@ -1,6 +1,5 @@
 import {
   ContainerNode,
-  getJSONObjectFromPath,
   IContainer,
   IQueryEngine,
   JSONObject,
@@ -14,7 +13,6 @@ export class PGInsertQueryEngine extends NodeBase implements IQueryEngine {
   private readonly connectionString: string;
   private readonly sqlInsertTemplate: string;
   private readonly sqlValuesTemplate: Array<string>;
-  private readonly dataRoot: string;
   private readonly outputEventName: string;
   private client: pg.Client | null;
 
@@ -24,27 +22,22 @@ export class PGInsertQueryEngine extends NodeBase implements IQueryEngine {
     this.sqlInsertTemplate = config["sqlInsertTemplate"] as string;
     this.sqlValuesTemplate = config["sqlValuesTemplate"] as Array<string>;
     this.outputEventName = config["outputEventName"] as string;
-    this.dataRoot = config["dataRoot"] as string;
     this.client = null;
   }
 
   async execute(
-    payload: JSONObject,
+    data: JSONObject,
     completeCallback: (completeEventName: string, result: JSONObject) => void,
   ): Promise<void> {
     console.log("executing query for node", this.id);
 
     if (this.client === null) {
-      const connectionString = keywordReplacement(
-        this.connectionString,
-        payload,
-      );
+      const connectionString = keywordReplacement(this.connectionString, data);
       this.client = new pg.Client({ connectionString });
       await this.client.connect();
     }
 
     try {
-      const data = getJSONObjectFromPath(this.dataRoot, payload);
       if (data instanceof Array) {
         for (const item of data) {
           const sqlInsert = keywordReplacement(
@@ -65,7 +58,7 @@ export class PGInsertQueryEngine extends NodeBase implements IQueryEngine {
         await this.client.query(sqlInsert);
       }
 
-      completeCallback(this.outputEventName, payload);
+      completeCallback(this.outputEventName, data);
     } catch (err) {
       console.error("error running query", err);
       return;

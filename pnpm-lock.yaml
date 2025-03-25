@@ -548,6 +548,37 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
 
+  packages/bluesky:
+    dependencies:
+      '@ts-flow/core':
+        specifier: workspace:*
+        version: link:../core
+      axios:
+        specifier: 1.7.9
+        version: 1.7.9
+    devDependencies:
+      '@types/jest':
+        specifier: 29.5.14
+        version: 29.5.14
+      '@types/node':
+        specifier: 22.13.4
+        version: 22.13.4
+      eslint:
+        specifier: 9.20.1
+        version: 9.20.1
+      jest:
+        specifier: 29.7.0
+        version: 29.7.0(@types/node@22.13.4)
+      jest-presets:
+        specifier: workspace:*
+        version: link:../jest-presets
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: 5.7.3
+        version: 5.7.3
+
   packages/core:
     dependencies:
       express:
@@ -647,6 +678,37 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
 
+  packages/emplifi:
+    dependencies:
+      '@ts-flow/core':
+        specifier: workspace:*
+        version: link:../core
+      axios:
+        specifier: 1.7.9
+        version: 1.7.9
+    devDependencies:
+      '@types/jest':
+        specifier: 29.5.14
+        version: 29.5.14
+      '@types/node':
+        specifier: 22.13.4
+        version: 22.13.4
+      eslint:
+        specifier: 9.20.1
+        version: 9.20.1
+      jest:
+        specifier: 29.7.0
+        version: 29.7.0(@types/node@22.13.4)
+      jest-presets:
+        specifier: workspace:*
+        version: link:../jest-presets
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: 5.7.3
+        version: 5.7.3
+
   packages/ffmpeg:
     dependencies:
       '@ts-flow/core':
@@ -713,6 +775,37 @@ importers:
       puppeteer:
         specifier: 24.2.1
         version: 24.2.1(typescript@5.7.3)
+    devDependencies:
+      '@types/jest':
+        specifier: 29.5.14
+        version: 29.5.14
+      '@types/node':
+        specifier: 22.13.4
+        version: 22.13.4
+      eslint:
+        specifier: 9.20.1
+        version: 9.20.1
+      jest:
+        specifier: 29.7.0
+        version: 29.7.0(@types/node@22.13.4)
+      jest-presets:
+        specifier: workspace:*
+        version: link:../jest-presets
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: 5.7.3
+        version: 5.7.3
+
+  packages/reddit:
+    dependencies:
+      '@ts-flow/core':
+        specifier: workspace:*
+        version: link:../core
+      axios:
+        specifier: 1.7.9
+        version: 1.7.9
     devDependencies:
       '@types/jest':
         specifier: 29.5.14

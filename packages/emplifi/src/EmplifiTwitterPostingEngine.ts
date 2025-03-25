@@ -1,5 +1,5 @@
-import { ContainerNode, keywordReplacement, NodeBase } from "@ts-flow/core";
 import type { IContainer, IQueryEngine, JSONObject } from "@ts-flow/core";
+import { ContainerNode, keywordReplacement, NodeBase } from "@ts-flow/core";
 import axios from "axios";
 import { EmplifiAuthManager } from "./auth";
 
@@ -46,18 +46,7 @@ export class EmplifiTwitterPostingEngine
 
     const token = await this.authManager.getValidToken();
     const processedText = keywordReplacement(this.postText, payload);
-    if (typeof processedText !== "string") {
-      throw new Error(
-        `Failed to process text - invalid type returned: ${typeof processedText}`,
-      );
-    }
-
     const processedUrl = keywordReplacement(this.postUrl, payload);
-    if (typeof processedUrl !== "string") {
-      throw new Error(
-        `Failed to process URL - invalid type returned: ${typeof processedUrl}`,
-      );
-    }
 
     const url = new URL(processedUrl);
     if (!url.searchParams.has("utm_source")) {

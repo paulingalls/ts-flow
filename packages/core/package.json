@@ -1,6 +1,6 @@
 {
   "name": "@ts-flow/core",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Simple, data driven workflow system leveraging an IoC container and event manager",
   "author": "paulingalls",
   "repository": {
@@ -30,7 +30,9 @@
     "prepublish": "tsc"
   },
   "jest": {
-    "preset": "jest-presets/jest/node"
+    "preset": "jest-presets/jest/node",
+    "collectCoverage": true,
+    "coverageDirectory": "coverage"
   },
   "dependencies": {
     "express": "5.0.1"

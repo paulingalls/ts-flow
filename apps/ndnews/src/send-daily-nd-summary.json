@@ -16,7 +16,7 @@
             "payload": {
               "page": 1,
               "pageSize": 3,
-              "from": "2025-02-17"
+              "from": "2025-03-17"
             },
             "triggerOnStart": "true",
             "outputEventName": "findLatestNews"
@@ -44,8 +44,8 @@
           "inputEventName": "latestNDNewsFound",
           "engineType": "PuppeteerQueryWebEngine",
           "engineId": "puppeteer-scrape-article-page",
+          "engineDataRoot": "articles",
           "engineConfig": {
-            "dataRoot": "articles",
             "urlPath": "url",
             "query": "allText",
             "outputProperty": "content",
@@ -60,11 +60,11 @@
           "inputEventName": "articlesScraped",
           "engineType": "OpenAIChatEngine",
           "engineId": "open-ai-article-summarize",
+          "engineDataRoot": "articles",
           "engineConfig": {
             "modelName": "gpt-4o-mini",
             "systemPrompt": "You are an expert editor experienced in summarizing stories about The University of Notre Dame football",
             "userPrompt": "Please summarize the following text in less than 200 words:\n${content}",
-            "dataRoot": "articles",
             "outputProperty": "summary",
             "outputEventName": "postAndImageReady"
           }
@@ -77,9 +77,9 @@
           "inputEventName": "postAndImageReady",
           "engineType": "SlackBlocksOnlyQueryEngine",
           "engineId": "slack-send-summary",
+          "engineDataRoot": "articles",
           "engineConfig": {
             "channel": "test-channel",
-            "dataRoot": "articles",
             "userPrompt": "${urlToImage}\n${title}\n${summary}\n${url}",
             "outputEventName": "summariesSent",
             "blocks": [
@@ -127,9 +127,9 @@
           "inputEventName": "cleanup",
           "engineType": "DeleteTransform",
           "engineId": "delete-articles",
+          "engineDataRoot": "",
           "engineConfig": {
             "outputEventName": "nextPage",
-            "dataRoot": "",
             "dataTarget": "articles"
           }
         }
@@ -141,9 +141,9 @@
           "inputEventName": "nextPage",
           "engineType": "IncrementTransform",
           "engineId": "increment-page",
+          "engineDataRoot": "",
           "engineConfig": {
             "outputEventName": "findLatestNews",
-            "dataRoot": "",
             "dataTarget": "page",
             "dataType": "number",
             "dataIncrement": 1

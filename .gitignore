@@ -4,6 +4,7 @@ node_modules
 *.log
 .next
 dist
+coverage
 dist-ssr
 *.local
 .env
@@ -14,3 +15,5 @@ public/dist
 /apps/pod2x/pods/*.mp3
 /apps/pod2x/tmp/*.png
 /apps/pod2x/public/images/*.png
+/apps/pod-indexer/public/pods/*
+

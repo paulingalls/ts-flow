@@ -28,8 +28,8 @@
           "inputEventName": "findOldIssues",
           "engineType": "HttpPostQueryEngine",
           "engineId": "http-post-jira",
+          "engineDataRoot": "",
           "engineConfig": {
-            "dataRoot": "",
             "urlTemplate": "https://ajdigital.atlassian.net/rest/api/3/search",
             "bodyType": "json",
             "bodyAdditionsFromPayload": {
@@ -65,11 +65,11 @@
           "inputEventName": "issuesReady",
           "engineType": "OpenAIChatEngine",
           "engineId": "open-ai-article-summarize",
+          "engineDataRoot": "issues",
           "engineConfig": {
             "modelName": "gpt-4",
             "systemPrompt": "You are an expert scrum master experienced in summarizing Jira tickets for your stakeholders.  You are good at taking information about a Jira ticket in JSON and turning it into a summarized TODO item for the ticket owner",
             "userPrompt": "Please summarize the following JSON in less than 100 words that lets ${fields.assignee.displayName}, the ticket assignee, know what they need to do next:\nTitle: ${fields.summary}\n\nDescription:\n${fields.description.content}",
-            "dataRoot": "issues",
             "outputProperty": "aiSummary",
             "outputEventName": "ticketSummariesReady"
           }
@@ -82,9 +82,9 @@
           "inputEventName": "ticketSummariesReady",
           "engineType": "SlackBlocksOnlyQueryEngine",
           "engineId": "slack-send-summary",
+          "engineDataRoot": "issues",
           "engineConfig": {
             "channel": "test-channel",
-            "dataRoot": "issues",
             "userPrompt": "${fields.summary} is late",
             "outputEventName": "summariesSent",
             "blocks": [
