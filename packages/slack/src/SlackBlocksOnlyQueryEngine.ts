@@ -33,7 +33,6 @@ export class SlackBlocksOnlyQueryEngine
     data: JSONObject,
     completeCallback: (completeEventName: string, result: JSONObject) => void,
   ): Promise<void> {
-    console.log("slack payload", data);
     if (data instanceof Array) {
       const promises: Promise<void>[] = [];
       data.forEach((value) => {

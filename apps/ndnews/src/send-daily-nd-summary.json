@@ -54,13 +54,14 @@
         }
       },
       {
-        "id": "send-daily-nd-summary-summarize-article",
+        "id": "send-daily-nd-summary-summarize-article-0",
         "type": "QueryEngine",
         "config": {
           "inputEventName": "articlesScraped",
           "engineType": "OpenAIChatEngine",
-          "engineId": "open-ai-article-summarize",
+          "engineId": "open-ai-article-summarize-0",
           "engineDataRoot": "articles",
+          "engineDataIndex": 0,
           "engineConfig": {
             "modelName": "gpt-4o-mini",
             "systemPrompt": "You are an expert editor experienced in summarizing stories about The University of Notre Dame football",
@@ -71,10 +72,55 @@
         }
       },
       {
+        "id": "send-daily-nd-summary-summarize-article-1",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "articlesScraped",
+          "engineType": "OpenAIChatEngine",
+          "engineId": "open-ai-article-summarize-1",
+          "engineDataRoot": "articles",
+          "engineDataIndex": 1,
+          "engineConfig": {
+            "modelName": "gpt-4o-mini",
+            "systemPrompt": "You are an expert editor experienced in summarizing stories about The University of Notre Dame football",
+            "userPrompt": "Please summarize the following text in less than 200 words:\n${content}",
+            "outputProperty": "summary",
+            "outputEventName": "postAndImageReady"
+          }
+        }
+      },
+      {
+        "id": "send-daily-nd-summary-summarize-article-2",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "articlesScraped",
+          "engineType": "OpenAIChatEngine",
+          "engineId": "open-ai-article-summarize-2",
+          "engineDataRoot": "articles",
+          "engineDataIndex": 2,
+          "engineConfig": {
+            "modelName": "gpt-4o-mini",
+            "systemPrompt": "You are an expert editor experienced in summarizing stories about The University of Notre Dame football",
+            "userPrompt": "Please summarize the following text in less than 200 words:\n${content}",
+            "outputProperty": "summary",
+            "outputEventName": "postAndImageReady"
+          }
+        }
+      },
+      {
+        "id": "send-daily-nd-summary-aggregate-summaries",
+        "type": "AggregatorNode",
+        "config": {
+          "inputEventName": "postAndImageReady",
+          "outputEventName": "postsAggregated",
+          "requiredEvents": 3
+        }
+      },
+      {
         "id": "send-daily-nd-summary-send-to-user",
         "type": "QueryEngine",
         "config": {
-          "inputEventName": "postAndImageReady",
+          "inputEventName": "postsAggregated",
           "engineType": "SlackBlocksOnlyQueryEngine",
           "engineId": "slack-send-summary",
           "engineDataRoot": "articles",

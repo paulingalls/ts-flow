@@ -4,3 +4,4 @@ export * from "./QueryEngine";
 export * from "./Trigger";
 export * from "./WebServer";
 export * from "./Workflow";
+export * from "./AggregatorNode";
