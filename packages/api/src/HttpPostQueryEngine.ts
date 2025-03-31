@@ -24,7 +24,9 @@ export class HttpPostQueryEngine extends NodeBase implements IQueryEngine {
     this.urlTemplate = config["urlTemplate"] as string;
     this.bodyType = config["bodyType"] as string;
     this.bodySchema = config["bodySchema"] as JSONObject;
-    this.headerSchema = config["headerSchema"] as JSONObject;
+    this.headerSchema = config["headerSchema"] as JSONObject || {
+      "Content-Type": "application/json"
+    };
     this.bodyAdditionsFromPayload = config[
       "bodyAdditionsFromPayload"
     ] as JSONObject;
