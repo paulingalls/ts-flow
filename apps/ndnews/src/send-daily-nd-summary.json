@@ -16,7 +16,7 @@
             "payload": {
               "page": 1,
               "pageSize": 3,
-              "from": "2025-03-17"
+              "from": "2025-03-27"
             },
             "triggerOnStart": "true",
             "outputEventName": "findLatestNews"

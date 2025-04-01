@@ -13,7 +13,7 @@ export class PGSelectQueryEngine extends NodeBase implements IQueryEngine {
   private readonly connectionString: string;
   private readonly sqlSelectTemplate: string;
   private readonly outputEventName: string;
-  private readonly outputEventProperty: string;
+  private readonly outputProperty: string;
   private client: pg.Client | null;
 
   constructor(id: string, container: IContainer, config: JSONObject) {
@@ -21,7 +21,7 @@ export class PGSelectQueryEngine extends NodeBase implements IQueryEngine {
     this.connectionString = config["connectionString"] as string;
     this.sqlSelectTemplate = config["sqlSelectTemplate"] as string;
     this.outputEventName = config["outputEventName"] as string;
-    this.outputEventProperty = config["outputEventProperty"] as string;
+    this.outputProperty = config["outputProperty"] as string;
     this.client = null;
   }
 
@@ -41,8 +41,8 @@ export class PGSelectQueryEngine extends NodeBase implements IQueryEngine {
     const sqlSelect = keywordReplacement(this.sqlSelectTemplate, payload);
     try {
       const res = await this.client.query(sqlSelect);
-      if (this.outputEventProperty) {
-        payload[this.outputEventProperty] = res.rows;
+      if (this.outputProperty) {
+        payload[this.outputProperty] = res.rows;
       } else {
         payload = { ...payload, ...res.rows } as unknown as JSONObject;
       }
