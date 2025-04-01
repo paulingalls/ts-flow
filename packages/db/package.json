@@ -1,6 +1,6 @@
 {
   "name": "@ts-flow/db",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "ts-flow nodes that select and insert data into a database",
   "author": "paulingalls",
   "repository": {
