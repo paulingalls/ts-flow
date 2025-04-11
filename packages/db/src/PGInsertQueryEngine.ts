@@ -1,5 +1,6 @@
 import {
   ContainerNode,
+  getValueForKeyword,
   IContainer,
   IQueryEngine,
   JSONObject,
@@ -45,11 +46,7 @@ export class PGInsertQueryEngine extends NodeBase implements IQueryEngine {
             item as JSONObject,
           );
           const values = this.sqlValuesTemplate.map((key) => {
-            const value = (item as JSONObject)[key];
-            if (value instanceof Array) {
-              return JSON.stringify(value);
-            }
-            return value;
+            return getValueForKeyword(key, item as JSONObject);
           });
           await this.client.query(sqlInsert, values);
         }

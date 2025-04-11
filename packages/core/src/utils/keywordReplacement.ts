@@ -1,4 +1,4 @@
-import { JSONObject } from "../Container";
+import { JSONObject, JSONValue } from "../Container";
 
 export function keywordReplacement(
   template: string,
@@ -29,9 +29,9 @@ function extractKeywords(input: string): string[] {
   return keywords;
 }
 
-function getValueForKeyword(keyword: string, payload: JSONObject): string {
+export function getValueForKeyword(keyword: string, payload: JSONObject): string {
   const parts = keyword.split(".");
-  let value;
+  let value: JSONValue = "";
   switch (parts.length) {
     case 1: {
       value = payload[parts[0]];

@@ -1,6 +1,6 @@
 {
   "name": "@ts-flow/slack",
-  "version": "2.0.1",
+  "version": "2.0.3",
   "description": "ts-flow nodes that interact with slack",
   "author": "paulingalls",
   "repository": {

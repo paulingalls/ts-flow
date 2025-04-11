@@ -1,6 +1,6 @@
 {
   "name": "@ts-flow/puppeteer",
-  "version": "2.0.1",
+  "version": "2.0.3",
   "description": "ts-flow nodes that interact with puppeteer",
   "author": "paulingalls",
   "repository": {
