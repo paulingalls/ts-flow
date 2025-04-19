@@ -1,6 +1,6 @@
 {
   "name": "@ts-flow/transforms",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "ts-flow nodes that transform data during workflows",
   "author": "paulingalls",
   "repository": {
