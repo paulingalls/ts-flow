@@ -1,35 +1,43 @@
 import {
     ContainerNode,
     IContainer,
-    IQueryEngine,
+    IEventListener,
     JSONObject,
     NodeBase,
     JSONValue,
+    EventBus,
 } from "@ts-flow/core";
 
 @ContainerNode
-export class LoopTransform extends NodeBase implements IQueryEngine {
+export class LoopTransform extends NodeBase implements IEventListener {
+    private readonly inputEventName: string;
     private readonly outputEventName: string;
     private readonly dataTarget: string;
 
     constructor(id: string, container: IContainer, config: JSONObject) {
         super(id, container, config);
+        this.inputEventName = config["inputEventName"] as string;
         this.outputEventName = config["outputEventName"] as string;
         this.dataTarget = config["dataTarget"] as string;
+
+        if (!this.inputEventName || !this.outputEventName) {
+            throw new Error("inputEventName and outputEventName are required for AggregatorNode");
+        }
+
+        const eventBus = this.container.getInstance("EventBus") as EventBus;
+        eventBus.addListener(this.inputEventName, this);
     }
 
-    execute(
-        data: JSONObject,
-        completeCallback: (completeEventName: string, result: JSONObject) => void,
-    ): Promise<void> {
-        const targetData = data[this.dataTarget];
+    eventTriggered(payload: JSONObject): Promise<void> {
+        const targetData = payload[this.dataTarget];
 
         if (!Array.isArray(targetData)) {
             throw new Error(`Target data at '${this.dataTarget}' is not an array`);
         }
 
+        const eventBus = this.container.getInstance("EventBus") as EventBus;
         targetData.forEach((item: JSONValue) => {
-            completeCallback(this.outputEventName, item as JSONObject);
+            eventBus.sendEvent(this.outputEventName, item as JSONObject);
         });
 
         return Promise.resolve();
