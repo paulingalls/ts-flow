@@ -6,6 +6,7 @@ import {
     NodeBase,
     JSONValue,
     EventBus,
+    getJSONObjectFromPath,
 } from "@ts-flow/core";
 
 @ContainerNode
@@ -29,7 +30,7 @@ export class LoopTransform extends NodeBase implements IEventListener {
     }
 
     eventTriggered(payload: JSONObject): Promise<void> {
-        const targetData = payload[this.dataTarget];
+        const targetData = getJSONObjectFromPath(this.dataTarget, payload);
 
         if (!Array.isArray(targetData)) {
             throw new Error(`Target data at '${this.dataTarget}' is not an array`);
