@@ -84,6 +84,7 @@ describe("RSSQueryEngine", () => {
 
       await rssEngine.execute(payload, mockCompleteCallback);
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(mockedAxios.get).toHaveBeenCalledTimes(3);
       // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(mockedAxios.get).toHaveBeenNthCalledWith(1, "https://example.com/rss?query=test");
@@ -94,9 +95,13 @@ describe("RSSQueryEngine", () => {
 
       expect(mockCompleteCallback).toHaveBeenCalledWith("rssProcessed", expect.objectContaining({
         query: "test",
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         rssData: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           rss: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             channel: expect.objectContaining({
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
               item: expect.arrayContaining([
                 expect.objectContaining({
                   title: "Test Article 1",
@@ -180,12 +185,17 @@ describe("RSSQueryEngine", () => {
 
       await rssEngine.execute(payload, mockCompleteCallback);
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(mockedAxios.get).toHaveBeenCalledTimes(6); // 2 RSS + 4 metadata requests
       expect(mockCompleteCallback).toHaveBeenCalledWith("rssProcessed", expect.objectContaining({
         sources: payload.sources,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         aggregatedRss: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           rss: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             channel: expect.objectContaining({
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
               item: expect.arrayContaining([
                 expect.objectContaining({
                   accountId: "acc1",
@@ -228,6 +238,7 @@ describe("RSSQueryEngine", () => {
       await rssEngine.execute(payload, mockCompleteCallback);
 
       expect(consoleSpy).toHaveBeenCalledWith("Skipping source - missing URL parameter");
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(mockedAxios.get).toHaveBeenCalledTimes(3); // Only first source processed
       expect(mockCompleteCallback).toHaveBeenCalled();
 
@@ -261,6 +272,7 @@ describe("RSSQueryEngine", () => {
 
       expect(mockCompleteCallback).toHaveBeenCalledWith("rssProcessed", expect.objectContaining({
         existingData: "test",
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         rss: expect.any(Object),
       }));
     });
@@ -289,8 +301,11 @@ describe("RSSQueryEngine", () => {
       await rssEngine.execute({}, mockCompleteCallback);
 
       expect(mockCompleteCallback).toHaveBeenCalledWith("rssProcessed", expect.objectContaining({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         rss: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           channel: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             item: expect.arrayContaining([
               expect.objectContaining({
                 pubDate: "Invalid Date String", // Should preserve original if invalid
