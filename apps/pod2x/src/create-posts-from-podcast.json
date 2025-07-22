@@ -2,109 +2,71 @@
   "id": "create-posts-from-podcast",
   "type": "Workflow",
   "config": {
-    "name": "Create X posts from a podcast",
-    "description": "Given the MP3 file of a podcast, generate some posts for X",
+    "name": "Create posts from podcast",
+    "description": "Create social media posts from a podcast episode",
     "nodes": [
       {
-        "id": "create-posts-from-podcast-trim-audio",
-        "type": "QueryEngine",
+        "id": "create-posts-from-podcast-trigger",
+        "type": "Trigger",
         "config": {
-          "inputEventName": "podcastUploaded",
-          "engineType": "AudioTrimQueryEngine",
-          "engineId": "ffmpeg-trim-audio",
-          "engineConfig": {
-            "dataRoot": "",
-            "inputProperty": "filePath",
-            "outputProperty": "trimmedFilePath",
-            "outputEventName": "trimmedAudioReady"
+          "triggerType": "CronTrigger",
+          "triggerId": "create-posts-from-podcast-cron",
+          "triggerConfig": {
+            "cron": "0 9 * * *",
+            "payload": {
+              "page": 1,
+              "pageSize": 3,
+              "from": "2025-02-17"
+            },
+            "triggerOnStart": "true",
+            "outputEventName": "findLatestNews"
           }
         }
       },
       {
-        "id": "create-posts-from-podcast-get-transcript",
+        "id": "create-posts-from-podcast-find-latest-news",
         "type": "QueryEngine",
         "config": {
-          "inputEventName": "trimmedAudioReady",
-          "engineType": "OpenAIWhisperEngine",
-          "engineId": "open-ai-get-transcript",
+          "inputEventName": "findLatestNews",
+          "engineType": "HttpGetQueryEngine",
+          "engineId": "get-latest-news",
           "engineConfig": {
-            "modelName": "whisper-1",
-            "audioPrompt": "Hello, this is a podcast.",
-            "dataRoot": "",
-            "inputProperty": "trimmedFilePath",
-            "outputProperty": "podcastText",
-            "outputEventName": "textReady"
+            "urlTemplate": "https://newsapi.org/v2/everything?apiKey=${NEWS_API_TOKEN}&q=%22Notre%20Dame%22%20-cathedral%20%2Bfootball&sortBy=relevancy&pageSize=${pageSize}&page=${page}&from=${from}&language=en",
+            "bodyType": "json",
+            "outputEventName": "latestNDNewsFound"
           }
         }
       },
       {
-        "id": "create-posts-from-podcast-get-quotes",
+        "id": "create-posts-from-podcast-scrape-article",
         "type": "QueryEngine",
         "config": {
-          "inputEventName": "textReady",
-          "engineType": "OpenAICompletionsEngine",
-          "engineId": "open-ai-podcast-quotes",
+          "inputEventName": "latestNDNewsFound",
+          "engineType": "PuppeteerQueryWebEngine",
+          "engineId": "puppeteer-scrape-article-page",
+          "engineDataRoot": "articles",
           "engineConfig": {
-            "modelName": "gpt-3.5-turbo-instruct",
-            "prompt": "${podcastText}\n\n\n=====\nThe above was the transcript of the first 5 minutes of a podcast.  A great quote from the podcast text above to share on social media, including good hashtags, is:\n\n",
-            "numCompletions": 3,
-            "maxTokens": 124,
-            "temperature": 1.1,
-            "dataRoot": "",
-            "outputProperty": "posts",
-            "outputEventName": "quotesReady"
+            "urlPath": "url",
+            "query": "allText",
+            "outputProperty": "content",
+            "outputEventName": "articlesScraped"
           }
         }
       },
       {
-        "id": "create-posts-from-podcast-get-image-text",
+        "id": "create-posts-from-podcast-summarize-article",
         "type": "QueryEngine",
         "config": {
-          "inputEventName": "quotesReady",
-          "engineType": "OpenAICompletionsEngine",
-          "engineId": "open-ai-podcast-image-text",
+          "inputEventName": "articlesScraped",
+          "engineType": "OpenAIChatEngine",
+          "engineId": "open-ai-article-summarize",
+          "engineDataRoot": "articles",
           "engineConfig": {
-            "modelName": "gpt-3.5-turbo-instruct",
-            "prompt": "${text}\n\n\n=====\nThe above is great quote from a podcast.  The best nine word or shorter statement from the quote to include on an image with a social media post about the podcast, not including hashtags, would be:\n\n",
-            "numCompletions": 1,
-            "maxTokens": 124,
-            "temperature": 1.1,
-            "dataRoot": "posts",
-            "outputProperty": "imageText",
-            "outputEventName": "imageTextReady"
-          }
-        }
-      },
-      {
-        "id": "create-posts-from-podcast-get-images",
-        "type": "QueryEngine",
-        "config": {
-          "inputEventName": "imageTextReady",
-          "engineType": "OpenAIImageEngine",
-          "engineId": "open-ai-podcast-images",
-          "engineConfig": {
-            "prompt": "A photo to include with a social media post.  The photo should be a digitally created abstract that includes a microphone.  The photo may not include any text from any language at all.\n\n",
-            "numImages": 1,
-            "size": "small",
-            "dataRoot": "posts",
-            "outputProperty": "image",
-            "outputEventName": "imagesGenerated"
-          }
-        }
-      },
-      {
-        "id": "create-posts-from-podcast-add-text-to-images",
-        "type": "QueryEngine",
-        "config": {
-          "inputEventName": "imagesGenerated",
-          "engineType": "AddTextToImageQueryEngine",
-          "engineId": "ffmpeg-add-text",
-          "engineConfig": {
-            "dataRoot": "posts",
-            "outputProperty": "image",
-            "outputEventName": "imagesReady",
-            "imageProperty": "image",
-            "textTemplate": "${imageText}"
+            "modelName": "gpt-4o-mini",
+            "systemPrompt": "You are an expert editor experienced in summarizing stories about The University of Notre Dame football",
+            "userPrompt": "Please summarize the following text in less than 200 words:\n${content}",
+            "outputProperty": "summary",
+            "outputEventName": "postAndImageReady"
           }
         }
       },
@@ -112,33 +74,79 @@
         "id": "create-posts-from-podcast-send-to-user",
         "type": "QueryEngine",
         "config": {
-          "inputEventName": "imagesReady",
+          "inputEventName": "postAndImageReady",
           "engineType": "SlackBlocksOnlyQueryEngine",
-          "engineId": "slack-send-quotes",
+          "engineId": "slack-send-summary",
+          "engineDataRoot": "articles",
           "engineConfig": {
             "channel": "test-channel",
-            "dataRoot": "posts",
-            "userPrompt": "${text}",
+            "userPrompt": "${urlToImage}\n${title}\n${summary}\n${url}",
             "outputEventName": "summariesSent",
             "blocks": [
               {
                 "type": "image",
                 "title": {
                   "type": "plain_text",
-                  "text": "Post",
+                  "text": "${title}",
                   "emoji": false
                 },
-                "image_url": "${image}",
+                "image_url": "${urlToImage}",
                 "alt_text": ""
               },
               {
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "${text}\n"
+                  "text": "*${title}*\n${summary}\n<${url}|read more...>\n"
                 }
               }
             ]
+          }
+        }
+      },
+      {
+        "id": "create-posts-from-podcast-check-for-more",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "summariesSent",
+          "engineType": "SlackYesNoQueryEngine",
+          "engineId": "slack-yes-no-submit",
+          "engineConfig": {
+            "channel": "test-channel",
+            "userPrompt": "Do you want to see more?",
+            "yesOutputEventName": "cleanup",
+            "noOutputEventName": "done",
+            "interactiveEndpoint": "/slack/interactive"
+          }
+        }
+      },
+      {
+        "id": "create-posts-from-podcast-cleanup",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "cleanup",
+          "engineType": "DeleteTransform",
+          "engineId": "delete-articles",
+          "engineDataRoot": "",
+          "engineConfig": {
+            "outputEventName": "nextPage",
+            "dataTarget": "articles"
+          }
+        }
+      },
+      {
+        "id": "create-posts-from-podcast-move-to-next-page",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "nextPage",
+          "engineType": "IncrementTransform",
+          "engineId": "increment-page",
+          "engineDataRoot": "",
+          "engineConfig": {
+            "outputEventName": "findLatestNews",
+            "dataTarget": "page",
+            "dataType": "number",
+            "dataIncrement": 1
           }
         }
       }

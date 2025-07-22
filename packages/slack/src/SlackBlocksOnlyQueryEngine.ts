@@ -18,7 +18,6 @@ export class SlackBlocksOnlyQueryEngine
   private readonly userPrompt: string;
   private readonly slackChannel: string;
   private readonly outputEventName: string;
-  private readonly dataRoot: string;
   private readonly blocks: Array<JSONValue>;
 
   constructor(id: string, container: IContainer, config: JSONObject) {
@@ -27,17 +26,13 @@ export class SlackBlocksOnlyQueryEngine
     this.userPrompt = config["userPrompt"] as string;
     this.slackChannel = config["channel"] as string;
     this.outputEventName = config["outputEventName"] as string;
-    this.dataRoot = config["dataRoot"] as string;
     this.blocks = config["blocks"] as Array<JSONValue>;
   }
 
   async execute(
-    payload: JSONObject,
+    data: JSONObject,
     completeCallback: (completeEventName: string, result: JSONObject) => void,
   ): Promise<void> {
-    const data: JSONObject = payload[this.dataRoot] as JSONObject;
-
-    console.log("slack payload", payload);
     if (data instanceof Array) {
       const promises: Promise<void>[] = [];
       data.forEach((value) => {
@@ -46,7 +41,7 @@ export class SlackBlocksOnlyQueryEngine
       });
       return Promise.all(promises)
         .then(() => {
-          completeCallback(this.outputEventName, payload);
+          completeCallback(this.outputEventName, data);
         })
         .catch((e) => {
           console.error("error sending slack message", e);
@@ -54,7 +49,7 @@ export class SlackBlocksOnlyQueryEngine
     } else {
       return this.sendSlackMessage(data)
         .then(() => {
-          completeCallback(this.outputEventName, payload);
+          completeCallback(this.outputEventName, data);
         })
         .catch((e) => {
           console.error("error sending slack message", e);

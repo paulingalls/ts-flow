@@ -8,7 +8,6 @@ describe("PuppeteerQueryWebEngine", () => {
 
   beforeEach(() => {
     mockConfig = {
-      dataRoot: "pageData",
       urlPath: "https://example.com",
       outputProperty: "content",
       query: "allText",

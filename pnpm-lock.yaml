@@ -489,8 +489,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       openai:
-        specifier: 4.85.4
-        version: 4.85.4(ws@8.18.0)(zod@3.24.2)
+        specifier: 4.90.0
+        version: 4.90.0(ws@8.18.0)(zod@3.24.2)
     devDependencies:
       '@types/express':
         specifier: 5.0.0
@@ -3278,8 +3278,8 @@ packages:
     resolution: {integrity: sha512-kbpaSSGJTWdAY5KPVeMOKXSrPtr8C8C7wodJbcsd51jRnmD+GZu8Y0VoU6Dm5Z4vWr0Ig/1NKuWRKf7j5aaYSg==}
     engines: {node: '>=6'}
 
-  openai@4.85.4:
-    resolution: {integrity: sha512-Nki51PBSu+Aryo7WKbdXvfm0X/iKkQS2fq3O0Uqb/O3b4exOZFid2te1BZ52bbO5UwxQZ5eeHJDCTqtrJLPw0w==}
+  openai@4.90.0:
+    resolution: {integrity: sha512-YCuHMMycqtCg1B8G9ezkOF0j8UnBWD3Al/zYaelpuXwU1yhCEv+Y4n9G20MnyGy6cH4GsFwOMrgstQ+bgG1PtA==}
     hasBin: true
     peerDependencies:
       ws: ^8.18.0
@@ -6935,7 +6935,7 @@ snapshots:
     dependencies:
       mimic-fn: 2.1.0
 
-  openai@4.85.4(ws@8.18.0)(zod@3.24.2):
+  openai@4.90.0(ws@8.18.0)(zod@3.24.2):
     dependencies:
       '@types/node': 18.19.76
       '@types/node-fetch': 2.6.12

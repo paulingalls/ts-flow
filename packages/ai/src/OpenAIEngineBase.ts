@@ -1,5 +1,4 @@
 import {
-  getJSONObjectFromPath,
   IContainer,
   IQueryEngine,
   JSONObject,
@@ -14,7 +13,6 @@ export abstract class OpenAIEngineBase
 {
   protected readonly modelName: string;
   protected readonly openAI: OpenAI;
-  protected readonly dataRoot: string;
   protected readonly outputProperty: string;
   protected readonly outputEventName: string;
 
@@ -22,7 +20,6 @@ export abstract class OpenAIEngineBase
     super(id, container, config);
 
     this.modelName = config["modelName"] as string;
-    this.dataRoot = config["dataRoot"] as string;
     this.outputProperty = config["outputProperty"] as string;
     this.outputEventName = config["outputEventName"] as string;
 
@@ -30,13 +27,9 @@ export abstract class OpenAIEngineBase
   }
 
   async execute(
-    payload: JSONObject,
+    data: JSONObject,
     completeCallback: (completeEventName: string, result: JSONObject) => void,
   ): Promise<void> {
-    const data: JSONObject = this.dataRoot
-      ? getJSONObjectFromPath(this.dataRoot, payload)
-      : payload;
-
     console.log("executing query for node", this.id);
 
     if (data instanceof Array) {
@@ -63,14 +56,14 @@ export abstract class OpenAIEngineBase
             "all promises resolved, sending event: ",
             this.outputEventName,
           );
-          completeCallback(this.outputEventName, payload);
+          completeCallback(this.outputEventName, data);
         })
         .catch((e) => console.error("error executing query ai", e));
     } else {
       return this.queryAI(data)
         .then((result) => {
           data[this.outputProperty] = result;
-          completeCallback(this.outputEventName, payload);
+          completeCallback(this.outputEventName, data);
         })
         .catch((e) => {
           console.error("error executing query ai", e);

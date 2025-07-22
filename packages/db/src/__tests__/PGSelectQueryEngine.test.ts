@@ -51,7 +51,7 @@ describe("PGSelectQueryEngine", () => {
       connectionString: "postgres://user:password@localhost:5432/database",
       sqlSelectTemplate: "SELECT * FROM users WHERE id = {{userId}}",
       outputEventName: "queryComplete",
-      outputEventProperty: "users",
+      outputProperty: "users",
     };
 
     // Act
@@ -62,7 +62,7 @@ describe("PGSelectQueryEngine", () => {
     expect(engine["connectionString"]).toBe(config.connectionString);
     expect(engine["sqlSelectTemplate"]).toBe(config.sqlSelectTemplate);
     expect(engine["outputEventName"]).toBe(config.outputEventName);
-    expect(engine["outputEventProperty"]).toBe(config.outputEventProperty);
+    expect(engine["outputProperty"]).toBe(config.outputProperty);
     expect(engine["client"]).toBeNull();
   });
 
@@ -72,7 +72,7 @@ describe("PGSelectQueryEngine", () => {
       connectionString: "postgres://user:password@localhost:5432/database",
       sqlSelectTemplate: "SELECT * FROM users",
       outputEventName: "queryComplete",
-      outputEventProperty: "users",
+      outputProperty: "users",
     };
     const engine = new PGSelectQueryEngine("test-id", container, config);
     const payload: JSONObject = {};
@@ -102,7 +102,7 @@ describe("PGSelectQueryEngine", () => {
       connectionString: "postgres://user:password@localhost:5432/database",
       sqlSelectTemplate: "SELECT * FROM users",
       outputEventName: "queryComplete",
-      outputEventProperty: "users",
+      outputProperty: "users",
     };
     const engine = new PGSelectQueryEngine("test-id", container, config);
     const payload: JSONObject = { existingProp: "value" };
@@ -128,13 +128,13 @@ describe("PGSelectQueryEngine", () => {
     );
   });
 
-  it("should merge query results directly into payload when no outputEventProperty is specified", async () => {
+  it("should merge query results directly into payload when no outputProperty is specified", async () => {
     // Arrange
     const config: JSONObject = {
       connectionString: "postgres://user:password@localhost:5432/database",
       sqlSelectTemplate: "SELECT * FROM users",
       outputEventName: "queryComplete",
-      outputEventProperty: "", // Empty string means merge directly
+      outputProperty: "", // Empty string means merge directly
     };
     const engine = new PGSelectQueryEngine("test-id", container, config);
     const payload: JSONObject = { existingProp: "value" };
@@ -166,7 +166,7 @@ describe("PGSelectQueryEngine", () => {
       connectionString: "postgres://user:password@localhost:5432/database",
       sqlSelectTemplate: "SELECT * FROM users",
       outputEventName: "queryComplete",
-      outputEventProperty: "users",
+      outputProperty: "users",
     };
     const engine = new PGSelectQueryEngine("test-id", container, config);
     const payload: JSONObject = {};

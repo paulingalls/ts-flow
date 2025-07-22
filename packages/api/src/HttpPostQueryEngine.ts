@@ -24,7 +24,9 @@ export class HttpPostQueryEngine extends NodeBase implements IQueryEngine {
     this.urlTemplate = config["urlTemplate"] as string;
     this.bodyType = config["bodyType"] as string;
     this.bodySchema = config["bodySchema"] as JSONObject;
-    this.headerSchema = config["headerSchema"] as JSONObject;
+    this.headerSchema = config["headerSchema"] as JSONObject || {
+      "Content-Type": "application/json"
+    };
     this.bodyAdditionsFromPayload = config[
       "bodyAdditionsFromPayload"
     ] as JSONObject;
@@ -36,8 +38,42 @@ export class HttpPostQueryEngine extends NodeBase implements IQueryEngine {
     payload: JSONObject,
     completeCallback: (completeEventName: string, result: JSONObject) => void,
   ): Promise<void> {
-    const url = keywordReplacement(this.urlTemplate, payload);
-    if (this.bodyType.toLowerCase() === "json") {
+    if (this.bodyType.toLowerCase() !== "json") {
+      return;
+    }
+
+    if (Array.isArray(payload)) {
+      await Promise.all(
+        payload.map(async (item: JSONObject) => {
+          const url = keywordReplacement(this.urlTemplate, item);
+          const postBody: JSONObject = injectDataIntoJSONObject(
+            item,
+            this.bodySchema,
+          );
+          Object.keys(this.bodyAdditionsFromPayload).forEach((key) => {
+            postBody[key] = item[this.bodySchema[key] as string];
+          });
+
+          const headers: AxiosHeaders = injectDataIntoJSONObject(
+            item,
+            this.headerSchema,
+          ) as AxiosHeaders;
+
+          try {
+            const res = await axios.post(url, postBody, { headers });
+            console.log(JSON.stringify(res.data));
+            if (this.outputProperty) {
+              item[this.outputProperty] = res.data as JSONObject;
+            } else {
+              Object.assign(item, res.data);
+            }
+          } catch (e) {
+            console.error("error posting http for array item", e);
+          }
+        })
+      );
+    } else {
+      const url = keywordReplacement(this.urlTemplate, payload);
       const postBody: JSONObject = injectDataIntoJSONObject(
         payload,
         this.bodySchema,
@@ -50,20 +86,20 @@ export class HttpPostQueryEngine extends NodeBase implements IQueryEngine {
         payload,
         this.headerSchema,
       ) as AxiosHeaders;
-      return axios
-        .post(url, postBody, { headers })
-        .then((res) => {
-          console.log(JSON.stringify(res.data));
-          if (this.outputProperty) {
-            payload[this.outputProperty] = res.data as JSONObject;
-          } else {
-            payload = res.data as JSONObject;
-          }
-          completeCallback(this.outputEventName, payload);
-        })
-        .catch((e) => {
-          console.error("error posting http", e);
-        });
+
+      try {
+        const res = await axios.post(url, postBody, { headers });
+        console.log(JSON.stringify(res.data));
+        if (this.outputProperty) {
+          payload[this.outputProperty] = res.data as JSONObject;
+        } else {
+          Object.assign(payload, res.data);
+        }
+      } catch (e) {
+        console.error("error posting http", e);
+      }
     }
+
+    completeCallback(this.outputEventName, payload);
   }
 }

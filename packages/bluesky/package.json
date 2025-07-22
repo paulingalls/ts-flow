@@ -1,6 +1,6 @@
 {
   "name": "@ts-flow/bluesky",
-  "version": "1.0.0",
+  "version": "2.0.3",
   "description": "ts-flow nodes that interact with bluesky apis",
   "repository": {
     "type": "git",
@@ -29,7 +29,9 @@
     "prepublish": "tsc"
   },
   "jest": {
-    "preset": "jest-presets/jest/node"
+    "preset": "jest-presets/jest/node",
+    "collectCoverage": true,
+    "coverageDirectory": "coverage"
   },
   "dependencies": {
     "@ts-flow/core": "workspace:*",

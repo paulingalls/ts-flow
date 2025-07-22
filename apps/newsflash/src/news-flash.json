@@ -17,7 +17,7 @@
               "page": 1,
               "pageSize": 3,
               "query": "${value}",
-              "from": "2025-01-31"
+              "from": "2025-03-17"
             },
             "triggerBlockId": "search-news",
             "interactiveEndpoint": "/slack/interactive",
@@ -48,9 +48,9 @@
           "inputEventName": "topicReady",
           "engineType": "UrlEncodeTransform",
           "engineId": "encode-value",
+          "engineDataRoot": "",
           "engineConfig": {
             "outputEventName": "findLatestNews",
-            "dataRoot": "",
             "dataTarget": "query"
           }
         }
@@ -76,8 +76,8 @@
           "inputEventName": "latestNDNewsFound",
           "engineType": "PuppeteerQueryWebEngine",
           "engineId": "puppeteer-scrape-article-page",
+          "engineDataRoot": "articles",
           "engineConfig": {
-            "dataRoot": "articles",
             "urlPath": "url",
             "query": "allText",
             "outputProperty": "content",
@@ -92,11 +92,11 @@
           "inputEventName": "articlesScraped",
           "engineType": "OpenAIChatEngine",
           "engineId": "open-ai-article-summarize",
+          "engineDataRoot": "articles",
           "engineConfig": {
             "modelName": "gpt-4",
             "systemPrompt": "You are an expert editor experienced in summarizing news stories about various topics",
             "userPrompt": "Please summarize the following text in less than 200 words:\n${content}",
-            "dataRoot": "articles",
             "outputProperty": "summary",
             "outputEventName": "postAndImageReady"
           }
@@ -109,9 +109,9 @@
           "inputEventName": "postAndImageReady",
           "engineType": "SlackBlocksOnlyQueryEngine",
           "engineId": "slack-send-summary",
+          "engineDataRoot": "articles",
           "engineConfig": {
             "channel": "test-channel",
-            "dataRoot": "articles",
             "userPrompt": "${urlToImage}\n${title}\n${summary}\n${url}",
             "outputEventName": "summariesSent",
             "blocks": [
@@ -159,9 +159,9 @@
           "inputEventName": "cleanup",
           "engineType": "DeleteTransform",
           "engineId": "delete-articles",
+          "engineDataRoot": "",
           "engineConfig": {
             "outputEventName": "nextPage",
-            "dataRoot": "",
             "dataTarget": "articles"
           }
         }
@@ -173,9 +173,9 @@
           "inputEventName": "nextPage",
           "engineType": "IncrementTransform",
           "engineId": "increment-page",
+          "engineDataRoot": "",
           "engineConfig": {
             "outputEventName": "findLatestNews",
-            "dataRoot": "",
             "dataTarget": "page",
             "dataType": "number",
             "dataIncrement": 1

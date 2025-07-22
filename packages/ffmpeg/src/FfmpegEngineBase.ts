@@ -1,5 +1,4 @@
 import {
-  getJSONObjectFromPath,
   IContainer,
   IQueryEngine,
   JSONObject,
@@ -15,25 +14,19 @@ export abstract class FfmpegEngineBase
   extends NodeBase
   implements IQueryEngine
 {
-  protected readonly dataRoot: string;
   protected readonly outputProperty: string;
   protected readonly outputEventName: string;
 
   protected constructor(id: string, container: IContainer, config: JSONObject) {
     super(id, container, config);
-    this.dataRoot = config["dataRoot"] as string;
     this.outputProperty = config["outputProperty"] as string;
     this.outputEventName = config["outputEventName"] as string;
   }
 
   async execute(
-    payload: JSONObject,
+    data: JSONObject,
     completeCallback: (completeEventName: string, result: JSONObject) => void,
   ): Promise<void> {
-    const data: JSONObject = this.dataRoot
-      ? getJSONObjectFromPath(this.dataRoot, payload)
-      : payload;
-
     console.log("executing ffmpeg engine for node", this.id);
 
     if (data instanceof Array) {
@@ -41,12 +34,12 @@ export abstract class FfmpegEngineBase
         const item = data[i] as JSONObject;
         item[this.outputProperty] = await this.runFfmpeg(item);
       }
-      completeCallback(this.outputEventName, payload);
+      completeCallback(this.outputEventName, data);
     } else {
       data[this.outputProperty] = await this.runFfmpeg(data);
-      completeCallback(this.outputEventName, payload);
+      completeCallback(this.outputEventName, data);
     }
   }
 
-  abstract runFfmpeg(payload: JSONObject): Promise<JSONValue>;
+  abstract runFfmpeg(data: JSONObject): Promise<JSONValue>;
 }

@@ -12,10 +12,10 @@
           "inputEventName": "podcastUploaded",
           "engineType": "OpenAIWhisperEngine",
           "engineId": "open-ai-get-vtt",
+          "engineDataRoot": "",
           "engineConfig": {
             "modelName": "whisper-1",
             "audioPrompt": "Please, will you kindly transcribe this podcast into vtt?",
-            "dataRoot": "",
             "responseFormat": "vtt",
             "inputProperty": "filePath",
             "outputProperty": "podcastVTT",
@@ -30,9 +30,9 @@
           "inputEventName": "vttReady",
           "engineType": "OpenAIChatEngine",
           "engineId": "open-ai-get-topics",
+          "engineDataRoot": "",
           "engineConfig": {
             "modelName": "gpt-4o-mini",
-            "dataRoot": "",
             "systemPrompt": "You are a podcast editor.  You are expert at taking a VTT file of a podcast, and grouping the phrases into topics, each with a start and and time within the podcast.  You generate a json file with entries like the following:\n{ \"topics\": [{\"topic\":\"title of the topic\", \"summary\": \"a paragraph summary of the topic\", \"start\":\"00:00:52.520\", \"end\":\"00:03:12.923\"}] }\nThe contents of a VTT file will be given, generate the correct JSON for it.",
             "userPrompt": "${podcastVTT}",
             "outputProperty": "podcastTopics",
@@ -91,8 +91,8 @@
           "inputEventName": "topicsReady",
           "engineType": "AudioTrimQueryEngine",
           "engineId": "ffmpeg-trim-audio",
+          "engineDataRoot": "",
           "engineConfig": {
-            "dataRoot": "",
             "inputProperty": "filePath",
             "fileFolderName": "public/pods",
             "trimRoot": "podcastTopics.topics",
@@ -112,8 +112,8 @@
           "inputEventName": "trimmedAudioReady",
           "engineType": "ResampleAudioQueryEngine",
           "engineId": "ffmpeg-resample-audio",
+          "engineDataRoot": "podcastTopics.topics",
           "engineConfig": {
-            "dataRoot": "podcastTopics.topics",
             "inputProperty": "trimmedFilename",
             "audioSampleRate": 24000,
             "audioChannels": 1,
@@ -132,9 +132,9 @@
           "inputEventName": "resampledAudioReady",
           "engineType": "OpenAIEmbeddingEngine",
           "engineId": "open-ai-get-embedding",
+          "engineDataRoot": "podcastTopics.topics",
           "engineConfig": {
             "modelName": "text-embedding-3-small",
-            "dataRoot": "podcastTopics.topics",
             "keyToEmbed": "summary",
             "outputProperty": "embedding",
             "outputEventName": "embeddingsReady"
@@ -148,8 +148,8 @@
           "inputEventName": "embeddingsReady",
           "engineType": "PGInsertQueryEngine",
           "engineId": "postgres-save-embeddings",
+          "engineDataRoot": "podcastTopics.topics",
           "engineConfig": {
-            "dataRoot": "podcastTopics.topics",
             "connectionString": "${POSTGRES_CONNECTION_STRING}",
             "sqlInsertTemplate": "insert into podcast_topics (title, summary, filename, embedding) values ($1, $2, $3, $4)",
             "sqlValuesTemplate": [

@@ -3,3 +3,4 @@ export * from "./OpenAICompletionsEngine";
 export * from "./OpenAIEmbeddingEngine";
 export * from "./OpenAIImageEngine";
 export * from "./OpenAIWhisperEngine";
+export * from "./OpenAISpeechEngine";

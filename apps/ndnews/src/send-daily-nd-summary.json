@@ -16,7 +16,7 @@
             "payload": {
               "page": 1,
               "pageSize": 3,
-              "from": "2025-02-17"
+              "from": "2025-03-27"
             },
             "triggerOnStart": "true",
             "outputEventName": "findLatestNews"
@@ -44,8 +44,8 @@
           "inputEventName": "latestNDNewsFound",
           "engineType": "PuppeteerQueryWebEngine",
           "engineId": "puppeteer-scrape-article-page",
+          "engineDataRoot": "articles",
           "engineConfig": {
-            "dataRoot": "articles",
             "urlPath": "url",
             "query": "allText",
             "outputProperty": "content",
@@ -54,32 +54,78 @@
         }
       },
       {
-        "id": "send-daily-nd-summary-summarize-article",
+        "id": "send-daily-nd-summary-summarize-article-0",
         "type": "QueryEngine",
         "config": {
           "inputEventName": "articlesScraped",
           "engineType": "OpenAIChatEngine",
-          "engineId": "open-ai-article-summarize",
+          "engineId": "open-ai-article-summarize-0",
+          "engineDataRoot": "articles",
+          "engineDataIndex": 0,
           "engineConfig": {
             "modelName": "gpt-4o-mini",
             "systemPrompt": "You are an expert editor experienced in summarizing stories about The University of Notre Dame football",
             "userPrompt": "Please summarize the following text in less than 200 words:\n${content}",
-            "dataRoot": "articles",
             "outputProperty": "summary",
             "outputEventName": "postAndImageReady"
           }
         }
       },
       {
+        "id": "send-daily-nd-summary-summarize-article-1",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "articlesScraped",
+          "engineType": "OpenAIChatEngine",
+          "engineId": "open-ai-article-summarize-1",
+          "engineDataRoot": "articles",
+          "engineDataIndex": 1,
+          "engineConfig": {
+            "modelName": "gpt-4o-mini",
+            "systemPrompt": "You are an expert editor experienced in summarizing stories about The University of Notre Dame football",
+            "userPrompt": "Please summarize the following text in less than 200 words:\n${content}",
+            "outputProperty": "summary",
+            "outputEventName": "postAndImageReady"
+          }
+        }
+      },
+      {
+        "id": "send-daily-nd-summary-summarize-article-2",
+        "type": "QueryEngine",
+        "config": {
+          "inputEventName": "articlesScraped",
+          "engineType": "OpenAIChatEngine",
+          "engineId": "open-ai-article-summarize-2",
+          "engineDataRoot": "articles",
+          "engineDataIndex": 2,
+          "engineConfig": {
+            "modelName": "gpt-4o-mini",
+            "systemPrompt": "You are an expert editor experienced in summarizing stories about The University of Notre Dame football",
+            "userPrompt": "Please summarize the following text in less than 200 words:\n${content}",
+            "outputProperty": "summary",
+            "outputEventName": "postAndImageReady"
+          }
+        }
+      },
+      {
+        "id": "send-daily-nd-summary-aggregate-summaries",
+        "type": "AggregatorNode",
+        "config": {
+          "inputEventName": "postAndImageReady",
+          "outputEventName": "postsAggregated",
+          "requiredEvents": 3
+        }
+      },
+      {
         "id": "send-daily-nd-summary-send-to-user",
         "type": "QueryEngine",
         "config": {
-          "inputEventName": "postAndImageReady",
+          "inputEventName": "postsAggregated",
           "engineType": "SlackBlocksOnlyQueryEngine",
           "engineId": "slack-send-summary",
+          "engineDataRoot": "articles",
           "engineConfig": {
             "channel": "test-channel",
-            "dataRoot": "articles",
             "userPrompt": "${urlToImage}\n${title}\n${summary}\n${url}",
             "outputEventName": "summariesSent",
             "blocks": [
@@ -127,9 +173,9 @@
           "inputEventName": "cleanup",
           "engineType": "DeleteTransform",
           "engineId": "delete-articles",
+          "engineDataRoot": "",
           "engineConfig": {
             "outputEventName": "nextPage",
-            "dataRoot": "",
             "dataTarget": "articles"
           }
         }
@@ -141,9 +187,9 @@
           "inputEventName": "nextPage",
           "engineType": "IncrementTransform",
           "engineId": "increment-page",
+          "engineDataRoot": "",
           "engineConfig": {
             "outputEventName": "findLatestNews",
-            "dataRoot": "",
             "dataTarget": "page",
             "dataType": "number",
             "dataIncrement": 1

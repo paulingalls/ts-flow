@@ -1,6 +1,6 @@
 {
   "name": "@ts-flow/ai",
-  "version": "1.0.0",
+  "version": "2.0.3",
   "description": "ts-flow nodes that interact with open AI",
   "author": "paulingalls",
   "repository": {
@@ -30,11 +30,13 @@
     "prepublish": "tsc"
   },
   "jest": {
-    "preset": "jest-presets/jest/node"
+    "preset": "jest-presets/jest/node",
+    "collectCoverage": true,
+    "coverageDirectory": "coverage"
   },
   "dependencies": {
     "@ts-flow/core": "workspace:*",
-    "openai": "4.85.4"
+    "openai": "4.90.0"
   },
   "devDependencies": {
     "@types/express": "5.0.0",
